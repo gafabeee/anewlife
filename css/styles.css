@@ -1,0 +1,1916 @@
+:root{
+  --bg: #0a0f14;
+  --panel: #10161d;
+  --panel-2: #172029;
+  --accent: #35c9c1;
+  --accent-soft: #7fe0da;
+  --accent-2: #e8935a;
+  --accent-2-soft: #f2b788;
+  --text: #e7f1f5;
+  --muted: #7d93a3;
+  --border: #22303c;
+}
+*{ box-sizing: border-box; }
+html,body{ height:100%; margin:0; }
+body{
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* Dark scrollbars across the page and every scrollable panel. */
+*{
+  scrollbar-color:#263440 #090d11;
+  scrollbar-width:thin;
+}
+*::-webkit-scrollbar{ width:10px; height:10px; }
+*::-webkit-scrollbar-track{ background:#090d11; }
+*::-webkit-scrollbar-thumb{
+  background:#263440;
+  border:2px solid #090d11;
+  border-radius:999px;
+}
+*::-webkit-scrollbar-thumb:hover{ background:#344654; }
+*::-webkit-scrollbar-corner{ background:#090d11; }
+
+.hidden{ display:none !important; }
+.link-btn{
+  display:inline-block;
+  background: var(--panel-2);
+  border:1px solid var(--border);
+  color: var(--accent);
+  padding:10px 18px;
+  border-radius:8px;
+  cursor:pointer;
+  margin: 4px 6px 0 0;
+  font-size:14px;
+}
+.link-btn:hover{ border-color: var(--accent); background:#1e2a35; }
+.link-btn:disabled, .link-btn.disabled{ opacity:.4; cursor:not-allowed; pointer-events:none; }
+.link-btn.primary{
+  color:#08181a;
+  background: linear-gradient(180deg, var(--accent-soft), var(--accent));
+  border:none;
+  font-weight:700;
+}
+.link-btn.primary:hover{ filter:brightness(1.08); }
+.link-btn.small{ padding:6px 12px; font-size:12px; }
+.link-btn.danger{ color: #ff9a8a; }
+
+/* ---------- menu / character creation ---------- */
+/* The title screen is two columns: the menu sits left of centre and the
+   news slideshow takes the right. `#create-screen` keeps the old single
+   centred column, so the two can't share a rule any more. */
+#menu-screen{
+  min-height:100vh;
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  justify-content:center;
+  gap:32px;
+  padding:32px 20px;
+  overflow-y:auto;
+}
+.menu-col{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:safe center;
+  gap:18px;
+  text-align:center;
+  flex:0 0 auto;
+}
+.menu-col > *{ flex-shrink:0; }
+#create-screen{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  /* Once the save list makes the page taller than the window, plain
+     `center` clips the top out of reach — `safe` falls back to aligning
+     from the start so the logo and buttons stay scrollable. */
+  justify-content:safe center;
+  gap:18px;
+  text-align:center;
+  padding: 32px 20px;
+  overflow-y:auto;
+}
+#create-screen > *{ flex-shrink:0; }
+/* Wordmark and subtitle now arrive together in one image, so the gradient
+   text and the small-caps subtitle underneath it both went away. It caps
+   its width and scales down with the column on narrow screens. */
+.title-logo{
+  display:block;
+  width:100%;
+  max-width:340px;
+  height:auto;
+  margin:0 auto;
+}
+.age-note{
+  max-width: 420px;
+  font-size:12px;
+  color: var(--muted);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px 14px;
+  background: var(--panel);
+}
+.menu-actions{ display:flex; flex-direction:column; gap:10px; width:280px; }
+.menu-actions .link-btn{ margin:0; padding:14px; font-size:15px; text-align:center; }
+.menu-note{ color: var(--muted); font-size:12px; }
+
+/* ---------- supporters strip on the title screen ----------
+   Centred and stacked rather than a label column beside a text column —
+   with one short tier the two-column version left a wide empty gap. */
+.supporters{
+  width:520px; max-width:94vw; text-align:center;
+  border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+  padding:14px 10px;
+}
+.supporters-label{
+  font-size:10px; letter-spacing:.16em; text-transform:uppercase;
+  color: var(--muted); margin-bottom:12px;
+}
+.supporters-tiers{ display:flex; flex-direction:column; gap:12px; }
+.sup-row{ display:flex; flex-direction:column; align-items:center; gap:4px; min-width:0; }
+.sup-tier{
+  font-size:9px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  color: var(--muted); opacity:.75;
+}
+.sup-track{ width:100%; min-width:0; overflow:hidden; }
+.sup-static{
+  font-size:14px; font-weight:600; letter-spacing:.01em; color: var(--text);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.sup-marquee{
+  display:inline-flex; gap:28px; white-space:nowrap;
+  animation-name: sup-scroll; animation-timing-function:linear; animation-iteration-count:infinite;
+}
+.sup-marquee span{ font-size:14px; font-weight:600; color: var(--text); }
+@keyframes sup-scroll{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+.supporters:hover .sup-marquee{ animation-play-state:paused; }
+/* Higher tiers read warmer. */
+.sup-s2 .sup-static, .sup-s2 .sup-marquee span{ color: var(--accent); }
+.sup-s3 .sup-static, .sup-s3 .sup-marquee span{ color: var(--accent-2); }
+.sup-s2 .sup-tier{ color: var(--accent); opacity:.85; }
+.sup-s3 .sup-tier{ color: var(--accent-2); opacity:.85; }
+/* People who supported and have since stopped. Still credited, set back a
+   step from the current names rather than dropped. */
+.sup-past .sup-static, .sup-past .sup-marquee span{ color: var(--muted); font-weight:500; }
+.sup-past .sup-tier{ opacity:.6; }
+
+/* ---------- important information ---------- */
+.legal{ display:flex; justify-content:center; }
+.legal .link-btn{ margin:0; }
+.info-box{ max-width:600px; text-align:left; }
+.info-head{ display:flex; align-items:center; gap:10px; margin-bottom:4px; }
+.info-head h3{
+  margin:0; flex:1; font-size:19px; color: var(--accent-2);
+  font-family: Georgia, 'Times New Roman', serif; font-style:italic;
+}
+.info-body{ max-height:58vh; overflow-y:auto; padding-right:6px; }
+.info-body section{ margin-bottom:20px; }
+.info-body section:last-child{ margin-bottom:0; }
+.info-body h4{
+  margin:0 0 8px; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color: var(--accent);
+}
+.info-body p{ margin:0 0 9px; font-size:12.5px; line-height:1.6; color: var(--muted); }
+.info-body p:last-child{ margin-bottom:0; }
+.info-cast{ list-style:none; margin:10px 0 0; padding:0; }
+.info-cast li{
+  display:flex; align-items:baseline; gap:8px;
+  padding:6px 0; border-bottom:1px solid var(--border); font-size:12.5px;
+}
+.info-cast li:last-child{ border-bottom:none; }
+.cast-char{ min-width:82px; font-weight:700; color: var(--text); }
+.cast-dot{ color: var(--muted); opacity:.5; }
+.cast-actress{ color: var(--accent-2); }
+.cast-actress.pending{ color: var(--muted); font-style:italic; opacity:.65; }
+
+/* A slot now carries a name, a progress line, a timestamp and four
+   actions — far more than fits on one line, so the row stacks: details
+   on top, buttons on their own row underneath. */
+.slot-list{ width:460px; max-width:94vw; display:flex; flex-direction:column; gap:10px; }
+.slot-toolbar{ display:flex; gap:6px; justify-content:center; }
+.slot-toolbar .link-btn{ margin:0; }
+.slot-row{
+  display:flex; flex-direction:column; align-items:stretch; gap:10px;
+  background: var(--panel); border:1px solid var(--border); border-radius:12px; padding:13px 15px;
+}
+.slot-row .slot-info{ text-align:left; font-size:12px; color:var(--muted); min-width:0; }
+.slot-row .slot-info strong{
+  display:block; color:var(--text); font-size:15px; margin-bottom:1px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.slot-row .slot-actions{
+  display:flex; flex-wrap:wrap; gap:6px;
+  border-top:1px solid var(--border); padding-top:10px;
+}
+.slot-row .slot-actions .link-btn{ margin:0; flex:1 1 auto; text-align:center; white-space:nowrap; }
+.slot-row .slot-actions .link-btn.primary{ flex:2 1 auto; }
+
+.create-card{
+  width: 420px; max-width: 90vw;
+  background: var(--panel); border:1px solid var(--border); border-radius:14px;
+  padding: 28px 30px; text-align:left;
+}
+.create-card h2{
+  margin:0 0 18px; color: var(--accent);
+  font-family: Georgia, serif; font-style: italic; text-align:center;
+}
+.field{ margin-bottom:18px; }
+.field label{ display:block; font-size:11px; letter-spacing:1px; text-transform:uppercase; color: var(--muted); margin-bottom:6px; }
+.field input[type=text]{
+  width:100%; background: var(--panel-2); border:1px solid var(--border); border-radius:8px;
+  padding:10px 12px; color: var(--text); font-size:14px;
+}
+.field input[type=text]:focus{ outline:none; border-color: var(--accent); }
+.create-actions{ text-align:center; margin-top:6px; }
+
+/* -- protagonist toggle (pill bar) -- */
+.cc-toggle{
+  display:flex; gap:0; border-radius:10px; overflow:hidden;
+  border:2px solid var(--border); background:var(--panel-2);
+}
+.cc-toggle-btn{
+  flex:1; text-align:center; padding:11px 0; cursor:pointer;
+  font-size:14px; font-weight:600; color:var(--muted);
+  transition:background .2s, color .2s;
+  position:relative;
+}
+.cc-toggle-btn input{ position:absolute; opacity:0; pointer-events:none; }
+.cc-toggle-btn:hover{ color:var(--text); }
+.cc-toggle-btn:has(input:checked){
+  background:var(--accent-2); color:#0a0f14;
+}
+.cc-toggle-btn + .cc-toggle-btn{ border-left:1px solid var(--border); }
+
+/* ---------- game screen ---------- */
+#game-screen{ display:flex; }
+#sidebar{
+  width: 300px; min-width: 300px;
+  background: var(--panel); border-right: 1px solid var(--border);
+  padding: 20px 16px; display:flex; flex-direction:column; gap:14px;
+  height:100vh; overflow-y:auto;
+}
+/* The wordmark is an image now, subtitle baked in, so the old gradient
+   text treatment went with the text. It caps its own width rather than
+   filling the sidebar, which keeps it off the border on both sides. */
+#logo{ text-align:center; padding: 4px 0 2px; }
+#logo img{ display:block; width:100%; max-width:175px; height:auto; margin:0 auto; }
+
+.tool-row{ display:flex; gap:6px; margin:2px 0 8px; }
+/* Dev sits at the very bottom of the sidebar — it is not part of playing. */
+.tool-row.dev-row{ margin:8px 0 0; }
+/* Dev sits at the very bottom of the sidebar, under Export — it isn't
+   part of playing, so it shouldn't be the first thing next to the logo. */
+#btn-cheats{
+  flex:1; text-align:center; font-size:11px; font-weight:600; letter-spacing:.03em;
+  border-radius:8px; padding:6px 8px; cursor:pointer; user-select:none;
+}
+#btn-cheats{ color:#c48bff; border:1px dashed #c48bff; background:rgba(196,139,255,0.08); }
+#btn-cheats:hover{ background:rgba(196,139,255,0.18); }
+
+/* ---------- cheats panel ---------- */
+/* The one destructive control in the panel, so it's set apart from the
+   toggles above it and turns red only once it's armed. */
+.cheat-danger{ border-top:1px solid var(--border); margin-top:18px; padding-top:16px; }
+.cheat-lock{ border-color:#c48bff; color:#c48bff; }
+.cheat-lock:hover{ background:rgba(196,139,255,.14); }
+.cheat-lock.armed{
+  border-color:#f1465c; color:#fff; background:rgba(241,70,92,.22);
+}
+.cheat-lock.armed:hover{ background:rgba(241,70,92,.34); }
+
+.cheat-locked{ max-width:440px; margin:24px auto; text-align:center; }
+.cheat-lock-icon{ font-size:38px; margin-bottom:10px; opacity:.85; }
+.cheat-locked h3{
+  margin:0 0 10px; font-size:17px; color:#c48bff;
+  letter-spacing:.06em; text-transform:uppercase;
+}
+.cheat-locked p{ margin:0 0 18px; font-size:13px; line-height:1.55; color: var(--muted); }
+.cheat-code-row{ display:flex; gap:8px; align-items:stretch; }
+.cheat-code-row .modal-input{ margin-top:0; text-align:center; letter-spacing:.14em; text-transform:uppercase; }
+.cheat-code-row .link-btn{ margin:0; white-space:nowrap; }
+.cheat-error{ margin-top:12px; font-size:12px; color:#ff7b72; }
+
+.cheat-wrap{ max-width:600px; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
+.cheat-section{
+  background: var(--panel); border:1px solid rgba(196,139,255,.28); border-radius:12px; padding:15px 17px;
+}
+.cheat-section h3{
+  margin:0 0 6px; font-size:12px; letter-spacing:.09em; text-transform:uppercase; color:#c48bff;
+}
+.cheat-help{ margin:0 0 13px; font-size:11.5px; line-height:1.5; color: var(--muted); }
+.cheat-stats{ display:flex; flex-direction:column; gap:13px; }
+.cheat-stat-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:5px; }
+.cheat-stat-name{ font-size:13px; font-weight:600; }
+.cheat-stat-val{ font-size:11px; color:#c48bff; font-weight:600; }
+.cheat-slider{ width:100%; accent-color:#c48bff; cursor:pointer; }
+.cheat-money-row{ display:flex; align-items:center; gap:8px; }
+.cheat-money-label{ font-size:15px; font-weight:700; color:#c48bff; }
+.cheat-money-input{ margin-top:0; flex:1; min-width:0; }
+.cheat-money-row .link-btn{ margin:0; white-space:nowrap; }
+.cheat-toggle{ display:flex; align-items:center; gap:10px; cursor:pointer; font-size:13px; user-select:none; }
+.cheat-toggle input{ position:absolute; opacity:0; width:0; height:0; }
+.cheat-toggle-box{
+  width:38px; height:21px; border-radius:999px; background: var(--panel-2);
+  border:1px solid var(--border); position:relative; flex:none; transition:background .18s, border-color .18s;
+}
+.cheat-toggle-box::after{
+  content:""; position:absolute; top:2px; left:2px; width:15px; height:15px; border-radius:50%;
+  background: var(--muted); transition:transform .18s, background .18s;
+}
+.cheat-toggle input:checked + .cheat-toggle-box{ background:rgba(196,139,255,.25); border-color:#c48bff; }
+.cheat-toggle input:checked + .cheat-toggle-box::after{ transform:translateX(17px); background:#c48bff; }
+
+.nav-arrows{ display:flex; gap:6px; justify-content:center; }
+.nav-arrows button{
+  width:30px; height:30px; border-radius:8px; border:1px solid var(--border);
+  background: var(--panel-2); color: var(--text); cursor:pointer; font-size:13px;
+}
+.nav-arrows button:hover{ background:#1e2a35; }
+.nav-arrows button:disabled{ opacity:.35; cursor:not-allowed; }
+
+/* The house button uses an SVG instead of an emoji, inlined in the markup
+   rather than loaded from assets/icons/home.svg so there's no second
+   request and nothing to cache separately. Its paths are currentColor, so
+   unlike the nav icons below it stays the same colour as the ‹ › ☰ glyphs
+   sharing its row — a lone teal button in a row of white ones reads as a
+   mistake rather than as emphasis.
+   Every inlined icon here is a copy of the file in assets/icons/, not a
+   reference: redraw one there and the markup needs updating to match. */
+.nav-arrows button.icon-btn{ display:inline-flex; align-items:center; justify-content:center; padding:0; }
+.icon-home{ display:block; width:15px; height:15px; }
+
+.stat-row{ display:flex; gap:8px; }
+.stat-box{
+  flex:1; background: var(--panel-2); border:1px solid var(--border); border-radius:10px;
+  padding:8px; text-align:center;
+}
+.stat-box .label{ font-size:9px; letter-spacing:1px; color:var(--muted); text-transform:uppercase; margin-top:2px;}
+.stat-box .value{ font-weight:700; font-size:13px; }
+.stat-box .value.accent{ color: var(--accent); }
+
+#funds-box{
+  background: var(--panel-2); border:1px solid var(--border); border-radius:10px;
+  padding:8px 14px; display:flex; justify-content:space-between; align-items:center;
+}
+#funds-box .label{ font-size:10px; letter-spacing:1px; color:var(--muted); text-transform:uppercase; }
+#funds-box .value{ color: var(--accent-2); font-weight:700; font-size:15px; }
+
+.section-label{ font-size:10px; letter-spacing:1px; color: var(--muted); text-transform:uppercase; margin-bottom:4px; }
+
+#quest-tracker{ display:flex; flex-direction:column; gap:6px; }
+.quest-tracker-card{
+  background: var(--panel-2); border:1px solid var(--border); border-left:3px solid var(--accent-2);
+  border-radius:8px; padding:8px 10px;
+}
+.quest-tracker-card h4{ margin:0 0 3px; font-size:12px; color: var(--accent-2); }
+.quest-tracker-card p{ margin:0; font-size:11px; color: var(--muted); line-height:1.35; }
+/* A suggestion the player can't act on yet — dimmed and marked in the
+   muted colour so it reads as "on the horizon", not "go do this now". */
+.quest-tracker-card.locked{ border-left-color: var(--muted); opacity:.72; }
+.quest-tracker-card.locked h4{ color: var(--muted); }
+.quest-tracker-empty{ font-size:11px; color: var(--muted); }
+.quest-tracker-hint{
+  margin-top:6px; font-size:10.5px; line-height:1.45; color: var(--accent-2);
+  border-left:2px solid var(--accent-2); padding-left:8px; opacity:.9;
+}
+.quest-tracker-empty.done{ color: var(--accent-2); font-weight:600; line-height:1.4; }
+.quest-tracker-more{ font-size:10px; color: var(--muted); text-align:right; }
+.grid-2{ display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+/* Auto-fits however many nav buttons there are, so removing one doesn't
+   leave a hole in the last row. */
+.grid-3{ display:grid; grid-template-columns:repeat(auto-fit,minmax(80px,1fr)); gap:8px; }
+
+.nav-btn{
+  position:relative;
+  background: var(--panel-2); border:1px solid var(--border); border-radius:10px;
+  padding:9px 4px; color: var(--text); text-align:center; cursor:pointer; font-size:11px;
+  display:flex; flex-direction:column; align-items:center; gap:5px;
+  transition: all .3s cubic-bezier(.2,.8,.2,1);
+}
+/* The nav icons are inline SVGs (originals live in assets/icons/). They sit
+   in the teal accent so they read as icons rather than as part of the
+   label underneath, and because the active state of the button is already
+   teal the two agree instead of fighting. */
+/* Shared inline-SVG icon. Inherits colour from whatever it sits in, so a
+   lock inside a muted badge is muted and one on a link-btn is the accent,
+   with no per-site rules. Sits on the text baseline where it's inline. */
+.ui-icon{
+  width:1em; height:1em; fill: currentColor;
+  vertical-align:-0.13em; flex:none;
+}
+.stat-ico{ display:flex; justify-content:center; color: var(--muted); font-size:15px; }
+.funds-ico{ display:flex; align-items:center; color: var(--accent-2); font-size:18px; }
+.tool-row .ui-icon, .save-btn .ui-icon{ color: var(--accent); }
+/* In the quest cards these read as small markers beside the text. */
+.quest-req .ui-icon{ color: var(--muted); }
+.req-now .ui-icon, .quest-card-more .ui-icon{ color: var(--accent); }
+
+.nav-btn .icon{ display:flex; align-items:center; justify-content:center; height:18px; }
+.nav-btn .icon svg{ width:18px; height:18px; display:block; fill: var(--accent); transition: all .3s ease; }
+
+/* Hover modelled on the reference build: the tile tints toward the accent,
+   lifts, and drops a shadow, while the icon brightens, grows slightly and
+   picks up a glow. The lift is what sells it — colour alone reads flat. */
+.nav-btn:hover{
+  background: rgba(53,201,193,.10);
+  border-color: rgba(53,201,193,.30);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.28);
+}
+.nav-btn:hover .icon svg{
+  fill: var(--accent-soft);
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 8px rgba(53,201,193,.5));
+}
+.nav-btn.active{ border-color: var(--accent); color: var(--accent); }
+.nav-btn.locked{ cursor:not-allowed; opacity:.4; }
+/* Locked tiles stay put — lifting something you can't click reads as a bug. */
+.nav-btn.locked:hover{
+  background: var(--panel-2); border-color: var(--border);
+  transform:none; box-shadow:none;
+}
+.nav-btn.locked:hover .icon svg{ fill: var(--accent); transform:none; filter:none; }
+.nav-btn .badge{
+  position:absolute; top:-6px; right:-6px; background: var(--accent-2); color:#241207;
+  font-size:10px; font-weight:700; border-radius:10px; padding:1px 6px;
+}
+
+/* Save / load, at the bottom of the sidebar under the bonds */
+.save-row{ display:flex; gap:6px; }
+.save-btn{
+  flex:1; text-align:center; cursor:pointer; user-select:none;
+  background: var(--panel-2); border:1px solid var(--border); border-radius:10px;
+  padding:9px 6px; color: var(--text); font-size:12px; font-weight:600;
+  transition: border-color .15s, background .15s, color .15s;
+}
+.save-btn:hover{ background:#1e2a35; border-color: var(--accent); color: var(--accent); }
+.save-btn.subtle{ font-size:11px; padding:7px 6px; color: var(--muted); }
+.save-btn.subtle:hover{ color: var(--accent-2); border-color: var(--accent-2); }
+
+.travel-btn{
+  background: var(--panel-2); border:1px solid var(--border); border-radius:10px;
+  padding:9px 12px; color: var(--text); display:flex; justify-content:space-between; align-items:center;
+  cursor:pointer; font-size:13px;
+  transition: all .3s cubic-bezier(.2,.8,.2,1);
+}
+/* Same lift-and-tint as the nav tiles above, so the whole sidebar
+   answers the mouse the same way. */
+.travel-btn:hover{
+  background: rgba(53,201,193,.10);
+  border-color: rgba(53,201,193,.30);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,.28);
+}
+.travel-btn.active{ border-color: var(--accent); color: var(--accent); }
+
+/* player stats block in the sidebar */
+.pstat{ margin-bottom:9px; }
+.pstat-top{ display:flex; justify-content:space-between; align-items:baseline; gap:6px; margin-bottom:3px; }
+.pstat-name{ font-size:11px; color: var(--muted); }
+.pstat-level{ font-size:11.5px; font-weight:700; color: var(--accent); }
+.pstat-bar{ height:4px; border-radius:999px; background: var(--panel-2); overflow:hidden; }
+.pstat-bar span{
+  display:block; height:100%; border-radius:999px;
+  background: linear-gradient(90deg, var(--accent-soft), var(--accent)); transition:width .3s;
+}
+.pstat-num{ font-size:9.5px; color: var(--muted); opacity:.75; text-align:right; margin-top:2px; }
+
+.bond-row{ margin-bottom:9px; }
+.bond-top{ display:flex; justify-content:space-between; font-size:11px; margin-bottom:3px; }
+.bond-top .name{ color: var(--text); font-weight:600; }
+.bond-top .bond-level{ color: var(--accent-2); font-weight:600; }
+.bond-bar-bg{ height:6px; background:#1c2730; border-radius:4px; overflow:hidden; }
+.bond-bar-fill{ height:100%; background: linear-gradient(90deg, var(--accent), var(--accent-soft)); }
+.bond-bar-fill.ready{ background: linear-gradient(90deg, var(--accent-2), var(--accent-2-soft)); }
+
+#main{ flex:1; padding: 30px 40px; overflow-y:auto; height:100vh; }
+.story-box{
+  background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px;
+  padding: 16px 20px; max-width: 820px; margin: 0 auto 20px; line-height:1.55;
+}
+.panel-title{
+  max-width:820px; margin: 0 auto 14px; color: var(--accent);
+  font-family: Georgia, serif; font-style: italic; font-size:22px;
+}
+.panel-sub{ max-width:820px; margin: -8px auto 18px; color: var(--muted); font-size:13px; }
+.actions{ max-width:820px; margin: 0 auto; }
+
+/* ---------- work minigames ---------- */
+.minigame-title{ max-width:820px; margin: 0 auto 16px; color: var(--text); font-size:14px; text-align:center; }
+.minigame-status{ max-width:820px; margin:12px auto 0; color: var(--accent-2); font-size:13px; text-align:center; }
+.minigame-grid{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:8px;
+  max-width:340px; margin:0 auto;
+}
+.minigame-grid .link-btn{ padding:16px 0; text-align:center; font-size:18px; }
+.minigame-grid.cols-3{ grid-template-columns:repeat(3,1fr); max-width:280px; }
+.minigame-grid.cols-4{ grid-template-columns:repeat(4,1fr); max-width:340px; }
+/* The booth task is about reading each table, so its short description
+   stays visible directly below the emoji instead of hiding in a tooltip. */
+.minigame-grid .booth-option{ padding:11px 6px 10px; }
+.booth-option-icon{ display:block; font-size:21px; line-height:1.1; }
+.booth-option-label{ display:block; margin-top:5px; font-size:10px; line-height:1.2; color:var(--muted); }
+/* The list Zoe rattled off, kept on screen under the instruction so the
+   task is "fetch these" rather than "remember what she said". */
+.minigame-sub{
+  max-width:820px; margin:-10px auto 14px; text-align:center;
+  font-size:12px; color: var(--muted); letter-spacing:.02em;
+}
+/* Talking a customer off the fish is lines of dialogue, not icons. */
+/* Leaflet rack: the closure year is the whole puzzle, so it reads as a
+   tag on the right rather than buried in the label. */
+.leaflet-year{ float:right; font-size:11px; color: var(--accent-2); opacity:.85; }
+.leaflet-open{ float:right; font-size:11px; color: var(--muted); opacity:.7; }
+
+/* ---------- early access gate ---------- */
+.early-box{ max-width:440px; text-align:left; }
+.early-badge{
+  display:inline-block; font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:#08181a; background: linear-gradient(180deg, var(--accent-soft), var(--accent));
+  padding:3px 9px; border-radius:20px; font-weight:700; margin-bottom:10px;
+}
+.early-box h3{ margin:0 0 10px; font-size:19px; color: var(--accent-2); }
+.early-lead{ margin:0 0 8px; font-size:13.5px; line-height:1.6; color: var(--text); }
+.early-date{ margin:0; font-size:13px; color: var(--muted); }
+.early-date strong{ color: var(--accent); }
+.early-form{ margin-top:14px; }
+.early-form .modal-input{ width:100%; }
+.early-error{ margin-top:7px; font-size:12px; color:#ff9a8a; }
+
+.minigame-lines{ display:flex; flex-direction:column; gap:8px; max-width:520px; margin:0 auto; }
+.minigame-lines .link-btn.wide{ margin:0; text-align:left; font-size:13px; padding:11px 14px; }
+.link-btn.picked{ border-color: var(--accent); color: var(--accent); background:#1e2a35; }
+.link-btn.solved{
+  background: var(--panel-2); color: var(--muted); border-color: var(--border);
+  opacity:.5; cursor:default; pointer-events:none;
+}
+
+.skip-tasks-card{
+  display:flex; align-items:center; gap:14px;
+  max-width:420px; margin:20px auto 0;
+  background:var(--panel-2); border:1px solid var(--border); border-radius:12px;
+  padding:12px 16px; cursor:pointer;
+  transition: border-color .2s, background .2s, box-shadow .2s;
+}
+.skip-tasks-card:hover{
+  border-color:var(--accent-2-soft); background:#1a2430;
+  box-shadow:0 0 16px rgba(232,147,90,.12);
+}
+.skip-tasks-icon{
+  flex:none; width:36px; height:36px; border-radius:50%;
+  background:rgba(232,147,90,.12); display:flex; align-items:center; justify-content:center;
+  font-size:17px; color:var(--accent-2);
+}
+.skip-tasks-body{ flex:1; min-width:0; }
+.skip-tasks-label{
+  font-size:13px; font-weight:600; color:var(--accent-2); margin-bottom:2px;
+}
+.skip-tasks-sub{
+  font-size:11.5px; color:var(--muted,#6e7a87); line-height:1.4;
+}
+.skip-tasks-arrow{
+  flex:none; font-size:18px; color:var(--muted,#6e7a87);
+  transition:color .2s, transform .2s;
+}
+.skip-tasks-card:hover .skip-tasks-arrow{
+  color:var(--accent-2); transform:translateX(2px);
+}
+#room-grid{
+  display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px;
+  max-width: 820px; margin: 0 auto;
+}
+.room-card{ cursor:pointer; text-align:center; }
+.room-thumb{
+  aspect-ratio: 4/3; border-radius:14px; border:1px solid var(--border);
+  background: radial-gradient(circle at 30% 20%, #2a2118, var(--panel-2) 70%);
+  display:flex; align-items:center; justify-content:center; font-size:40px; margin-bottom:10px;
+  transition: border-color .15s, transform .15s, box-shadow .15s; position:relative;
+  box-shadow: 0 0 0 rgba(232,147,90,0);
+}
+.room-card:hover .room-thumb{
+  border-color: var(--accent-2); transform: translateY(-3px);
+  box-shadow: 0 0 22px rgba(232,147,90,0.25);
+}
+/* Room artwork fills the card the emoji used to sit in. overflow:hidden on
+   the thumb keeps the image inside the rounded corners; the occupant
+   portrait, ping and lock still sit on top because they're positioned. */
+.room-card.has-art .room-thumb{ overflow:hidden; padding:0; background:#0d1319; }
+.room-art{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; display:block;
+}
+.room-card.has-art .room-thumb::after{
+  content:""; position:absolute; inset:0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,0.55));
+  pointer-events:none;
+}
+.room-card.has-art:hover .room-art{ transform: scale(1.04); }
+.room-art{ transition: transform .25s ease; }
+.room-card.locked.has-art .room-art{ filter: grayscale(.7) brightness(.5); }
+.room-name{
+  font-size:14px; color: var(--accent-2); font-weight:600;
+  display:flex; align-items:center; justify-content:center; gap:7px;
+}
+.room-ping{
+  flex:none; width:8px; height:8px; border-radius:50%;
+  background: var(--accent-2); box-shadow: 0 0 6px var(--accent-2);
+  animation: room-ping-pulse 1.6s ease-in-out infinite;
+}
+/* Somebody is standing over here, as opposed to something needing doing —
+   different colour so the two dots never read as the same instruction. */
+.room-ping.who{
+  background:#ff98c8; box-shadow: 0 0 6px #ff98c8;
+}
+@keyframes room-ping-pulse{
+  0%,100%{ opacity:1; transform:scale(1); }
+  50%{ opacity:.5; transform:scale(1.3); }
+}
+.room-occupant{
+  position:absolute; bottom:6px; right:6px; width:34px; height:34px; border-radius:50%;
+  object-fit:cover; border:2px solid var(--accent-2); box-shadow: 0 0 8px rgba(0,0,0,0.5);
+}
+.room-card.locked{ cursor:not-allowed; }
+.room-card.locked .room-thumb{ filter:grayscale(1) brightness(.55); }
+.room-card.locked .room-name{ color: var(--muted); }
+.room-card.locked:hover .room-thumb{ transform:none; box-shadow:none; border-color: var(--border); }
+.back-card .room-thumb{ background: var(--panel-2); color: var(--muted); }
+.back-card:hover .room-thumb{ border-color: var(--muted); box-shadow:none; }
+.back-card .room-name{ color: var(--muted); }
+.room-lock{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  font-size:26px; color: rgba(255,255,255,0.85);
+}
+.travel-btn.locked{ cursor:not-allowed; opacity:.4; }
+.travel-btn.locked:hover{ background: var(--panel-2); border-color: var(--border); transform:none; box-shadow:none; }
+
+/* ---------- occupied room ---------- */
+.occupant-portrait-wrap{ display:flex; justify-content:center; margin: 4px auto 22px; }
+.occupant-portrait{
+  width: 300px; max-width:80vw; aspect-ratio: 3/4; object-fit:cover;
+  border-radius:16px; border:2px solid var(--accent-2);
+  box-shadow: 0 0 26px rgba(232,147,90,0.35);
+}
+.occupant-actions{
+  max-width:820px; margin:0 auto; display:flex; justify-content:center; gap:14px; flex-wrap:wrap;
+}
+.occ-btn{
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  background: var(--panel-2); border:1px solid var(--border); border-radius:12px;
+  padding:14px 22px; min-width:100px; cursor:pointer; font-weight:700; font-size:13px; color: var(--text);
+}
+.occ-btn:hover{ background:#1e2a35; }
+.occ-btn .occ-icon{ font-size:20px; }
+.occ-btn.talk{ border-color:#2c4a5e; }
+.occ-btn.talk .occ-icon{ color:#7fc2f0; }
+.occ-btn.action{ border-color: var(--accent-2); color: var(--accent-2); }
+.occ-btn.action .occ-icon{ color: var(--accent-2); }
+.occ-btn.back{ color: var(--muted); }
+.occ-btn.disabled{ opacity:.45; cursor:not-allowed; pointer-events:none; }
+.occ-btn.cinema{ border-color:#e8935a; color:#e8935a; }
+.occ-btn.cinema .occ-icon{ color:#e8935a; }
+.occ-btn.cinema.locked{ opacity:.5; cursor:not-allowed; }
+.occ-btn .occ-cost{ font-size:10px; font-weight:600; color: var(--muted); }
+
+/* ---------- dialogue ---------- */
+.dialogue-box{
+  max-width: 820px; margin: 0 auto 12px; background: var(--panel-2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 18px; display:flex; gap:12px; align-items:flex-start;
+}
+.dialogue-portrait{
+  width:48px; height:48px; border-radius:50%; object-fit:cover; flex:none;
+  border:2px solid var(--border);
+}
+.dialogue-body{ flex:1; min-width:0; }
+.dialogue-box .speaker{ font-weight:700; margin-bottom: 4px; }
+.dialogue-box .speaker.player{ color: var(--text); }
+.dialogue-box .text{ white-space:pre-line; }
+
+.dialogue-choices{ max-width:820px; margin:16px auto 0; display:flex; flex-direction:column; gap:9px; }
+.dialogue-choice{
+  display:flex; align-items:center; gap:11px;
+  background: var(--panel-2); border:1px solid var(--border); border-radius:10px;
+  padding:12px 16px; text-align:left; cursor:pointer; color: var(--text); font-size:14px; line-height:1.4;
+  transition: border-color .15s, background .15s, transform .15s, box-shadow .15s;
+}
+.dialogue-choice:hover{
+  border-color: var(--accent); background:#1e2a35; transform: translateX(3px);
+  box-shadow: 0 0 0 1px rgba(53,201,193,0.25);
+}
+.dialogue-choice .choice-arrow{ color: var(--accent); flex:none; font-size:15px; opacity:.75; }
+.dialogue-choice .choice-text{ flex:1; }
+.dialogue-choice.locked{ cursor:not-allowed; opacity:.6; }
+.dialogue-choice.locked:hover{ border-color: var(--border); background: var(--panel-2); transform:none; box-shadow:none; }
+.dialogue-choice.locked .choice-arrow{ color: var(--muted); opacity:1; }
+.dialogue-choice .choice-hint{ flex:none; font-size:11px; color: var(--muted); font-style:italic; }
+
+.dialogue-continue{
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  margin:16px auto 0; width:fit-content; min-width:160px;
+  padding:12px 26px; border-radius:24px; cursor:pointer;
+  background: linear-gradient(180deg, var(--accent-soft), var(--accent));
+  color:#08181a; font-weight:700; font-size:14px;
+  box-shadow: 0 4px 14px rgba(53,201,193,0.25);
+  transition: transform .15s, box-shadow .15s, filter .15s;
+}
+.dialogue-continue:hover{ transform: translateY(-2px); box-shadow: 0 6px 20px rgba(53,201,193,0.35); filter:brightness(1.05); }
+.dialogue-continue:active{ transform: translateY(0); box-shadow: 0 3px 10px rgba(53,201,193,0.3); }
+.dialogue-continue .continue-icon{ font-size:12px; letter-spacing:-2px; transition: transform .15s; }
+.dialogue-continue:hover .continue-icon{ transform: translateX(3px); }
+.dialogue-continue .key-hint{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:18px; height:18px; padding:0 4px; margin-left:2px;
+  border-radius:4px; border:1px solid rgba(8,24,26,0.45); border-bottom-width:2px;
+  background:rgba(8,24,26,0.14); color:#08181a;
+  font-size:11px; font-weight:700; font-family:monospace; line-height:1;
+}
+.narration{
+  max-width:820px; margin: 0 auto 14px; font-style:italic; color: var(--accent-soft);
+  border-left: 3px solid var(--accent); padding: 8px 14px; background: rgba(53,201,193,0.06);
+  border-radius: 0 8px 8px 0;
+}
+.scene-video{ max-width:820px; margin: 0 auto 14px; position:relative; }
+.scene-video video{ width:100%; border-radius:10px; border:1px solid var(--border); background:#000; display:block; }
+/* Earlier clips in the same scene stay visible but dim, so it's obvious
+   which one is the live one. */
+.scene-video.is-past video{ opacity:.55; }
+.video-sound-hint{
+  position:absolute; top:10px; right:10px;
+  display:flex; align-items:center; gap:5px;
+  background: rgba(8,12,16,0.78); border:1px solid var(--border);
+  color: var(--text); font-size:11px; font-weight:600;
+  padding:5px 10px; border-radius:20px; cursor:pointer;
+  backdrop-filter: blur(4px);
+  transition: opacity .18s ease, border-color .18s ease;
+}
+.video-sound-hint:hover{ border-color: var(--accent); }
+.scene-video.sound-on .video-sound-hint,
+.scene-video.is-past .video-sound-hint{ opacity:0; pointer-events:none; }
+/* Same width as .scene-video and the establishing shot — a photo or gif
+   dropped mid-scene used to render at half the size of the clip above it,
+   which read as a mistake rather than a choice. */
+.scene-image{ max-width:820px; margin: 0 auto 14px; }
+.scene-image img{ width:100%; border-radius:10px; border:1px solid var(--border); display:block; }
+/* Opening shot of a scene — wide and cropped like a establishing frame,
+   dimmed slightly so it sits behind the text instead of competing. */
+.scene-image.establishing{ max-width:820px; margin-bottom:16px; }
+.scene-image.establishing img{
+  aspect-ratio:21/9; object-fit:cover; filter:brightness(.86) saturate(.95);
+}
+/* ---------- Now Hiring ----------
+   The player is comparing jobs here, so the numbers that decide it get
+   their own line each rather than being buried in a sentence. */
+.hiring-box{ max-width:560px; text-align:left; }
+.hiring-lead{ margin:0 0 14px; font-size:13px; color:var(--muted); line-height:1.55; }
+.hiring-lead strong{ color:var(--text); }
+.job-cards{ display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+.job-card{
+  background:var(--panel-2); border:1px solid var(--border); border-radius:12px;
+  padding:12px 14px; transition: border-color .2s;
+}
+.job-card:hover{ border-color: rgba(53,201,193,.35); }
+.job-card.early-locked{
+  background:#0a0d11; border-color:rgba(255,255,255,.07);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.28);
+}
+.job-card.early-locked:hover{ border-color:rgba(255,255,255,.11); }
+.job-card.early-locked .job-card-head,
+.job-card.early-locked .job-card-facts,
+.job-card.early-locked .job-card-who{ opacity:.48; }
+.job-card.early-locked .job-card-art{ filter:grayscale(.8) brightness(.5); }
+.job-card.early-locked .job-card-head h4{ color:var(--muted); }
+.job-card-access{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  margin-top:10px; padding:9px 10px;
+  border:1px solid rgba(232,147,90,.25); border-radius:8px;
+  background:rgba(232,147,90,.06); color:var(--accent-2);
+}
+.job-card-access-copy{ display:flex; align-items:center; gap:9px; min-width:0; }
+.job-card-access-copy .ui-icon{ flex:none; font-size:15px; }
+.job-card-access-copy span{ display:flex; flex-direction:column; gap:2px; }
+.job-card-access-copy strong{ font-size:11.5px; }
+.job-card-access-copy em{ font-size:10.5px; font-style:normal; color:var(--muted); }
+.job-card-code{ display:flex; align-items:center; justify-content:flex-end; gap:6px; flex-wrap:wrap; }
+.job-card-code input{
+  width:112px; min-width:0; padding:7px 9px; border-radius:7px;
+  border:1px solid var(--border); background:#080b0f; color:var(--text);
+  font:inherit; font-size:11px;
+}
+.job-card-code input:focus{ outline:none; border-color:var(--accent); }
+.job-card-code .link-btn{ margin:0; }
+.job-card-code small{ flex-basis:100%; text-align:right; font-size:9.5px; color:#ff9a8a; }
+@media (max-width:520px){
+  .job-card-access{ align-items:stretch; flex-direction:column; }
+  .job-card-code{ justify-content:flex-start; }
+  .job-card-code small{ text-align:left; }
+}
+.job-card-head{ display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+.job-card-head h4{ margin:0; font-size:15px; color:var(--accent); }
+.job-card-art{
+  width:44px; height:32px; object-fit:cover; border-radius:6px;
+  border:1px solid var(--border); flex:none;
+}
+.job-card-glyph{ font-size:22px; line-height:1; flex:none; }
+.job-card-facts{ display:flex; flex-wrap:wrap; gap:6px 16px; }
+.job-fact{ display:inline-flex; align-items:center; gap:5px; font-size:12px; color:var(--muted); }
+.job-fact em{ font-style:normal; opacity:.75; }
+.job-fact .ui-icon{ color:var(--muted); font-size:13px; }
+.job-fact.pay{ color:var(--accent-2); font-weight:700; font-size:13px; }
+.job-fact.pay .ui-icon{ color:var(--accent-2); }
+.job-card-who{
+  display:flex; align-items:center; gap:9px; margin-top:10px;
+  padding-top:9px; border-top:1px solid var(--border);
+}
+.job-card-who img{
+  width:28px; height:28px; border-radius:50%; object-fit:cover;
+  object-position:center 22%; border:1px solid var(--border); flex:none;
+}
+.job-card-who span{ display:flex; flex-direction:column; line-height:1.3; }
+.job-card-who strong{ font-size:12.5px; }
+.job-card-who em{ font-style:normal; font-size:11px; color:var(--muted); }
+.hiring-note{
+  margin:0 0 7px; font-size:12px; color:var(--muted); line-height:1.55;
+  display:flex; align-items:baseline; gap:6px;
+}
+.hiring-note .ui-icon{ flex:none; color:var(--muted); }
+.switch-warn{
+  margin:0 0 12px; padding:11px 13px; font-size:12.5px; line-height:1.6;
+  color:var(--text); background:rgba(232,147,90,.09);
+  border:1px solid rgba(232,147,90,.3); border-left:3px solid var(--accent-2);
+  border-radius:9px;
+}
+.hiring-beta{
+  margin:10px 0 0; padding-top:9px; border-top:1px solid var(--border);
+  font-size:11px; color:var(--muted); opacity:.75; font-style:italic;
+}
+
+.media-placeholder{
+  max-width:820px; margin: 0 auto 14px; aspect-ratio:16/9;
+  border:1px dashed var(--border); border-radius:10px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;
+  color: var(--muted); font-size:12px; background: rgba(255,255,255,0.02);
+}
+.media-placeholder-icon{ font-size:26px; }
+
+.occupant-portrait.portrait-slot-pending{
+  width:300px; max-width:80vw; aspect-ratio:3/4; border-radius:16px;
+  border:2px dashed var(--accent-2); box-shadow:none; background: rgba(232,147,90,0.06);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+  padding:20px; text-align:center; box-sizing:border-box;
+}
+.portrait-slot-icon{ font-size:28px; }
+.portrait-slot-label{ color: var(--accent-2); font-weight:700; font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+.portrait-slot-text{ color: var(--muted); font-size:12px; line-height:1.5; }
+
+/* ---------- quests / inventory / love stats / gallery / packs ---------- */
+.card-list{ max-width:820px; margin:0 auto; display:flex; flex-direction:column; gap:10px; }
+/* ---------- inventory: square grid, same shape as the house hub ---------- */
+.item-grid{
+  display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px;
+  max-width:820px; margin:0 auto;
+}
+.item-tile{
+  aspect-ratio:1/1; display:flex; flex-direction:column; gap:6px;
+  background: var(--panel); border:1px solid var(--border); border-left:3px solid var(--accent);
+  border-radius:12px; padding:14px; overflow:hidden;
+  transition: border-color .15s, transform .15s;
+}
+.item-tile:hover{ border-color: var(--accent); transform: translateY(-2px); }
+.item-tile-name{ font-size:14px; font-weight:700; color: var(--accent); line-height:1.25; }
+.item-tile-desc{
+  font-size:11.5px; color: var(--muted); line-height:1.45;
+  overflow-y:auto; flex:1; padding-right:2px;
+}
+.item-tile-tag{ font-size:10px; font-weight:700; color: var(--accent-2); letter-spacing:.4px; }
+.item-tile.delivered{ border-left-color: var(--muted); opacity:.6; }
+.item-tile.delivered .item-tile-name{ color: var(--muted); }
+/* Sleep stays visible but clearly unavailable during the tutorial. */
+.link-btn.sleep-locked{ opacity:.5; color: var(--muted); cursor:not-allowed; }
+@media (max-width: 620px){ .item-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+.info-card{
+  background: var(--panel); border:1px solid var(--border); border-radius:10px; padding:14px 16px;
+}
+.info-card h3{ margin:0 0 4px; font-size:15px; color: var(--accent); }
+.info-card p{ margin:0; font-size:13px; color: var(--muted); }
+.info-card .meta{ font-size:11px; color: var(--accent-2); margin-top:6px; }
+.info-card.available{ border-style:dashed; opacity:.8; }
+.info-card.available h3{ color: var(--muted); font-size:14px; }
+.info-card.clickable{ cursor:pointer; transition: border-color .15s, background .15s; }
+.info-card.clickable:hover{ border-color: var(--accent); background:#1e2a35; }
+/* quest card with the participating character's icon */
+.info-card.quest-card{ display:flex; align-items:center; gap:13px; }
+.quest-card-icon{
+  width:46px; height:46px; border-radius:50%; object-fit:cover; flex-shrink:0;
+  border:2px solid var(--border);
+}
+.info-card.quest-card:not(.available) .quest-card-icon{ border-color: var(--accent); }
+.quest-card-icon-empty{
+  display:flex; align-items:center; justify-content:center;
+  background: var(--panel-2); font-size:20px;
+}
+.quest-card-text{ min-width:0; flex:1; }
+.rival-line{ font-size:12px; color:#e8b84d; margin-top:4px; }
+.rival-line strong{ color:#f0c860; }
+/* where / when / anything else the quest needs, on the suggestion card */
+.slot-line{ display:block; font-size:12px; color: var(--muted); margin-top:3px; }
+.slot-date{ display:block; font-size:10.5px; color: var(--muted); opacity:.7; margin-top:3px; }
+.modal-input{
+  width:100%; margin-top:12px; padding:10px 12px; border-radius:8px;
+  background: var(--panel-2); border:1px solid var(--border); color: var(--text);
+  font-family:inherit; font-size:14px;
+}
+.modal-input:focus{ outline:none; border-color: var(--accent); }
+
+.quest-req{
+  margin-top:7px; font-size:11px; color: var(--muted);
+  display:flex; flex-wrap:wrap; align-items:center; gap:2px; line-height:1.5;
+}
+.req-sep{ opacity:.45; margin:0 6px; }
+.req-now{ color: var(--accent); font-weight:600; }
+.req-later{ color: var(--accent-2); font-weight:600; }
+.char-chevron{ color: var(--muted); font-size:22px; flex-shrink:0; }
+/* "her arc is finished" notice — deliberately the warm accent, so a
+   completed companion reads as a milestone and not as an error state */
+.info-card p.quest-card-more,
+.quest-card-more{
+  margin:5px 0 0; font-size:11.5px; font-weight:600; color: var(--accent-2);
+  letter-spacing:.01em;
+}
+.quest-card-more.standalone{
+  margin:14px auto 0; max-width:520px; text-align:center; padding:11px 14px;
+  border:1px dashed var(--accent-2); border-radius:10px;
+  background: rgba(232,147,90,.07);
+}
+/* On the board but not reachable yet. Kept visible on purpose — a quest
+   that disappears until its gate opens looks like it doesn't exist. */
+.info-card.quest-card.locked{ opacity:.68; }
+.info-card.quest-card.locked .quest-card-icon{ border-color: var(--border); filter:grayscale(.5); }
+.info-card.quest-card.locked h3{ color: var(--muted); }
+.info-card.quest-card.maxed{ border-color: rgba(232,147,90,.42); }
+.info-card.quest-card.maxed .quest-card-icon{ border-color: var(--accent-2); }
+/* per-character quest log */
+.quest-log-head{ display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+.quest-log-head .quest-card-icon{ width:52px; height:52px; border-color: var(--accent); }
+.quest-log-head h3{ margin:0; font-size:18px; color: var(--text); }
+.quest-log-step{
+  background: var(--panel); border:1px solid var(--border); border-radius:10px;
+  padding:12px 14px; border-left:3px solid var(--border);
+}
+.quest-log-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.quest-log-title{ font-size:14px; font-weight:700; color: var(--text); }
+.quest-log-badge{ font-size:11px; font-weight:700; white-space:nowrap; }
+.quest-log-note{ font-size:12px; color: var(--muted); margin-top:5px; }
+.quest-log-step.done{ border-left-color: var(--accent); }
+.quest-log-step.done .quest-log-title{ color: var(--muted); }
+.quest-log-step.done .quest-log-badge{ color: var(--accent); }
+.quest-log-step.current{ border-left-color: var(--accent-2); background:#171f1d; }
+.quest-log-step.current .quest-log-badge{ color: var(--accent-2); }
+.quest-log-step.locked{ opacity:.65; }
+.quest-log-step.locked .quest-log-badge{ color: var(--muted); }
+.empty-note{ max-width:820px; margin:0 auto; color: var(--muted); font-size:13px; }
+
+.love-grid{ max-width:820px; margin:0 auto; display:flex; flex-direction:column; gap:18px; }
+.love-card{
+  background: var(--panel); border:1px solid var(--border); border-radius:12px; padding:16px 18px;
+  display:flex; gap:14px; align-items:center;
+}
+.love-portrait{ width:64px; height:64px; border-radius:50%; object-fit:cover; border:2px solid var(--border); flex:none; }
+
+/* Portraits arrive at wildly different ratios — some are square headshots,
+   some are near 1:2 full-length shots. `cover` centred on a tall image
+   crops to the middle of the body and loses the face, so the crop is
+   biased upward. On a square source this changes nothing at all.
+   Tune the percentage if a specific portrait sits wrong. */
+.room-occupant, .dialogue-portrait, .quest-card-icon,
+.love-portrait, .gallery-slot-portrait, .gal-char-portrait,
+.occupant-portrait{ object-position: center 22%; }
+.love-body{ flex:1; }
+.love-body h3{ margin:0 0 8px; color: var(--accent); }
+
+.gallery-grid{ max-width:900px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; }
+.gallery-card{
+  background: var(--panel); border:1px solid var(--border); border-radius:12px; padding:14px; text-align:center;
+}
+.gallery-card img{ width:72px; height:72px; border-radius:50%; object-fit:cover; margin-bottom:8px; }
+.gallery-slot-portrait{ width:72px; height:72px; border-radius:50%; object-fit:cover; margin-bottom:8px; }
+.gallery-slot-portrait.portrait-slot-pending{
+  width:100%; height:150px; border-radius:10px; margin-bottom:8px; box-sizing:border-box;
+}
+.gallery-card h3{ margin:0 0 4px; color: var(--accent); font-size:15px; }
+.gallery-card .clip-list{ display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-top:8px; }
+
+/* Establishing shot for a place with nobody in it */
+.place-art{ max-width:620px; margin:0 auto 16px; }
+.place-art img{
+  width:100%; aspect-ratio:21/9; object-fit:cover; display:block;
+  border-radius:12px; border:1px solid var(--border); filter:brightness(.88);
+}
+
+/* ---------- gym ---------- */
+.gym-panel{ max-width:380px; margin:0 auto; text-align:center; }
+.gym-stat{
+  background: var(--panel); border:1px solid var(--border); border-radius:14px;
+  padding:18px 20px; margin-bottom:20px;
+}
+.gym-stat-label{ font-size:11px; letter-spacing:.09em; text-transform:uppercase; color: var(--muted); }
+.gym-stat-value{ font-size:20px; font-weight:700; color: var(--accent); margin:6px 0 12px; }
+.gym-bar{ height:7px; border-radius:999px; background: var(--panel-2); overflow:hidden; }
+.gym-bar span{
+  display:block; height:100%; border-radius:999px;
+  background: linear-gradient(90deg, var(--accent-soft), var(--accent)); transition:width .3s;
+}
+.gym-stat-note{ margin-top:8px; font-size:11px; color: var(--muted); }
+.gym-pass{
+  display:flex; flex-direction:column; gap:3px; margin-bottom:16px;
+  padding:10px 14px; border-radius:10px;
+  border:1px solid var(--border); background: var(--panel);
+}
+.gym-pass-on{ font-size:13px; font-weight:700; color: var(--accent); }
+.gym-pass-off{ font-size:13px; font-weight:700; color: var(--accent-2); }
+.gym-pass-note{ font-size:11px; color: var(--muted); }
+
+/* ---------- gallery (per-character rows) ---------- */
+.gal-list{ max-width:860px; margin:0 auto; display:flex; flex-direction:column; gap:14px; }
+.gal-char{
+  background: var(--panel); border:1px solid var(--border); border-radius:14px; padding:14px 16px 16px;
+}
+.gal-char.empty{ opacity:.62; }
+.gal-char-head{ display:flex; align-items:center; gap:12px; }
+.gal-char-portrait{
+  width:46px; height:46px; border-radius:50%; object-fit:cover; flex:none;
+  border:1px solid var(--border); background: var(--panel-2);
+}
+.gal-char-portrait-blank{ display:flex; align-items:center; justify-content:center; font-size:20px; }
+.gal-char-meta{ flex:1; min-width:0; }
+.gal-char-meta h3{ margin:0; color: var(--accent); font-size:15px; }
+.gal-char-meta p{ margin:2px 0 0; color: var(--muted); font-size:12px; }
+.gal-char-count{
+  flex:none; font-size:11px; font-weight:700; color: var(--muted);
+  background: var(--panel-2); border:1px solid var(--border); border-radius:999px; padding:3px 10px;
+}
+.gal-char-head .link-btn.small{ flex:none; }
+.gal-group{ margin-top:12px; }
+.gal-group-title{
+  font-size:10px; letter-spacing:.08em; text-transform:uppercase; color: var(--muted); margin-bottom:6px;
+}
+.gal-grid{
+  display:grid; gap:8px;
+  grid-template-columns:repeat(auto-fill,minmax(112px,1fr));
+}
+.gal-tile{
+  position:relative; aspect-ratio:16/10; border-radius:10px; overflow:hidden; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+  background: var(--panel-2); border:1px solid var(--border); transition:border-color .15s, transform .15s;
+}
+.gal-tile:hover{ border-color: var(--accent); transform:translateY(-2px); }
+.gal-tile-image img{ width:100%; height:100%; object-fit:cover; display:block; }
+.gal-play{ font-size:17px; color: var(--accent); line-height:1; }
+.gal-tile-label{ font-size:10px; letter-spacing:.06em; text-transform:uppercase; color: var(--muted); }
+
+/* Captured still sits under the play glyph, which gets a scrim so it
+   stays legible over a bright frame. */
+.thumb-img, .thumb-video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+.thumb-video{ pointer-events:none; background:#000; }
+.gal-tile.has-thumb .gal-play,
+.gal-tile.has-thumb .gal-tile-label{ position:relative; z-index:1; }
+.gal-tile.has-thumb .gal-play{
+  color:#fff; text-shadow:0 1px 6px rgba(0,0,0,.9);
+  width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  background:rgba(0,0,0,.42); backdrop-filter:blur(2px); font-size:13px; padding-left:2px;
+}
+.gal-tile.has-thumb .gal-tile-label{ color:#fff; text-shadow:0 1px 4px rgba(0,0,0,.95); }
+.gal-tile-video:not(.has-thumb):not(.thumb-failed) .gal-tile-label{ opacity:.55; }
+.media-thumb{ position:relative; }
+.media-thumb.has-thumb{ font-size:0; }
+.gal-tile-pending{ border-style:dashed; }
+.gal-tile-pending .gal-play{ color: var(--accent-2); }
+.gal-empty-row{ margin-top:10px; font-size:12px; color: var(--muted); }
+
+/* ---------- house group chat ---------- */
+.chat-thread{ max-width:520px; margin:0 auto; display:flex; flex-direction:column; gap:14px; }
+.chat-msg{ display:flex; gap:10px; align-items:flex-start; }
+.chat-avatar{ width:34px; height:34px; border-radius:50%; object-fit:cover; flex:none; background: var(--panel-2); }
+.chat-content{ max-width:78%; }
+.chat-sender{ font-size:11px; font-weight:700; margin-bottom:4px; }
+.chat-bubble{
+  background: var(--panel-2); border:1px solid var(--border); border-radius:4px 14px 14px 14px;
+  padding:9px 13px; font-size:13px; line-height:1.45; color: var(--text);
+}
+.chat-image{ display:block; width:100%; max-width:220px; border-radius:8px; margin-top:8px; }
+.chat-msg.mine{ flex-direction:row-reverse; }
+.chat-msg.mine .chat-content{ display:flex; flex-direction:column; align-items:flex-end; }
+.chat-msg.mine .chat-bubble{
+  background: linear-gradient(180deg, var(--accent-soft), var(--accent)); color:#08181a;
+  border-color:transparent; border-radius:14px 4px 14px 14px;
+}
+.chat-replies{ max-width:520px; margin:14px auto 0; }
+
+.pack-grid{ max-width:820px; margin:0 auto; display:flex; flex-direction:column; gap:12px; }
+.pack-card{
+  background: var(--panel); border:1px solid var(--border); border-radius:12px; padding:16px;
+  display:flex; justify-content:space-between; align-items:center; gap:12px;
+}
+.collection-grid{ max-width:820px; margin:18px auto 0; display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:10px; }
+.collection-card{
+  border:1px solid var(--border); border-radius:10px; padding:10px; text-align:center; background: var(--panel);
+}
+
+/* ---------- developer tools ---------- */
+.dev-group{ max-width:820px; margin:0 auto 20px; }
+.dev-group h3{ margin:0 0 8px; color: var(--accent); font-size:13px; text-transform:uppercase; letter-spacing:.04em; }
+.dev-actions{ display:flex; flex-wrap:wrap; gap:8px; }
+.dev-actions .link-btn{ font-size:12px; padding:6px 12px; }
+
+.media-thumb-grid{ display:flex; flex-wrap:wrap; gap:8px; }
+.media-thumb{
+  width:64px; height:64px; border-radius:8px; overflow:hidden; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; font-size:22px;
+  background: var(--panel-2); border:1px solid var(--border);
+}
+.media-thumb:hover{ border-color: var(--accent); }
+.media-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+.media-thumb.media-thumb-pending{ border-style:dashed; border-color: var(--accent-2); color: var(--accent-2); }
+
+.media-subgroup{ margin:0 0 14px; }
+.media-subgroup-title{ font-size:11px; color: var(--muted); margin-bottom:6px; }
+.rarity-common{ color:#9fb3c0; }
+.rarity-rare{ color:#7fe0da; }
+.rarity-epic{ color:#d8a0ff; }
+.rarity-legendary{ color:#e8935a; }
+
+/* ---------- video modal ---------- */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(4,6,9,0.82); display:flex; align-items:center; justify-content:center;
+  padding:20px; z-index:80;
+}
+.modal-box{
+  background: var(--panel); border:1px solid var(--border); border-radius:14px; padding:16px;
+  max-width:720px; width:100%;
+}
+.modal-box video{ width:100%; border-radius:10px; background:#000; }
+.modal-box h3{ margin:0 0 10px; color:var(--accent); }
+.modal-box p{ margin:0; color: var(--text); font-size:14px; line-height:1.5; }
+
+/* ---------- toast notifications ---------- */
+#toast-root{
+  position:fixed; bottom:18px; right:18px; z-index:90;
+  display:flex; flex-direction:column; gap:8px; align-items:flex-end;
+  pointer-events:none;
+}
+.toast{
+  background: var(--panel); border:1px solid var(--border); border-left:3px solid var(--accent);
+  border-radius:8px; padding:10px 16px; color: var(--text); font-size:13px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  opacity:0; transform: translateY(8px);
+  transition: opacity .25s ease, transform .25s ease;
+  max-width:280px;
+}
+.toast.show{ opacity:1; transform: translateY(0); }
+.toast.money{ border-left-color: var(--accent-2); }
+.toast.bond{ border-left-color: #e8935a; }
+.toast.warn{ border-left-color: #e05a5a; }
+
+/* ---------- sidebar panel popup ---------- */
+.panel-modal{
+  position:fixed; inset:0; z-index:70;
+  display:flex; align-items:center; justify-content:center;
+  padding:28px;
+  background: radial-gradient(120% 120% at 50% 0%, rgba(53,201,193,0.10), rgba(5,8,11,0.72) 60%);
+  backdrop-filter: blur(6px) saturate(1.1);
+  -webkit-backdrop-filter: blur(6px) saturate(1.1);
+  animation: panel-fade .18s ease;
+}
+.panel-modal.hidden{ display:none; }
+@keyframes panel-fade{ from{ opacity:0; } to{ opacity:1; } }
+.panel-modal-window{
+  width:min(760px, 100%);
+  max-height: calc(100vh - 56px);
+  display:flex; flex-direction:column;
+  background: linear-gradient(180deg, #131c24, var(--panel));
+  border:1px solid var(--border);
+  border-top:2px solid var(--accent);
+  border-radius:18px;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.6), 0 0 0 1px rgba(53,201,193,0.06);
+  overflow:hidden;
+  animation: panel-rise .2s cubic-bezier(.2,.7,.3,1);
+}
+@keyframes panel-rise{ from{ transform: translateY(14px) scale(.985); opacity:0; } to{ transform:none; opacity:1; } }
+.panel-modal-header{
+  display:flex; align-items:center; gap:11px;
+  padding:16px 18px 14px;
+  border-bottom:1px solid var(--border);
+  background: linear-gradient(180deg, rgba(53,201,193,0.09), transparent);
+}
+.panel-modal-icon{ font-size:20px; line-height:1; filter: drop-shadow(0 0 6px rgba(53,201,193,.35)); }
+.panel-modal-title{
+  font-size:17px; font-weight:800; letter-spacing:.3px; color:var(--text);
+  flex:1;
+}
+.panel-modal-x{
+  appearance:none; border:1px solid var(--border); background:var(--panel-2);
+  color:var(--muted); width:32px; height:32px; border-radius:9px;
+  font-size:20px; line-height:1; cursor:pointer; transition: all .15s ease;
+}
+.panel-modal-x:hover{ color:var(--text); border-color:var(--accent); background:#1e2a35; }
+.panel-modal-blurb{
+  padding:12px 18px 0; color:var(--muted); font-size:13px; line-height:1.5;
+}
+.panel-modal-blurb:empty{ display:none; }
+.panel-modal-body{
+  padding:14px 18px 20px;
+  overflow-y:auto;
+}
+/* Panels reuse their own inner .panel-title heading; the modal header already
+   names the panel, so hide the redundant top heading when shown in the popup. */
+.panel-modal-body > .panel-title{ display:none; }
+
+/* ---------- message popup (new text, bottom-left) ---------- */
+/* end-of-build popup — the one moment the game speaks as itself */
+.modal-box.complete-box{ max-width:520px; text-align:left; }
+.complete-mark{ font-size:34px; text-align:center; margin-bottom:6px; }
+.complete-box h3{
+  text-align:center; margin:0 0 14px; font-size:20px; color: var(--accent-2);
+  font-family: Georgia, 'Times New Roman', serif; font-style:italic;
+}
+.complete-box p{ margin:0 0 12px; font-size:13.5px; line-height:1.6; color: var(--text); }
+.complete-lead{ color: var(--muted) !important; text-align:center; }
+.complete-patreon{
+  border-left:3px solid var(--accent-2); padding:10px 14px; border-radius:0 8px 8px 0;
+  background: rgba(232,147,90,.09); margin-bottom:0 !important;
+}
+.complete-box .link-btn{ text-decoration:none; }
+
+/* companion arc finished — richer than a toast, same bottom-right corner */
+.arc-popup{
+  display:flex; align-items:flex-start; gap:11px;
+  background: linear-gradient(180deg, rgba(232,147,90,.12), var(--panel));
+  border:1px solid rgba(232,147,90,.45); border-left:3px solid var(--accent-2);
+  border-radius:10px; padding:12px 12px 12px 11px; color: var(--text);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.45);
+  opacity:0; transform: translateY(10px);
+  transition: opacity .28s ease, transform .28s ease;
+  width:300px; max-width:88vw; cursor:pointer; pointer-events:auto; position:relative;
+}
+.arc-popup.show{ opacity:1; transform: translateY(0); }
+.arc-popup:hover{ border-color: var(--accent-2); }
+.arc-popup-avatar{
+  width:42px; height:42px; border-radius:50%; object-fit:cover; flex:none;
+  border:2px solid var(--accent-2);
+}
+.arc-popup-body{ min-width:0; flex:1; padding-right:12px; }
+.arc-popup-kicker{
+  font-size:9.5px; letter-spacing:.13em; text-transform:uppercase;
+  color: var(--accent-2); font-weight:700;
+}
+.arc-popup-name{ font-size:13.5px; font-weight:700; margin:3px 0 4px; }
+.arc-popup-text{ font-size:11.5px; line-height:1.42; color: var(--muted); }
+.arc-popup-x{
+  position:absolute; top:6px; right:7px; width:19px; height:19px; line-height:1;
+  background:none; border:none; color: var(--muted); font-size:16px; cursor:pointer; padding:0;
+}
+.arc-popup-x:hover{ color: var(--text); }
+
+#msg-popup-root{
+  position:fixed; bottom:18px; left:18px; z-index:60;
+  display:flex; flex-direction:column; gap:8px; align-items:flex-start;
+  pointer-events:none;
+}
+.msg-popup{
+  display:flex; align-items:center; gap:10px;
+  background: var(--panel); border:1px solid var(--border); border-left:3px solid var(--accent-2);
+  border-radius:8px; padding:8px 14px 8px 10px; color: var(--text);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  opacity:0; transform: translateY(8px);
+  transition: opacity .25s ease, transform .25s ease;
+  max-width:280px; cursor:pointer; pointer-events:auto;
+}
+.msg-popup.show{ opacity:1; transform: translateY(0); }
+.msg-popup-avatar{ width:36px; height:36px; border-radius:50%; object-fit:cover; flex:none; }
+.msg-popup-body{ min-width:0; }
+.msg-popup-name{ font-size:12px; font-weight:600; color: var(--accent); }
+.msg-popup-text{ font-size:12px; color: var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+/* ---------- misc ---------- */
+.house-warn{
+  max-width:820px; margin:0 auto 16px; font-size:12px; color: var(--muted);
+  border:1px solid var(--border); border-radius:8px; padding:8px 12px;
+}
+
+/* ---------- news panel ---------- */
+/* Data-driven from NEWS in engine.js — each release adds one entry, so
+   this styling has to hold for both an unshipped announcement and a
+   changelog without either looking like an afterthought. */
+.news-list{ display:flex; flex-direction:column; gap:16px; }
+.news-item{
+  border:1px solid rgba(255,255,255,.09); border-radius:12px;
+  padding:16px 18px; background:rgba(255,255,255,.02);
+}
+.news-item.upcoming{
+  border-color:rgba(196,139,255,.45);
+  background:linear-gradient(180deg, rgba(196,139,255,.10), rgba(196,139,255,.02));
+}
+.news-head{ display:flex; align-items:center; gap:8px; margin-bottom:2px; }
+.news-date{
+  font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+  opacity:.65; font-weight:600;
+}
+.news-new{
+  font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  color:#12131a; background:var(--accent-2); border-radius:999px; padding:2px 7px;
+}
+.news-title{ margin:2px 0 6px; font-size:19px; }
+.news-lead{ margin:0 0 10px; opacity:.85; }
+.news-body{ margin:0 0 8px; opacity:.85; line-height:1.55; }
+.news-dates{ display:flex; flex-direction:column; gap:8px; margin:12px 0 14px; }
+/* version · date · audience. The audience is the part the reader is
+   scanning for, so it gets the colour rather than the date. */
+/* Grid rather than flex-wrap: the tag needs a line of its own AND has to
+   hug its own text. A full-width flex item does the first and breaks the
+   second, since flex-basis:100% stretches the pill across the row. */
+.news-date-row{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:5px 10px;
+  justify-items:start; align-items:baseline;
+  padding:9px 12px; border-radius:9px; background:rgba(0,0,0,.22);
+}
+.news-ver{ grid-column:1; grid-row:1; font-weight:700; color:#c48bff; white-space:nowrap; }
+.news-when{ grid-column:2; grid-row:1; font-weight:600; white-space:nowrap; }
+.news-who{ grid-column:1 / -1; grid-row:2; font-weight:600; white-space:nowrap; }
+.news-note{ grid-column:1 / -1; font-size:12px; opacity:.6; }
+/* Same coral as the Patreon button below it, so the tag and the call to
+   action read as one thing rather than two unrelated highlights. */
+.news-who.members{
+  font-size:11px; letter-spacing:.05em; padding:3px 9px; border-radius:999px;
+  font-weight:700; color:#fff;
+  background:linear-gradient(135deg,#ff6b4a,#f1465c);
+  box-shadow:0 2px 8px rgba(241,70,92,.3);
+}
+/* Borderless like the coral one, so the fill alone has to carry it —
+   hence the heavier tint than the old outlined version needed. */
+.news-who.all{
+  font-size:11px; letter-spacing:.05em; padding:3px 9px; border-radius:999px;
+  font-weight:700; background:rgba(127,224,218,.2); color:#7fe0da;
+}
+.news-section{ margin-top:12px; }
+.news-section h4{
+  margin:0 0 6px; font-size:12px; letter-spacing:.07em;
+  text-transform:uppercase; opacity:.6;
+}
+.news-section ul{ margin:0; padding-left:18px; }
+.news-section li{ margin:4px 0; line-height:1.5; opacity:.9; }
+/* Not a .link-btn — it's the one outbound link in the panel, so it gets
+   Patreon's own coral and its mark instead of looking like another
+   in-game action. Two lines: the offer on top, the ask underneath. */
+/* One button, full width. It was a two-across row while F95 sat beside
+   the Patreon one; with that gone the column rule is all it needs. */
+.news-cta{ display:flex; flex-direction:column; gap:8px; margin-top:14px; }
+.news-patreon{
+  display:flex; align-items:center; gap:12px;
+  padding:11px 14px;
+  border-radius:11px; text-decoration:none; color:#fff;
+  background:linear-gradient(135deg,#ff6b4a,#f1465c);
+  box-shadow:0 4px 14px rgba(241,70,92,.28);
+  transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+.news-patreon:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 22px rgba(241,70,92,.42);
+  filter:saturate(1.08);
+}
+.news-patreon:active{ transform:translateY(0); }
+.news-patreon-mark{
+  width:19px; height:19px; flex:none; fill:#fff;
+}
+.news-patreon-text{ display:flex; flex-direction:column; line-height:1.25; flex:1; }
+.news-patreon-lead{ font-size:14px; font-weight:700; letter-spacing:.01em; }
+.news-patreon-sub{ font-size:11.5px; opacity:.85; }
+.news-patreon-go{ font-size:20px; opacity:.75; flex:none; }
+.news-patreon:hover .news-patreon-go{ opacity:1; }
+
+/* Slideshow panel on the right of the title screen. Fixed height so the
+   menu beside it doesn't jump when a short announcement is followed by a
+   long changelog — the slide scrolls inside instead. */
+.news-panel{
+  flex:0 1 380px;
+  min-width:320px;
+  max-width:400px;
+  align-self:center;
+  display:flex;
+  flex-direction:column;
+  text-align:left;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:var(--panel);
+  padding:14px 16px 16px;
+  max-height:min(70vh, 560px);
+}
+.news-panel-head{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:10px; padding-bottom:10px; margin-bottom:12px;
+  border-bottom:1px solid var(--border);
+}
+.news-panel-title{
+  display:inline-flex; align-items:center; gap:7px;
+  font-size:12px; font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+  opacity:.75;
+}
+.news-nav{ display:inline-flex; align-items:center; gap:8px; }
+.news-arrow{
+  width:22px; height:22px; line-height:1; padding:0;
+  border:1px solid var(--border); border-radius:6px;
+  background:transparent; color:inherit; cursor:pointer;
+  font-size:15px; opacity:.7;
+}
+.news-arrow:hover{ opacity:1; border-color:#c48bff; color:#c48bff; }
+.news-dots{ display:inline-flex; align-items:center; gap:5px; }
+.news-dot{
+  width:7px; height:7px; padding:0; border:0; border-radius:50%;
+  background:rgba(255,255,255,.25); cursor:pointer;
+}
+.news-dot.on{ background:#c48bff; }
+.news-stage{ overflow-y:auto; padding-right:4px; }
+/* The slide fills the panel, so it drops the card border it had as a
+   list item and lets the panel itself be the frame. */
+.news-stage .news-item{
+  border:0; background:none; padding:0; border-radius:0;
+  animation: news-fade .25s ease;
+}
+.news-stage .news-item.upcoming{ background:none; }
+@keyframes news-fade{ from{ opacity:0; transform:translateY(4px); } to{ opacity:1; transform:none; } }
+
+@media (max-width: 900px){
+  #menu-screen{ flex-direction:column; gap:26px; }
+  .news-panel{ flex:0 0 auto; width:min(100%, 460px); max-width:none; max-height:none; }
+}
+
+@media (max-width: 680px){
+  .news-date-row{ grid-template-columns:1fr; gap:2px; }
+}
+
+/* An activity used up for today. Same treatment as the gym's "trained
+   today" line — still readable, clearly not a button any more. */
+.link-btn.spent{
+  opacity:.45; cursor:default; border-style:dashed;
+}
+.link-btn.spent:hover{ background:none; }
+
+/* ---------- auto-save setting ---------- */
+#btn-autosave{ font-size:11px; }
+#btn-autosave.off{ color:#e8935a; border-color:#e8935a; }
+.autosave-lead{ margin:0 0 14px; font-size:13px; line-height:1.55; color: var(--muted); }
+.autosave-options{ display:flex; flex-direction:column; gap:6px; }
+.autosave-opt{
+  display:flex; align-items:baseline; gap:10px; justify-content:space-between;
+  padding:10px 13px; border:1px solid var(--border); border-radius:9px;
+  cursor:pointer; user-select:none;
+}
+.autosave-opt:hover{ border-color:#7fe0da; }
+.autosave-opt.on{
+  border-color:#7fe0da; color:#7fe0da; background:rgba(127,224,218,.10);
+}
+.autosave-opt-label{ font-weight:600; font-size:14px; }
+.autosave-opt-note{ font-size:11px; opacity:.6; text-align:right; }
+
+/* Developer panel button — last thing in the sidebar, under Export and
+   the auto-save setting, because it isn't part of playing. */
+#btn-dev{
+  flex:1; text-align:center; font-size:11px; font-weight:600; letter-spacing:.03em;
+  border-radius:8px; padding:6px 8px; cursor:pointer; user-select:none;
+  color:#7fb2ff; border:1px dashed #7fb2ff; background:rgba(127,178,255,0.08);
+}
+#btn-dev:hover{ background:rgba(127,178,255,0.18); }
+
+/* ---------- settings panel ---------- */
+.settings-section h3{ margin:0 0 6px; font-size:17px; }
+.settings-help{ margin:0 0 14px; font-size:13px; line-height:1.55; color: var(--muted); }
+.autosave-opt-label input[type=number]{
+  width:56px; margin:0 4px; padding:3px 6px;
+  border:1px solid var(--border); border-radius:6px;
+  background:rgba(0,0,0,.28); color:inherit;
+  font:inherit; font-weight:700; text-align:center;
+}
+.autosave-opt.on .autosave-opt-label input[type=number]{ border-color:#7fe0da; }
+.autosave-opt-label input[type=number]:focus{ outline:none; border-color:#7fe0da; }
+
+/* A clip that ships as an animated gif rather than mp4 — same slot in the
+   scene as a video, so it has to match the video's sizing. */
+.scene-video.is-gif img{
+  display:block; width:100%; border-radius:10px; background:#000;
+}
+
+/* ==========================================================================
+   Phones and narrow tablets
+   --------------------------------------------------------------------------
+   The desktop layout is a 300px sidebar beside the story. On a 375px screen
+   that leaves 75px for the game, so below 860px the sidebar becomes a drawer
+   and a slim bar keeps day/time/money on screen. Everything else is the same
+   game — grids drop a column, popups become full-height sheets, and tap
+   targets grow to something a thumb can hit.
+   ========================================================================== */
+
+/* Mobile browsers count the URL bar in 100vh, so a full-height element is
+   taller than the visible window and the bottom is cut off. dvh tracks the
+   real height; the vh line stays as the fallback. */
+#mobile-bar{ display:none; }
+
+@media (max-width: 860px){
+  #game-screen{ flex-direction:column; }
+
+  #mobile-bar{
+    display:flex; align-items:center; gap:10px;
+    position:fixed; top:0; left:0; right:0; z-index:60;
+    height:52px; padding:0 10px;
+    background:rgba(12,17,22,.94);
+    border-bottom:1px solid var(--border);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .mb-btn{
+    appearance:none; flex:none;
+    width:40px; height:40px; border-radius:10px;
+    border:1px solid var(--border); background:var(--panel-2);
+    color:var(--text); cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center;
+  }
+  .mb-btn .ui-icon{ width:20px; height:20px; }
+  .mb-stats{
+    flex:1; min-width:0;
+    display:flex; align-items:center; justify-content:space-around; gap:8px;
+  }
+  .mb-stat{ display:flex; flex-direction:column; align-items:center; line-height:1.15; min-width:0; }
+  .mb-stat em{
+    font-style:normal; font-size:9px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--muted);
+  }
+  .mb-stat b{ font-size:13px; white-space:nowrap; }
+  .mb-stat b.accent{ color:var(--accent); }
+
+  /* The back arrow is a plain glyph, not an icon, so it needs its own size. */
+  #btn-back-mb{ font-size:22px; line-height:1; padding-bottom:3px; }
+  #btn-back-mb:disabled{ opacity:.3; }
+
+  /* 30px is a mouse target. Everything the thumb has to hit inside the
+     drawer grows to something closer to a fingertip. */
+  .nav-arrows{ gap:8px; }
+  .nav-arrows button{ width:42px; height:42px; font-size:20px; }
+  .save-btn, .save-btn.subtle{ padding:11px 10px; }
+  #btn-cheats{ padding:11px 10px; }
+
+  /* The drawer itself. Off-canvas until #game-screen carries .drawer-open,
+     which is the only thing the toggle does. Below the panel popup (z 70)
+     on purpose: a panel opens over it, never under it. */
+  #sidebar{
+    position:fixed; top:0; bottom:0; left:0; z-index:65;
+    width:min(86vw, 320px); min-width:0;
+    height:100vh; height:100dvh;
+    transform:translateX(-100%);
+    transition: transform .22s cubic-bezier(.2,.7,.3,1);
+    box-shadow: 0 0 40px rgba(0,0,0,.6);
+    padding-bottom:28px;
+  }
+  #game-screen.drawer-open #sidebar{ transform:none; }
+
+  #sidebar-scrim{
+    position:fixed; inset:0; z-index:64;
+    background:rgba(4,6,9,.6);
+    opacity:0; pointer-events:none;
+    transition: opacity .22s ease;
+  }
+  #game-screen.drawer-open #sidebar-scrim{ opacity:1; pointer-events:auto; }
+
+  /* The story column is the whole screen now, and it scrolls with the page
+     rather than inside a fixed-height box. */
+  #main{
+    height:auto; min-height:0;
+    padding:64px 14px 40px;
+    width:100%;
+  }
+
+  /* Without the sidebar the story column is the full width, so a tablet
+     still fits the three-across house grid comfortably. */
+  #room-grid{ gap:14px; }
+  .gallery-grid{ grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:12px; }
+
+  .story-box{ padding:13px 15px; margin-bottom:15px; }
+  .dialogue-choices{ margin-top:13px; }
+  .dialogue-choice{ padding:13px 14px; }
+
+  /* Popups stop being windows floating on a desktop and become sheets that
+     own the screen — there is no room to show what's behind them anyway. */
+  .panel-modal{ padding:0; }
+  .panel-modal-window{
+    width:100%; max-width:none; border-radius:0; border-left:0; border-right:0;
+    height:100vh; height:100dvh; max-height:none;
+  }
+  .panel-modal-header{ padding:14px 14px 12px; padding-top:max(14px, env(safe-area-inset-top)); }
+  .panel-modal-blurb{ padding:11px 14px 0; }
+  .panel-modal-body{ padding:12px 14px 28px; }
+  .panel-modal-x{ width:38px; height:38px; }
+
+  .modal-overlay{ padding:12px; }
+  .modal-box{ padding:13px; }
+
+  /* Anything that was capped at 820px for reading comfort has no cap to
+     apply here; the padding on #main is doing that job. */
+  .actions, .card-list, .scene-video, .dialogue-choices, .panel-title{ max-width:none; }
+}
+
+/* Phones proper. Three room cards across a 375px screen leaves each one
+   110px wide, which is too small to read the art or the name. */
+@media (max-width: 640px){
+  #room-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+  .room-thumb{ margin-bottom:7px; font-size:30px; }
+  .room-name{ font-size:13px; }
+  .item-grid{ gap:10px; }
+  .gallery-grid{ grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); }
+}
+
+/* Title screen. It already stacks at 900px; this is about the parts that
+   are still sized for a mouse. */
+@media (max-width: 560px){
+  #menu-screen{ padding:22px 14px; gap:20px; }
+  .title-logo{ max-width:250px; }
+  .news-panel{ width:100%; padding:12px 13px 14px; }
+  /* A 7px dot is not a tap target. The dot stays the same size, the button
+     around it grows. */
+  .news-dots{ gap:2px; }
+  .news-dot{
+    width:24px; height:24px; background:none; border-radius:6px;
+    display:inline-flex; align-items:center; justify-content:center;
+  }
+  .news-dot::after{
+    content:""; width:7px; height:7px; border-radius:50%;
+    background:rgba(255,255,255,.25);
+  }
+  .news-dot.on{ background:none; }
+  .news-dot.on::after{ background:#c48bff; }
+  .news-arrow{ width:32px; height:32px; font-size:17px; }
+  .create-card{ width:100%; }
+}
+
+/* Touch devices: a tap leaves the hover state stuck on the card until the
+   next tap elsewhere, which reads as a bug. Give the lift to mice only. */
+@media (hover: none){
+  .room-card:hover .room-thumb,
+  .nav-btn:hover,
+  .dialogue-continue:hover,
+  .gallery-card:hover{ transform:none; box-shadow:none; }
+}
+
+/* Support buttons on the title screen. Same shape as the Patreon button in
+   the news panel so all three read as one family; the colour is what tells
+   them apart, taken from each service's own palette. They live in the menu
+   column, where they are on screen the whole time instead of only on the
+   news slides that carry a call to action. */
+.menu-support-row{
+  display:flex; flex-direction:column; gap:8px;
+  width:100%; max-width:320px;
+}
+.menu-support{
+  display:flex; align-items:center; gap:12px;
+  width:100%; box-sizing:border-box;
+  padding:11px 14px;
+  border-radius:11px; text-decoration:none; color:#fff;
+  transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+.menu-support:hover{ transform:translateY(-2px); filter:saturate(1.08); }
+.menu-support:active{ transform:translateY(0); }
+/* SubscribeStar's own teal, sampled off the mark they supply (#009090).
+   The logo is a filled circle in that same teal, so on this ground it
+   would vanish -- hence the white ring: the brand's own way of putting a
+   coloured mark on its coloured field. */
+.menu-support.substar{
+  background:linear-gradient(135deg,#00a39b,#00706c);
+  box-shadow:0 4px 14px rgba(0,112,108,.34);
+}
+.menu-support.substar:hover{ box-shadow:0 8px 22px rgba(0,163,155,.44); }
+/* The same coral as the Patreon button in the news panel — one brand, one
+   colour, wherever it appears. */
+.menu-support.patreon{
+  background:linear-gradient(135deg,#ff6b4a,#f1465c);
+  box-shadow:0 4px 14px rgba(241,70,92,.28);
+}
+.menu-support.patreon:hover{ box-shadow:0 8px 22px rgba(241,70,92,.42); }
+.menu-support-mark{ width:19px; height:19px; flex:none; }
+.menu-support-mark svg,
+.menu-support-mark img{ width:100%; height:100%; display:block; }
+.menu-support.substar .menu-support-mark img{ border-radius:50%; box-shadow:0 0 0 2px rgba(255,255,255,.92); }
+/* Patreon supply a single-colour mark, so it takes the button's white.
+   SubscribeStar supply a full-colour one, which is left alone. */
+.menu-support.patreon .menu-support-mark svg{ fill:#fff; }
+.menu-support-text{ display:flex; flex-direction:column; line-height:1.25; flex:1; text-align:left; }
+.menu-support-lead{ font-size:14px; font-weight:700; letter-spacing:.01em; }
+.menu-support-sub{ font-size:11.5px; opacity:.85; }
+.menu-support-go{ font-size:20px; opacity:.75; flex:none; }
+.menu-support:hover .menu-support-go{ opacity:1; }
+
+/* ========== Quest panel redesign (A Lot of Ways style) ========== */
+.alw-panel-header{
+  display:flex; align-items:center; gap:10px;
+  font-size:21px; font-weight:700; color:#fff;
+  margin:0 auto 16px; max-width:820px;
+  text-shadow:0 2px 8px rgba(232,147,90,.18);
+}
+.alw-trophy{ font-size:20px; filter:drop-shadow(0 0 6px rgba(232,147,90,.35)); }
+.alw-quests-grid{
+  display:flex; flex-direction:column; gap:14px;
+  max-width:820px; margin:0 auto;
+}
+.alw-quest-card{
+  background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.08);
+  border-radius:16px; overflow:hidden; transition:all .25s ease;
+}
+.alw-quest-card:hover{
+  transform:translateY(-2px); background:rgba(255,255,255,.045);
+  border-color:rgba(255,255,255,.14);
+  box-shadow:0 8px 20px rgba(0,0,0,.2);
+}
+.alw-card-header{
+  padding:13px 16px; display:flex; align-items:center; gap:12px;
+  background:linear-gradient(to right,rgba(255,255,255,.03),transparent);
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.alw-icon-wrap{
+  width:42px; height:42px; border-radius:11px; overflow:hidden; flex-shrink:0;
+  border:2px solid rgba(255,255,255,.1);
+  box-shadow:0 3px 8px rgba(0,0,0,.3);
+  background:var(--panel-2);
+}
+.alw-icon-wrap img{ width:100%; height:100%; object-fit:cover; font-size:0; color:transparent; }
+.alw-icon-wrap .alw-icon-empty{
+  width:100%; height:100%; display:flex; align-items:center; justify-content:center;
+  background:var(--panel-2); font-size:16px;
+}
+.alw-card-info{ flex:1; min-width:0; }
+.alw-card-title{ font-size:15px; font-weight:700; color:#fff; line-height:1.2; }
+.alw-card-sub{ font-size:11.5px; color:rgba(255,255,255,.45); margin-top:2px; }
+.alw-progress{ height:3px; background:rgba(255,255,255,.05); }
+.alw-progress-fill{
+  height:100%; transition:width .5s ease;
+  background:linear-gradient(90deg,var(--accent-2),#f2b788);
+  box-shadow:0 0 6px rgba(232,147,90,.25);
+}
+.alw-progress-fill.teal{
+  background:linear-gradient(90deg,var(--accent),var(--accent-soft));
+  box-shadow:0 0 6px rgba(53,201,193,.25);
+}
+.alw-steps{ padding:12px 16px; display:flex; flex-direction:column; gap:8px; }
+.alw-step{
+  display:flex; gap:10px; padding:10px 12px;
+  background:rgba(0,0,0,.18); border-radius:10px;
+  border-left:3px solid rgba(255,255,255,.08);
+  transition:all .2s ease;
+}
+.alw-step.active{
+  background:rgba(232,147,90,.05); border-left-color:var(--accent-2);
+}
+.alw-step.avail{
+  background:rgba(53,201,193,.04); border-left-color:var(--accent);
+}
+.alw-step.done{
+  background:rgba(16,185,129,.04); border-left-color:#10b981; opacity:.7;
+}
+.alw-step.locked{
+  opacity:.5; background:transparent; border-left-color:rgba(255,255,255,.08);
+}
+.alw-step-dot{
+  width:18px; flex-shrink:0; text-align:center;
+  font-size:14px; padding-top:1px; line-height:1;
+}
+.alw-step.active .alw-step-dot{ color:var(--accent-2); }
+.alw-step.avail .alw-step-dot{ color:var(--accent); }
+.alw-step.done .alw-step-dot{ color:#10b981; }
+.alw-step.locked .alw-step-dot{ color:rgba(255,255,255,.2); }
+.alw-step-body{ flex:1; min-width:0; }
+.alw-step-title{
+  font-size:13.5px; font-weight:600; color:var(--text); line-height:1.3;
+}
+.alw-step.done .alw-step-title{
+  text-decoration:line-through; color:rgba(255,255,255,.45);
+}
+.alw-step-meta{
+  margin-top:5px; display:flex; flex-wrap:wrap; gap:3px 12px;
+  font-size:11.5px; color:rgba(255,255,255,.5); align-items:center;
+}
+.alw-step-meta .ui-icon{ width:12px; height:12px; vertical-align:-1px; opacity:.65; }
+.alw-step-desc{
+  margin-top:4px; font-size:11.5px; color:rgba(255,255,255,.45); line-height:1.4;
+}
+.alw-step-phrase{
+  margin-top:4px; font-size:11px; font-style:italic; color:rgba(236,72,153,.55); line-height:1.4;
+}
+.alw-step-req{
+  margin-top:5px; font-size:11px; line-height:1.4;
+  display:flex; flex-wrap:wrap; gap:2px 8px; align-items:center;
+}
+.alw-step-req .req-now{ color:var(--accent); font-weight:600; }
+.alw-step-req .req-later{ color:var(--accent-2); font-weight:600; }
+.alw-step-req .ui-icon{ width:11px; height:11px; vertical-align:-1px; }
+.alw-section-label{
+  font-size:11px; font-weight:700; text-transform:uppercase;
+  letter-spacing:.07em; padding:10px 4px 4px;
+  display:flex; align-items:center; gap:6px;
+}
+.alw-section-label.avail{ color:var(--accent); }
+.alw-section-label.waiting{ color:var(--accent-2); }
+.alw-empty{
+  text-align:center; padding:44px 20px; color:rgba(255,255,255,.4);
+}
+.alw-empty-icon{ font-size:32px; opacity:.3; margin-bottom:8px; }
+.alw-empty p{ font-size:13px; margin:3px 0; }
+.alw-complete-note{
+  margin:12px auto 0; max-width:500px; text-align:center;
+  padding:10px 14px; border:1px dashed var(--accent-2); border-radius:10px;
+  background:rgba(232,147,90,.06); font-size:12px; font-weight:600;
+  color:var(--accent-2);
+}
+/* NTR characters in ALW style */
+.alw-ntr-card{
+  background:rgba(255,255,255,.025); border:1px solid rgba(255,255,255,.08);
+  border-radius:12px; overflow:hidden; transition:all .25s ease;
+}
+.alw-ntr-card:hover{
+  background:rgba(255,255,255,.05);
+  border-color:rgba(236,72,153,.2);
+  box-shadow:0 4px 16px rgba(0,0,0,.25);
+}
+.alw-ntr-header{
+  padding:10px 14px; display:flex; align-items:center; gap:10px;
+}
+.alw-ntr-info{ flex:1; min-width:0; }
+.alw-ntr-name{ font-size:14px; font-weight:700; color:#fff; margin:0; line-height:1.2; }
+.alw-ntr-status{ font-size:11px; color:rgba(255,255,255,.4); margin-top:1px; }
+.alw-ntr-tags{ display:flex; gap:6px; margin-top:5px; }
+.alw-tag{
+  font-size:10.5px; padding:2px 7px; border-radius:8px;
+  font-weight:600; letter-spacing:.02em;
+}
+.alw-tag.netori{
+  background:rgba(236,72,153,.12); color:#ec4899;
+}
+.alw-tag.netorare{
+  background:rgba(224,96,96,.12); color:#e06060;
+}
+.alw-ntr-chevron{
+  color:rgba(255,255,255,.2); font-size:22px; font-weight:300;
+  margin-left:auto; flex-shrink:0; transition:color .2s;
+}
+.alw-ntr-card:hover .alw-ntr-chevron,
+.alw-rival-card:hover .alw-ntr-chevron{ color:rgba(255,255,255,.5); }
+.alw-icon-corr{
+  position:absolute; bottom:0; left:0; height:3px;
+  background:linear-gradient(90deg,#ec4899,#f472b6);
+  border-radius:0 0 0 10px; transition:width .3s;
+}
+.alw-icon-wrap{ position:relative; }
+.alw-ntr-stats{
+  display:flex; flex-wrap:wrap; gap:6px;
+  padding:0 16px 12px;
+}
+.alw-ntr-pill{
+  font-size:11px; padding:3px 9px; border-radius:10px;
+  background:rgba(255,255,255,.06); color:rgba(255,255,255,.7);
+  display:inline-flex; align-items:center; gap:5px;
+}
+.alw-ntr-pill .alw-pill-val{ font-weight:700; }
+.alw-rival-card{
+  background:rgba(255,60,60,.03); border:1px solid rgba(255,60,60,.1);
+  border-radius:12px; overflow:hidden; transition:all .25s ease;
+}
+.alw-rival-card:hover{
+  background:rgba(255,60,60,.07); border-color:rgba(255,60,60,.22);
+  box-shadow:0 4px 16px rgba(0,0,0,.25);
+}
+.alw-rival-header{
+  padding:10px 14px; display:flex; align-items:center; gap:10px;
+}
+.alw-rival-icon{
+  width:38px; height:38px; border-radius:10px; flex-shrink:0;
+  background:rgba(255,60,60,.08); border:1px solid rgba(255,60,60,.15);
+  display:flex; align-items:center; justify-content:center; font-size:16px;
+}
+.alw-rival-body{ flex:1; min-width:0; }
+.alw-rival-name{ font-size:14px; font-weight:700; color:#ff6b6b; line-height:1.2; }
+.alw-rival-name small{ font-weight:400; font-size:11px; color:rgba(255,255,255,.4); margin-left:4px; }
+.alw-rival-info{ font-size:11px; color:rgba(255,255,255,.4); margin-top:2px; }
+.alw-rival-status{ font-weight:600; color:rgba(255,255,255,.55); }
+.alw-rival-right{
+  display:flex; align-items:center; gap:6px; flex-shrink:0;
+}
+/* pulse animation for active step dot */
+@keyframes alw-pulse{
+  0%,100%{ transform:scale(1); opacity:1; }
+  50%{ transform:scale(1.15); opacity:.8; }
+}
+.alw-step.active .alw-step-dot{ animation:alw-pulse 2s infinite; }
+@media(max-width:620px){
+  .alw-card-header{ padding:11px 13px; }
+  .alw-steps{ padding:10px 13px; }
+  .alw-step{ padding:8px 10px; }
+  .alw-icon-wrap{ width:36px; height:36px; border-radius:9px; }
+}

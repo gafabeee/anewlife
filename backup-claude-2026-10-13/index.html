@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A New Life: Close Quarters</title>
+<link rel="icon" type="image/png" href="assets/icons/logo.png">
+<link rel="apple-touch-icon" href="assets/icons/logo.png">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- ===== MAIN MENU ===== -->
+<div id="menu-screen">
+  <div class="menu-col">
+    <div>
+      <img class="title-logo" src="assets/icons/newlifelogo.png" alt="A New Life: Close Quarters">
+    </div>
+    <div class="age-note">This story contains explicit adult content. By continuing you confirm you are of legal age in your jurisdiction.</div>
+    <div class="menu-actions">
+      <span class="link-btn primary" id="btn-new-save">New Game</span>
+      <span class="link-btn" id="btn-load-save">Load Game</span>
+    </div>
+    <div id="slot-list" class="slot-list hidden"></div>
+    <div class="menu-note" id="menu-note"></div>
+
+    <!-- Support links. Each one gets its address, and whether it appears
+         at all, from a constant in the engine (SUBSCRIBESTAR_URL,
+         PATREON_URL), so blanking one hides that button instead of
+         shipping a dead one. -->
+    <div class="menu-support-row">
+      <a class="menu-support substar hidden" id="btn-substar" target="_blank" rel="noopener noreferrer">
+        <span class="menu-support-mark"><img src="assets/icons/subscribestar.png" alt=""></span>
+        <span class="menu-support-text">
+          <span class="menu-support-lead">Support the game</span>
+          <span class="menu-support-sub">SubscribeStar</span>
+        </span>
+        <span class="menu-support-go">&#8250;</span>
+      </a>
+      <a class="menu-support patreon hidden" id="btn-patreon-menu" target="_blank" rel="noopener noreferrer">
+        <span class="menu-support-mark"><svg viewBox="0 0 1097.41 1200" aria-hidden="true" focusable="false"><path d="M632.44.42c9.6,3.05,19.33,1.72,29.34,2.68,51.16,4.92,99.67,12.94,149.43,26.27,171.96,46.06,306.72,194.66,283.62,378.09-19.93,158.25-132.34,269.39-285.12,306.24-109.58,26.43-197.38,57.56-256.67,159.9-38.68,66.77-62.58,140.34-102.51,207.02-49.66,82.94-107.44,129.26-208,117.59-41.06-4.76-75.74-24.98-104.91-52.74C11.56,1025.46-4.03,720.11.73,551.46c1.48-52.29,7.88-101.49,18.76-152.42C52.85,242.82,141.16,117.17,292.04,56.4,362.27,28.11,434.98,11.56,510.7,4.71c11.54-1.04,21.06-4.33,32.96-2.25,3.85.67,8.28-.33,10.56-2.46l78.21.42Z"/></svg></span>
+        <span class="menu-support-text">
+          <span class="menu-support-lead">Get it first</span>
+          <span class="menu-support-sub">Support on Patreon</span>
+        </span>
+        <span class="menu-support-go">&#8250;</span>
+      </a>
+    </div>
+
+    <div class="supporters" id="supporters">
+      <div class="supporters-label">&#10084; Special thanks</div>
+      <div class="supporters-tiers" id="supporters-tiers"></div>
+    </div>
+
+    <div class="legal">
+      <span class="link-btn small" id="btn-legal">&#9432; Important Information</span>
+    </div>
+  </div>
+
+  <!-- ===== NEWS SLIDESHOW ===== -->
+  <aside class="news-panel" id="news-panel">
+    <div class="news-panel-head">
+      <span class="news-panel-title"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M22 3.41A2 2 0 0 0 19.9 1.6L14 4.6a5 5 0 0 1-2.24.53H5a5 5 0 0 0-1 9.9v4.47a3.5 3.5 0 0 0 7 0V15.2h-.24a5 5 0 0 1 2.24.53l5.9 3a2 2 0 0 0 2.1-.19 2 2 0 0 0 .9-1.67V5a2 2 0 0 0-.9-1.59ZM9 19.5a1.5 1.5 0 0 1-3 0v-4.37h3Z"/></svg> News</span>
+      <span class="news-nav">
+        <button class="news-arrow" id="btn-news-prev" title="Previous">&#8249;</button>
+        <span class="news-dots" id="news-dots"></span>
+        <button class="news-arrow" id="btn-news-next" title="Next">&#8250;</button>
+      </span>
+    </div>
+    <div class="news-stage" id="news-stage"></div>
+  </aside>
+</div>
+
+<!-- ===== IMPORTANT INFORMATION ===== -->
+<div class="modal-overlay hidden" id="info-modal">
+  <div class="modal-box info-box">
+    <div class="info-head">
+      <h3>Important Information</h3>
+      <button class="panel-modal-x" id="btn-info-close" title="Close">&times;</button>
+    </div>
+    <div class="info-body">
+      <section>
+        <h4>Special Thanks</h4>
+        <p>Thanks to our Patreon and SubscribeStar supporters, and to everyone who plays and supports the game.</p>
+      </section>
+
+      <section>
+        <h4>Featured Actresses</h4>
+        <p>The following are the stage names (pseudonyms) of the actresses featured as companions in this game:</p>
+        <ul class="info-cast" id="info-cast"></ul>
+      </section>
+
+      <section>
+        <h4>Disclaimer</h4>
+        <p>This project is entirely a work of fiction.</p>
+        <p>Every character, narrative, and dialogue featured in this game is invented. Nothing depicted here is based on or intended to portray any real individual or actual event.</p>
+        <p>All video, image, and animation assets were obtained from legitimate adult entertainment platforms. Original watermarks have been preserved, and all rights belong to the respective copyright owners. These materials are used solely for illustrative and narrative purposes within the game.</p>
+        <p>None of the media featured in this game belongs to the developer. If you are a rights holder and wish to have your content removed, please reach out and it will be taken down promptly.</p>
+        <p>Lawful access to the original source material requires an active subscription to the respective platforms.</p>
+      </section>
+    </div>
+    <div class="actions" style="text-align:right;margin-top:4px;">
+      <span class="link-btn primary" id="btn-info-ok">Got it</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHARACTER CREATION ===== -->
+<div id="create-screen" class="hidden">
+  <div class="create-card">
+    <h2>Character Creation</h2>
+
+    <div class="field">
+      <label>Name</label>
+      <input type="text" id="input-name" placeholder="Enter your name" maxlength="18">
+    </div>
+
+    <div class="field">
+      <label>Protagonist</label>
+      <div class="cc-toggle">
+        <label class="cc-toggle-btn" for="input-skin-white">
+          <input type="radio" name="skin-tone" id="input-skin-white" value="white" checked>
+          <span>White</span>
+        </label>
+        <label class="cc-toggle-btn" for="input-skin-black">
+          <input type="radio" name="skin-tone" id="input-skin-black" value="black">
+          <span>Blacked</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="create-actions">
+      <span class="link-btn primary" id="btn-start-game">Start</span>
+      <span class="link-btn" id="btn-cancel-create">Back</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== GAME ===== -->
+<div id="game-screen" class="hidden">
+  <!-- Phone strip. The sidebar turns into a drawer at narrow widths, but
+       day, time and money are things the player checks constantly, so they
+       stay on screen instead of living one tap away. Hidden on desktop. -->
+  <div id="mobile-bar">
+    <button id="btn-drawer" class="mb-btn" aria-label="Open menu" aria-expanded="false">
+      <svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <div class="mb-stats">
+      <span class="mb-stat"><em>Day</em><b id="mb-day">1</b></span>
+      <span class="mb-stat"><em>Time</em><b id="mb-time" class="accent">08:00</b></span>
+      <span class="mb-stat"><em>Money</em><b id="mb-money">$0</b></span>
+    </div>
+    <!-- Going back is the one control the player reaches for mid-scene, so
+         it stays out here instead of behind the drawer. Same handler as the
+         sidebar arrow; the drawer keeps forward, house and menu. -->
+    <button id="btn-back-mb" class="mb-btn" title="back" aria-label="Back">&#8249;</button>
+  </div>
+  <div id="sidebar-scrim"></div>
+  <div id="sidebar">
+    <div id="logo"><img src="assets/icons/newlifelogo.png" alt="A New Life: Close Quarters"></div>
+
+    <div class="tool-row">
+      <div id="btn-cheats" title="Cheats"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m22 0h-1.436a2.978 2.978 0 0 0 -2.121.879l-8.527 8.521a7.518 7.518 0 1 0 4.684 4.684l2.4-2.4v-3.684h3v-3h3.551a2.978 2.978 0 0 0 .449-1.564v-1.436a2 2 0 0 0 -2-2zm-16.5 20a1.5 1.5 0 1 1 1.5-1.5 1.5 1.5 0 0 1 -1.5 1.5z"/></svg> Cheats</div>
+    </div>
+
+    <div class="nav-arrows">
+      <button id="btn-back" title="back">&#8249;</button>
+      <button id="btn-fwd" title="forward">&#8250;</button>
+      <button id="btn-house" class="icon-btn" title="back to house"><svg class="icon-home" viewBox="0 0 512 512" aria-hidden="true" focusable="false"><path fill="currentColor" d="M362.667,383.841v128H448c35.346,0,64-28.654,64-64V253.26c0.005-11.083-4.302-21.733-12.011-29.696l-181.29-195.99c-31.988-34.61-85.976-36.735-120.586-4.747c-1.644,1.52-3.228,3.103-4.747,4.747L12.395,223.5C4.453,231.496-0.003,242.31,0,253.58v194.261c0,35.346,28.654,64,64,64h85.333v-128c0.399-58.172,47.366-105.676,104.073-107.044C312.01,275.383,362.22,323.696,362.667,383.841z"/><path fill="currentColor" d="M256,319.841c-35.346,0-64,28.654-64,64v128h128v-128C320,348.495,291.346,319.841,256,319.841z"/></svg></button>
+      <button id="btn-menu" title="save &amp; menu">&#8962;</button>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-ico"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m18.5,2h-.5v-.5c0-.829-.672-1.5-1.5-1.5s-1.5.671-1.5,1.5v.5h-6v-.5c0-.829-.672-1.5-1.5-1.5s-1.5.671-1.5,1.5v.5h-.5C2.468,2,0,4.467,0,7.5v11c0,3.033,2.468,5.5,5.5,5.5h13c3.032,0,5.5-2.467,5.5-5.5V7.5c0-3.033-2.468-5.5-5.5-5.5Zm0,19H5.5c-1.379,0-2.5-1.122-2.5-2.5v-9.5h18v9.5c0,1.378-1.121,2.5-2.5,2.5Zm-8.5-8.5v2c0,.828-.672,1.5-1.5,1.5h-2c-.828,0-1.5-.672-1.5-1.5v-2c0-.828.672-1.5,1.5-1.5h2c.828,0,1.5.672,1.5,1.5Z"/></svg></div>
+        <div class="value" id="day-value">Day 1</div>
+        <div class="label">Day</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-ico"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,0C5.383,0,0,5.383,0,12s5.383,12,12,12,12-5.383,12-12S18.617,0,12,0Zm4,13h-4c-.552,0-1-.447-1-1V6c0-.553,.448-1,1-1s1,.447,1,1v5h3c.553,0,1,.447,1,1s-.447,1-1,1Z"/></svg></div>
+        <div class="value accent" id="time-value">08:00</div>
+        <div class="label">Time</div>
+      </div>
+    </div>
+
+    <div id="funds-box">
+      <div>
+        <div class="label">Money</div>
+        <div class="value" id="funds-value">$0</div>
+      </div>
+      <div class="funds-ico"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9,4c0-2.209,3.358-4,7.5-4s7.5,1.791,7.5,4-3.358,4-7.5,4-7.5-1.791-7.5-4Zm7.5,6c-1.027,0-2.001-.115-2.891-.315-1.359-1.019-3.586-1.685-6.109-1.685-4.142,0-7.5,1.791-7.5,4s3.358,4,7.5,4,7.5-1.791,7.5-4c0-.029-.007-.057-.008-.086h.008v2.086c0,2.209-3.358,4-7.5,4S0,16.209,0,14v2c0,2.209,3.358,4,7.5,4s7.5-1.791,7.5-4v2c0,2.209-3.358,4-7.5,4S0,20.209,0,18v2c0,2.209,3.358,4,7.5,4s7.5-1.791,7.5-4v-.08c.485,.052,.986,.08,1.5,.08,4.142,0,7.5-1.791,7.5-4v-2c0,2.119-3.092,3.849-7,3.987v-2c3.908-.138,7-1.867,7-3.987v-2c0,2.119-3.092,3.849-7,3.987v-2c3.908-.138,7-1.867,7-3.987v-2c0,2.209-3.358,4-7.5,4Z"/></svg></div>
+    </div>
+
+    <div>
+      <div class="section-label">Current Quest</div>
+      <div id="quest-tracker" style="margin-top:6px;"></div>
+    </div>
+
+    <div>
+      <div class="section-label">Navigation</div>
+      <div class="grid-3" style="margin-top:6px;">
+        <div class="nav-btn" data-nav="quests"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m21.998,19c1.17,0,2.099,1.003,1.993,2.168-.014.156-.03.275-.047.332-.43,1.446-1.77,2.5-3.355,2.5h-9.35c.48-.716.76-1.576.76-2.5h0c0-1.381,1.119-2.5,2.5-2.5h7.498ZM1.5,0C.672,0,0,.672,0,1.5v1c0,1.381,1.119,2.5,2.5,2.5h.5V1.5c0-.828-.672-1.5-1.5-1.5Zm3.162,0c.217.455.338.964.338,1.5v19.857c0,1.308.941,2.499,2.242,2.63,1.496.15,2.758-1.021,2.758-2.487h0c0-2.485,2.015-4.5,4.5-4.5h5.5V4c0-2.209-1.791-4-4-4H4.662Z"/></svg></span>Quests</div>
+        <div class="nav-btn" data-nav="gallery"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m20 10v4a4.977 4.977 0 0 1 -2 3.974v-2.974a7.009 7.009 0 0 0 -7-7h-6c-.2 0-.4.013-.592.03a5.006 5.006 0 0 1 4.592-3.03h6a5.006 5.006 0 0 1 5 5zm-8.406 8.577a2 2 0 0 1 -2.83 0l-.476-.48-5.909 5.128a4.956 4.956 0 0 0 2.647.775h6a5.006 5.006 0 0 0 5-5v-4a4.983 4.983 0 0 0 -.081-.8zm3.551-6.4-4.962 4.994-.475-.479a1.993 1.993 0 0 0 -2.708-.114l-6.078 5.265a4.962 4.962 0 0 1 -.896-2.843v-4a5.006 5.006 0 0 1 5-5h6a5 5 0 0 1 4.119 2.175zm-10.145 1.923a1 1 0 1 0 -1 1 1 1 0 0 0 1-1zm14-14.1h-6a4.994 4.994 0 0 0 -4.579 3.029c.191-.015.384-.029.579-.029h6a7.009 7.009 0 0 1 7 7v2.974a4.977 4.977 0 0 0 2-3.974v-4a5.006 5.006 0 0 0 -5-5z"/></svg></span>Gallery</div>
+        <div class="nav-btn" data-nav="phone"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M23.954,5.542,15.536,13.96a5.007,5.007,0,0,1-7.072,0L.046,5.542C.032,5.7,0,5.843,0,6V18a5.006,5.006,0,0,0,5,5H19a5.006,5.006,0,0,0,5-5V6C24,5.843,23.968,5.7,23.954,5.542Z"/><path d="M14.122,12.546l9.134-9.135A4.986,4.986,0,0,0,19,1H5A4.986,4.986,0,0,0,.744,3.411l9.134,9.135A3.007,3.007,0,0,0,14.122,12.546Z"/></svg></span>Phone</div>
+        <div class="nav-btn" data-nav="inventory"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16,24H8a3,3,0,0,1-2.886-2.225,6.993,6.993,0,0,1,13.772,0A3,3,0,0,1,16,24ZM3,21V13.424A5,5,0,0,0,0,18v1a5,5,0,0,0,3.924,4.876A4.953,4.953,0,0,1,3,21Zm18-7.576V21a4.953,4.953,0,0,1-.924,2.876A5,5,0,0,0,24,19V18A5,5,0,0,0,21,13.424ZM19,11v6.356a8.978,8.978,0,0,0-14,0V11A6.992,6.992,0,0,1,8,5.264V4a4,4,0,0,1,8,0V5.264A6.992,6.992,0,0,1,19,11ZM10,4.3a6.927,6.927,0,0,1,4,0V4a2,2,0,0,0-4,0ZM15,10h0a1,1,0,0,0-1-1H10a1,1,0,0,0-1,1H9a1,1,0,0,0,1,1h4A1,1,0,0,0,15,10Z"/></svg></span>Items</div>
+        <div class="nav-btn" data-nav="lovestats"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m7.5 13a4.5 4.5 0 1 1 4.5-4.5 4.505 4.505 0 0 1 -4.5 4.5zm0-7a2.5 2.5 0 1 0 2.5 2.5 2.5 2.5 0 0 0 -2.5-2.5zm7.5 17v-.5a7.5 7.5 0 0 0 -15 0v.5a1 1 0 0 0 2 0v-.5a5.5 5.5 0 0 1 11 0v.5a1 1 0 0 0 2 0zm9-5a7 7 0 0 0 -11.667-5.217 1 1 0 1 0 1.334 1.49 5 5 0 0 1 8.333 3.727 1 1 0 0 0 2 0zm-6.5-9a4.5 4.5 0 1 1 4.5-4.5 4.505 4.505 0 0 1 -4.5 4.5zm0-7a2.5 2.5 0 1 0 2.5 2.5 2.5 2.5 0 0 0 -2.5-2.5z"/></svg></span>Characters</div>
+        <div class="nav-btn" data-nav="settings"><span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12,8a4,4,0,1,0,4,4A4,4,0,0,0,12,8Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,12,14Z"/><path d="M21.294,13.9l-.444-.256a9.1,9.1,0,0,0,0-3.29l.444-.256a3,3,0,1,0-3-5.2l-.445.257A8.977,8.977,0,0,0,15,3.513V3A3,3,0,0,0,9,3v.513A8.977,8.977,0,0,0,6.152,5.159L5.707,4.9a3,3,0,0,0-3,5.2l.444.256a9.1,9.1,0,0,0,0,3.29l-.444.256a3,3,0,1,0,3,5.2l.445-.257A8.977,8.977,0,0,0,9,20.487V21a3,3,0,0,0,6,0v-.513a8.977,8.977,0,0,0,2.848-1.646l.445.257a3,3,0,0,0,3-5.2ZM12,18a6,6,0,1,1,6-6A6.006,6.006,0,0,1,12,18Z"/></svg></span>Settings</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-label">House</div>
+      <div style="display:flex; flex-direction:column; gap:8px; margin-top:6px;" id="quick-travel"></div>
+    </div>
+
+    <div>
+      <div class="section-label">You</div>
+      <div style="margin-top:6px;" id="player-stats"></div>
+    </div>
+
+    <div>
+      <div class="section-label">Bonds</div>
+      <div style="margin-top:6px;" id="bond-summary"></div>
+    </div>
+
+    <div class="save-row">
+      <div class="save-btn" id="btn-quick-save"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19,0H3A3,3,0,0,0,0,3V24H24V5ZM7,2H17V6H7ZM22,22H2V3A1,1,0,0,1,3,2H5V8H19V2.828l3,3Z"/><path d="M12,10a4,4,0,1,0,4,4A4,4,0,0,0,12,10Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,12,16Z"/></svg> Save</div>
+      <div class="save-btn" id="btn-quick-load"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m0,18V5C0,2.794,1.794,1,4,1h2c.464,0,.928.109,1.342.316l3.155,1.578c.138.069.293.105.447.105h5.056c2.757,0,5,2.243,5,5h-10.976c-2.638,0-5.003,1.766-5.754,4.303l-2.673,9.339c-.977-.913-1.597-2.203-1.597-3.642Zm23.493-6.983c-.479-.643-1.209-1.012-2.008-1.025-.015,0-.027.008-.042.008h-11.419c-1.758,0-3.335,1.177-3.834,2.862l-2.818,9.843c.513.178,1.055.295,1.628.295h12.558c2.226,0,4.15-1.432,4.802-3.607l1.532-6.116c.234-.782.089-1.605-.398-2.26Z"/></svg> Load</div>
+    </div>
+    <div class="save-row">
+      <div class="save-btn subtle" id="btn-quick-export" title="Save this game to a file">&#11015; Export</div>
+    </div>
+
+    <!-- Last thing in the sidebar, under Export, because it isn't part of
+         playing. The panel itself is still wired up in the engine; this is
+         only the way in. -->
+    <!-- RELEASE BUILD: the Developer button is commented out. The panel is
+         still wired up in the engine and the listener is guarded with
+         `if (devBtn)`, so nothing breaks while this is absent. To get it
+         back for testing, uncomment the two lines below. -->
+    <div class="tool-row dev-row">
+      <div id="btn-dev" title="Developer tools">&#128295; Developer</div>
+    </div>
+  </div>
+
+  <div id="main">
+    <div class="story-box" id="story-text"></div>
+    <div id="content"></div>
+  </div>
+</div>
+
+<div id="modal-root"></div>
+<div id="toast-root"></div>
+<div id="msg-popup-root"></div>
+
+<!-- ===== SIDEBAR PANEL POPUP ===== -->
+<div id="panel-modal" class="panel-modal hidden">
+  <div class="panel-modal-window">
+    <div class="panel-modal-header">
+      <span class="panel-modal-icon" id="panel-modal-icon"></span>
+      <span class="panel-modal-title" id="panel-modal-title"></span>
+      <button class="panel-modal-x" id="panel-modal-close" title="Close">&times;</button>
+    </div>
+    <div class="panel-modal-blurb" id="panel-modal-blurb"></div>
+    <div class="panel-modal-body" id="panel-modal-content"></div>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/em.js"></script>
+<script src="js/engine.js"></script>
+</body>
+</html>
