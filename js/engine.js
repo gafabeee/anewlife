@@ -19778,6 +19778,91 @@ function checkBlackedZoeStage() {
     }
   ];
 
+  const NTR_DEV_ACTIONS = [
+    {
+      group: "Save / Time",
+      actions: [
+        { id: "reset_game", label: "Reset to fresh save (Day 1)" },
+        { id: "advance_day", label: "+1 Day (skip to next morning)" },
+        { id: "advance_3h", label: "+3 hours (same day)" },
+        { id: "add_money_100", label: "+$100" }
+      ]
+    },
+    {
+      group: "Player Stats",
+      actions: [
+        { id: "stat_fitness_5", label: "+5 Fitness" },
+        { id: "stat_charisma_5", label: "+5 Charisma" },
+        { id: "stat_confidence_5", label: "+5 Confidence" },
+        { id: "stat_intelligence_5", label: "+5 Intelligence" },
+        { id: "stats_reset", label: "Reset all to 0" }
+      ]
+    },
+    {
+      group: "NTR Setup",
+      actions: [
+        { id: "ntr_skip_intro", label: "Skip NTR intro (unlock house)" },
+        { id: "ntr_corruption_all_20", label: "Set all corruption to 20" },
+        { id: "ntr_corruption_all_40", label: "Set all corruption to 40" },
+        { id: "ntr_corruption_all_60", label: "Set all corruption to 60" },
+        { id: "ntr_corruption_all_100", label: "Set all corruption to 100" }
+      ]
+    },
+    {
+      group: "Serena",
+      actions: [
+        { id: "ntr_serena_q1_jump", label: "Quest 1: Late Suppers" },
+        { id: "ntr_serena_q2_jump", label: "Quest 2: What Marcus Doesn't See" },
+        { id: "ntr_serena_q3_jump", label: "Quest 3: The Door She Doesn't Lock" },
+        { id: "ntr_serena_a1_jump", label: "Action: Closing Time" }
+      ]
+    },
+    {
+      group: "Kira",
+      actions: [
+        { id: "ntr_kira_q1_jump", label: "Quest 1: Pace Partner" },
+        { id: "ntr_kira_q2_jump", label: "Quest 2: Caught Looking" },
+        { id: "ntr_kira_q3_jump", label: "Quest 3: After the Last Lap" },
+        { id: "ntr_kira_a1_jump", label: "Action: Closing Time" }
+      ]
+    },
+    {
+      group: "Valentina (Sabrina)",
+      actions: [
+        { id: "ntr_valentina_q1_jump", label: "Quest 1: Behind the Filter" },
+        { id: "ntr_valentina_q2_jump", label: "Quest 2: When Damon Leaves" },
+        { id: "ntr_valentina_q3_jump", label: "Quest 3: No Audience" },
+        { id: "ntr_valentina_a1_jump", label: "Action 1" }
+      ]
+    },
+    {
+      group: "Harper",
+      actions: [
+        { id: "ntr_harper_q1_jump", label: "Quest 1: Regular Hours" },
+        { id: "ntr_harper_q2_jump", label: "Quest 2: The Ring She Keeps Turning" },
+        { id: "ntr_harper_q3_jump", label: "Quest 3: After Closing" },
+        { id: "ntr_harper_a1_jump", label: "Action: Closing Time" }
+      ]
+    },
+    {
+      group: "Rival Quests (Netorare)",
+      actions: [
+        { id: "ntre_serena_r1_jump", label: "Serena rival 1: Someone New" },
+        { id: "ntre_serena_r2_jump", label: "Serena rival 2: Comfortable Distance" },
+        { id: "ntre_serena_r3_jump", label: "Serena rival 3: What You Weren't Meant to See" },
+        { id: "ntre_kira_r1_jump", label: "Kira rival 1: The New Trainer" },
+        { id: "ntre_kira_r2_jump", label: "Kira rival 2: After Hours" },
+        { id: "ntre_kira_r3_jump", label: "Kira rival 3: The Locker Room" },
+        { id: "ntre_valentina_r1_jump", label: "Valentina rival 1: VIP List" },
+        { id: "ntre_valentina_r2_jump", label: "Valentina rival 2: The Reshoot" },
+        { id: "ntre_valentina_r3_jump", label: "Valentina rival 3: Private Collection" },
+        { id: "ntre_harper_r1_jump", label: "Harper rival 1: Special Delivery" },
+        { id: "ntre_harper_r2_jump", label: "Harper rival 2: Coffee Break" },
+        { id: "ntre_harper_r3_jump", label: "Harper rival 3: After Closing Time" }
+      ]
+    }
+  ];
+
   /* Returns where the player should land right after the flags are set —
      wherever that story beat would actually leave them in real play — so
      "jump to a moment" really means landing on it, not just flipping
@@ -19853,6 +19938,52 @@ function checkBlackedZoeStage() {
     PLAYER_STAT_IDS.forEach((id) => { state.stats[id] = STAT_CAP; });
     changeMoney(500);
     showToast("Everything unlocked — save is at 100%.", "bond");
+  }
+
+  function devJumpNtrQuest(charId, step) {
+    var f = state.flags;
+    f.ntr_intro_complete = true;
+    f.tutorialFreed = true;
+    f.houseHubUnlocked = true;
+    if (!state.ntrQuestProgress) state.ntrQuestProgress = {};
+    if (!state.ntrCorruption) state.ntrCorruption = {};
+    state.ntrQuestProgress[charId] = step;
+    var quests = DATA.ntrQuests[charId];
+    if (!quests) return;
+    for (var i = 0; i < step; i++) {
+      if (quests[i]) f[quests[i].completionFlag] = true;
+    }
+    var quest = quests[step];
+    if (quest && quest.corruptionRequired > 0) {
+      state.ntrCorruption[charId] = Math.max(state.ntrCorruption[charId] || 0, quest.corruptionRequired);
+    }
+    if (quest && quest.timeStart !== undefined) {
+      state.hour = quest.timeStart;
+      state.minute = 0;
+    }
+    talkToNtrCharacter(charId);
+  }
+
+  function devJumpNtrRival(charId, step) {
+    var f = state.flags;
+    f.ntr_intro_complete = true;
+    f.tutorialFreed = true;
+    f.houseHubUnlocked = true;
+    if (!state.ntrNetorareProgress) state.ntrNetorareProgress = {};
+    state.ntrNetorareProgress[charId] = step;
+    var quests = DATA.ntrNetorareQuests && DATA.ntrNetorareQuests[charId];
+    if (!quests) return;
+    for (var i = 0; i < step; i++) {
+      if (quests[i]) f[quests[i].completionFlag] = true;
+    }
+    var quest = quests[step];
+    if (quest && quest.preRequisiteFlag) f[quest.preRequisiteFlag] = true;
+    if (quest && quest.lines && quest.lines.length > 0) {
+      f[quest.completionFlag] = true;
+      advanceNetorareStep(charId);
+      addNtrCorruption(charId, 5);
+      playSequence(quest.lines, finishAfter);
+    }
   }
 
   function applyDevAction(id) {
@@ -20493,6 +20624,49 @@ function checkBlackedZoeStage() {
         f.blk_zoe_stage_day = state.day;
         playBlackedZoeStage();
         return null;
+
+      case "ntr_skip_intro":
+        f.ntr_intro_complete = true;
+        f.tutorialFreed = true;
+        f.houseHubUnlocked = true;
+        return { view: "house", room: null };
+      case "ntr_corruption_all_20":
+      case "ntr_corruption_all_40":
+      case "ntr_corruption_all_60":
+      case "ntr_corruption_all_100": {
+        var lvl = parseInt(id.split("_").pop());
+        if (!state.ntrCorruption) state.ntrCorruption = {};
+        NTR_CHARS.forEach(function(cid) { state.ntrCorruption[cid] = lvl; });
+        return null;
+      }
+      case "ntr_serena_q1_jump": devJumpNtrQuest("serena", 0); return null;
+      case "ntr_serena_q2_jump": devJumpNtrQuest("serena", 1); return null;
+      case "ntr_serena_q3_jump": devJumpNtrQuest("serena", 2); return null;
+      case "ntr_serena_a1_jump": devJumpNtrQuest("serena", 3); return null;
+      case "ntr_kira_q1_jump": devJumpNtrQuest("kira", 0); return null;
+      case "ntr_kira_q2_jump": devJumpNtrQuest("kira", 1); return null;
+      case "ntr_kira_q3_jump": devJumpNtrQuest("kira", 2); return null;
+      case "ntr_kira_a1_jump": devJumpNtrQuest("kira", 3); return null;
+      case "ntr_valentina_q1_jump": devJumpNtrQuest("valentina", 0); return null;
+      case "ntr_valentina_q2_jump": devJumpNtrQuest("valentina", 1); return null;
+      case "ntr_valentina_q3_jump": devJumpNtrQuest("valentina", 2); return null;
+      case "ntr_valentina_a1_jump": devJumpNtrQuest("valentina", 3); return null;
+      case "ntr_harper_q1_jump": devJumpNtrQuest("harper", 0); return null;
+      case "ntr_harper_q2_jump": devJumpNtrQuest("harper", 1); return null;
+      case "ntr_harper_q3_jump": devJumpNtrQuest("harper", 2); return null;
+      case "ntr_harper_a1_jump": devJumpNtrQuest("harper", 3); return null;
+      case "ntre_serena_r1_jump": devJumpNtrRival("serena", 0); return null;
+      case "ntre_serena_r2_jump": devJumpNtrRival("serena", 1); return null;
+      case "ntre_serena_r3_jump": devJumpNtrRival("serena", 2); return null;
+      case "ntre_kira_r1_jump": devJumpNtrRival("kira", 0); return null;
+      case "ntre_kira_r2_jump": devJumpNtrRival("kira", 1); return null;
+      case "ntre_kira_r3_jump": devJumpNtrRival("kira", 2); return null;
+      case "ntre_valentina_r1_jump": devJumpNtrRival("valentina", 0); return null;
+      case "ntre_valentina_r2_jump": devJumpNtrRival("valentina", 1); return null;
+      case "ntre_valentina_r3_jump": devJumpNtrRival("valentina", 2); return null;
+      case "ntre_harper_r1_jump": devJumpNtrRival("harper", 0); return null;
+      case "ntre_harper_r2_jump": devJumpNtrRival("harper", 1); return null;
+      case "ntre_harper_r3_jump": devJumpNtrRival("harper", 2); return null;
 
       case "maya_intro_seen":
         playCasualEventById("maya_outside_intro");
@@ -21242,8 +21416,9 @@ function checkBlackedZoeStage() {
 
   function renderDevToolsView(root) {
     $("panel-modal-blurb").textContent = "Developer tools — jump to any story checkpoint for testing. Not part of the real game.";
-    const actions = blackedModeOn() ? BLACKED_DEV_ACTIONS : DEV_ACTIONS;
-    let html = '<div class="panel-title">Developer' + (blackedModeOn() ? ' <span style="color:var(--accent-2);font-size:12px;">(Blacked Mode)</span>' : '') + '</div>';
+    const actions = ntrModeOn() ? NTR_DEV_ACTIONS : blackedModeOn() ? BLACKED_DEV_ACTIONS : DEV_ACTIONS;
+    var modeTag = ntrModeOn() ? ' <span style="color:var(--accent-2);font-size:12px;">(NTR Mode)</span>' : blackedModeOn() ? ' <span style="color:var(--accent-2);font-size:12px;">(Blacked Mode)</span>' : '';
+    let html = '<div class="panel-title">Developer' + modeTag + '</div>';
     actions.forEach((group) => {
       html += `<div class="dev-group"><h3>${escapeHtml(group.group)}</h3><div class="dev-actions">`;
       group.actions.forEach((a) => {
