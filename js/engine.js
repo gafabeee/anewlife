@@ -18618,7 +18618,10 @@ function checkBlackedZoeStage() {
         const aid = btn.dataset.replay;
         const flag = btn.dataset.flag;
         if (!cheatsUnlocked()) { if (!state.choiceTreeReplays) state.choiceTreeReplays = {}; state.choiceTreeReplays[flag] = true; }
-        applyDevAction(aid);
+        state.panel = null; state.panelRoom = null;
+        renderPanel();
+        const result = applyDevAction(aid);
+        if (result) { state.view = result.view; if (result.room !== undefined) state.room = result.room; render(); }
       });
     });
   }
