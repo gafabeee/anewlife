@@ -18557,65 +18557,49 @@ function checkBlackedZoeStage() {
     for (let i = 0; i < log.steps.length; i++) { if (!state.flags[log.steps[i].flag]) { firstIncomplete = i; break; } }
     const p = questLogProgress(charId);
     const pct = p.total > 0 ? Math.round((p.done / p.total) * 100) : 0;
-    const COLS = 3;
     const steps = log.steps;
-    const numRows = Math.ceil(steps.length / COLS);
     let html = `<div class="ct-back" data-back="1">&larr; All companions</div>`;
-    html += `<div class="ct-titlebar"><div class="ct-titlebar-info">${questIconHTML(charId)}<div><h3>${escapeHtml(c.name)}</h3><div class="ct-progress">${p.done} / ${p.total}</div><div class="ct-bar-track"><div class="ct-bar-fill" style="width:${pct}%"></div></div></div></div></div>`;
-    html += `<div class="choice-tree"><div class="ct-flow-center"><div class="ct-flow">`;
-    for (let r = 0; r < numRows; r++) {
-      const isRTL = r % 2 === 1;
-      const start = r * COLS;
-      const end = Math.min(start + COLS, steps.length);
-      html += `<div class="ct-row${isRTL ? " ct-rtl" : ""}">`;
-      for (let j = 0; j < end - start; j++) {
-        const idx = start + j;
-        const s = steps[idx];
-        const done = !!state.flags[s.flag];
-        const isCurrent = !done && idx === firstIncomplete;
-        const isLocked = !done && !isCurrent;
-        const devAction = REPLAY_MAP[s.flag];
-        if (j > 0) {
-          const prevDone = !!state.flags[steps[start + j - 1].flag];
-          html += `<div class="ct-h-line${prevDone && done ? " ct-h-done" : ""}"></div>`;
-        }
-        let cls, nodeIcon, title;
-        if (done) {
-          cls = "ct-done"; nodeIcon = "✓"; title = escapeHtml(s.title);
-        } else if (isCurrent) {
-          const avail = s.avail ? s.avail() : true;
-          cls = "ct-current"; nodeIcon = avail ? "●" : "🔒"; title = escapeHtml(s.title);
-        } else {
-          cls = "ct-locked"; nodeIcon = "🔒"; title = cheats ? escapeHtml(s.title) : "???";
-        }
-        let playable = false, badge = "";
-        if (done && devAction) {
-          const replayed = !!state.choiceTreeReplays[s.flag];
-          if (cheats) { playable = true; badge = `<div class="ct-replay-badge ct-cheat">&#9654; Replay</div>`; }
-          else if (!replayed) { playable = true; badge = `<div class="ct-replay-badge">&#9654; 1&times;</div>`; }
-          else { badge = `<div class="ct-replay-badge ct-used">&#10003;</div>`; }
-        }
-        if (isLocked && cheats && devAction) { playable = true; badge = `<div class="ct-replay-badge ct-cheat">&#9654; Play</div>`; }
-        html += `<div class="ct-node ${cls}${playable ? " ct-playable" : ""}"${playable ? ` data-replay="${escapeHtml(devAction)}" data-flag="${escapeHtml(s.flag)}"` : ""}>`;
-        html += `<div class="ct-node-icon">${nodeIcon}</div>`;
-        html += `<div class="ct-node-title">${title}</div>`;
-        if (badge) html += badge;
-        html += `</div>`;
+    html += `<div class="ct-titlebar"><div class="ct-titlebar-info">${questIconHTML(charId)}<div><h3>${escapeHtml(c.name)}</h3><div class="ct-progress">${p.done} / ${p.total}</div><div class="ct-bar-track"><div class="ct-bar-fill" style="width:${pct}%"></div></div></div></div><div class="ct-close" data-back="1">&times;</div></div>`;
+    html += `<div class="choice-tree"><div class="ct-flow">`;
+    steps.forEach((s, i) => {
+      const done = !!state.flags[s.flag];
+      const isCurrent = !done && i === firstIncomplete;
+      const isLocked = !done && !isCurrent;
+      const devAction = REPLAY_MAP[s.flag];
+      if (i > 0) {
+        const prevDone = !!state.flags[steps[i - 1].flag];
+        html += `<div class="ct-h-line${prevDone && done ? " ct-h-done" : ""}"></div>`;
       }
+      let cls, title, lockIcon = "";
+      if (done) {
+        cls = "ct-done"; title = escapeHtml(s.title);
+      } else if (isCurrent) {
+        const avail = s.avail ? s.avail() : true;
+        cls = "ct-current"; title = escapeHtml(s.title);
+        if (!avail) lockIcon = `<span class="ct-node-lock">&#128274;</span>`;
+      } else {
+        cls = "ct-locked"; title = cheats ? escapeHtml(s.title) : "???";
+        lockIcon = `<span class="ct-node-lock">&#128274;</span>`;
+      }
+      let playable = false, badge = "";
+      if (done && devAction) {
+        const replayed = !!state.choiceTreeReplays[s.flag];
+        if (cheats) { playable = true; badge = `<div class="ct-replay-badge ct-cheat">&#9654; Replay</div>`; }
+        else if (!replayed) { playable = true; badge = `<div class="ct-replay-badge">&#9654; 1&times;</div>`; }
+        else { badge = `<div class="ct-replay-badge ct-used">&#10003;</div>`; }
+      }
+      if (isLocked && cheats && devAction) { playable = true; badge = `<div class="ct-replay-badge ct-cheat">&#9654; Play</div>`; }
+      html += `<div class="ct-node ${cls}${playable ? " ct-playable" : ""}"${playable ? ` data-replay="${escapeHtml(devAction)}" data-flag="${escapeHtml(s.flag)}"` : ""}>`;
+      html += `<span class="ct-node-title">${title}${lockIcon}</span>`;
+      if (badge) html += badge;
       html += `</div>`;
-      if (r < numRows - 1) {
-        const lastDone = !!state.flags[steps[end - 1].flag];
-        const nextDone = end < steps.length && !!state.flags[steps[end].flag];
-        const side = isRTL ? "ct-v-left" : "ct-v-right";
-        html += `<div class="ct-v-wrap ${side}${lastDone && nextDone ? " ct-v-done" : ""}"><div class="ct-v-line"></div></div>`;
-      }
-    }
-    html += `</div></div></div>`;
+    });
+    html += `</div></div>`;
     if (firstIncomplete === -1) {
       html += `<div class="ct-footer">${icon("sparkles")} All chapters explored &mdash; more coming soon.</div>`;
     }
     root.innerHTML = html;
-    root.querySelector("[data-back]").addEventListener("click", () => { state.panelRoom = null; renderPanel(); });
+    root.querySelectorAll("[data-back]").forEach(el => el.addEventListener("click", () => { state.panelRoom = null; renderPanel(); }));
     root.querySelectorAll("[data-replay]").forEach((node) => {
       node.addEventListener("click", () => {
         const aid = node.dataset.replay;

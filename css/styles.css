@@ -977,60 +977,52 @@ body{
 .ct-back:hover{text-decoration:underline}
 .ct-titlebar{
   display:flex;align-items:center;justify-content:space-between;
-  padding:10px 14px;background:var(--panel-2);
+  padding:12px 16px;background:var(--panel-2);
   border:1px solid var(--border);border-radius:8px 8px 0 0;
 }
 .ct-titlebar-info{display:flex;align-items:center;gap:10px}
 .ct-titlebar .quest-card-icon{width:36px;height:36px;border-color:var(--accent)}
-.ct-titlebar h3{margin:0;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text);font-family:'Courier New',monospace}
+.ct-titlebar h3{margin:0;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--text);font-family:'Courier New',monospace}
 .ct-titlebar .ct-progress{font-size:11px;color:var(--muted);margin-top:2px}
 .ct-bar-track{height:3px;width:100px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:3px}
 .ct-bar-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s ease}
+.ct-close{cursor:pointer;color:var(--muted);font-size:22px;line-height:1;padding:2px 6px;transition:color .2s}
+.ct-close:hover{color:var(--text)}
 .choice-tree{
-  padding:20px 12px;margin:0;overflow-x:auto;
+  padding:24px 16px 12px;margin:0;overflow-x:auto;overflow-y:hidden;
   background:var(--panel);border:1px solid var(--border);border-top:none;
   border-radius:0 0 8px 8px;
 }
-.ct-flow-center{display:flex;justify-content:center}
-.ct-flow{display:inline-flex;flex-direction:column;align-items:stretch}
-.ct-row{display:flex;align-items:center}
-.ct-row.ct-rtl{flex-direction:row-reverse}
+.ct-flow{display:flex;align-items:center;min-width:max-content;padding-bottom:4px}
 .ct-node{
-  flex:0 0 110px;width:110px;min-height:48px;
+  flex:0 0 160px;width:160px;min-height:56px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:6px 8px;border:2px dashed var(--border);border-radius:6px;
+  padding:10px 12px;border:2px dashed var(--border);border-radius:10px;
   text-align:center;cursor:default;
   transition:border-color .2s,background .2s,box-shadow .2s;
 }
-.ct-node-title{font-size:11px;font-weight:600;color:var(--muted);line-height:1.3}
-.ct-node-icon{font-size:14px;margin-bottom:2px}
-.ct-node.ct-done{border-style:solid;border-color:var(--accent);background:rgba(53,201,193,.08)}
+.ct-node-title{font-size:13px;font-weight:600;color:var(--muted);line-height:1.3}
+.ct-node-lock{font-size:11px;margin-left:5px;opacity:.6}
+.ct-node.ct-done{border-style:solid;border-color:var(--accent);background:rgba(53,201,193,.06)}
 .ct-node.ct-done .ct-node-title{color:var(--accent-soft)}
-.ct-node.ct-done .ct-node-icon{color:var(--accent)}
 .ct-node.ct-current{
   border-color:var(--accent-2);border-style:solid;
-  background:rgba(232,147,90,.08);
+  background:rgba(232,147,90,.06);
   animation:ct-pulse 2s ease-in-out infinite;
 }
 .ct-node.ct-current .ct-node-title{color:var(--accent-2-soft)}
-.ct-node.ct-current .ct-node-icon{color:var(--accent-2)}
 @keyframes ct-pulse{
-  0%,100%{box-shadow:0 0 4px rgba(232,147,90,.15)}
-  50%{box-shadow:0 0 14px rgba(232,147,90,.3)}
+  0%,100%{box-shadow:0 0 4px rgba(232,147,90,.12)}
+  50%{box-shadow:0 0 16px rgba(232,147,90,.28)}
 }
-.ct-node.ct-locked{opacity:.5}
+.ct-node.ct-locked{opacity:.45}
 .ct-node.ct-locked .ct-node-title{font-style:italic}
-.ct-h-line{flex:0 0 24px;height:0;border-top:2px dashed var(--border)}
+.ct-h-line{flex:0 0 32px;height:0;border-top:2px dashed var(--border)}
 .ct-h-line.ct-h-done{border-top-color:var(--accent);border-top-style:solid}
-.ct-v-wrap{display:flex;height:20px}
-.ct-v-wrap.ct-v-right{justify-content:flex-end;padding-right:54px}
-.ct-v-wrap.ct-v-left{justify-content:flex-start;padding-left:54px}
-.ct-v-line{width:0;height:100%;border-left:2px dashed var(--border)}
-.ct-v-wrap.ct-v-done .ct-v-line{border-left-color:var(--accent);border-left-style:solid}
 .ct-node.ct-playable{cursor:pointer}
-.ct-node.ct-playable:hover{border-color:var(--accent);background:rgba(53,201,193,.12);opacity:1}
+.ct-node.ct-playable:hover{border-color:var(--accent);background:rgba(53,201,193,.1);opacity:1}
 .ct-replay-badge{
-  font-size:9px;margin-top:3px;padding:1px 6px;border-radius:3px;
+  font-size:9px;margin-top:4px;padding:2px 8px;border-radius:4px;
   background:rgba(53,201,193,.15);color:var(--accent);font-weight:600;
 }
 .ct-replay-badge.ct-cheat{background:rgba(232,147,90,.15);color:var(--accent-2)}
