@@ -18551,72 +18551,75 @@ function checkBlackedZoeStage() {
     const log = questLogFor(charId);
     if (!log) { state.panelRoom = null; renderPanel(); return; }
     if (!state.choiceTreeReplays) state.choiceTreeReplays = {};
-    $("panel-modal-blurb").textContent = `${c.name} — story flowchart.`;
+    $("panel-modal-blurb").textContent = "";
     const cheats = cheatsUnlocked();
     let firstIncomplete = -1;
     for (let i = 0; i < log.steps.length; i++) { if (!state.flags[log.steps[i].flag]) { firstIncomplete = i; break; } }
     const p = questLogProgress(charId);
     const pct = p.total > 0 ? Math.round((p.done / p.total) * 100) : 0;
+    const COLS = 3;
+    const steps = log.steps;
+    const numRows = Math.ceil(steps.length / COLS);
     let html = `<div class="ct-back" data-back="1">&larr; All companions</div>`;
-    html += `<div class="ct-header">${questIconHTML(charId)}<div><h3>${escapeHtml(c.name)}</h3><div class="ct-progress">${p.done} of ${p.total} chapters explored</div><div class="ct-header-bar"><div class="ct-header-fill" style="width:${pct}%"></div></div></div></div>`;
-    html += `<div class="choice-tree">`;
-    log.steps.forEach((s, i) => {
-      const done = !!state.flags[s.flag];
-      const isCurrent = !done && i === firstIncomplete;
-      const isLocked = !done && !isCurrent;
-      const cls = done ? "ct-done" : (isCurrent ? "ct-current" : "ct-locked");
-      const timeStr = timeWindowLabel(s.time);
-      let badge, note, title;
-      if (done) {
-        badge = icon("check") + " Done"; note = `${s.where} &middot; ${timeStr}`; title = escapeHtml(s.title);
-      } else if (isCurrent) {
-        const avail = s.avail ? s.avail() : true;
-        if (avail) {
-          badge = "&#9679; In progress"; note = `${s.where} &middot; ${timeStr}`; title = escapeHtml(s.title);
-        } else {
-          badge = icon("lock") + " Locked";
-          const explicit = typeof s.lockedHint === "function" ? s.lockedHint() : s.lockedHint;
-          const waiting = charId === "claire" && claireGapDaysLeft(s.flag) > 0 ? claireWaitHint(s.flag) : null;
-          const bits = [];
-          if (!statGateMet(s.flag)) bits.push(`Needs ${statGateLabel(s.flag)}`);
-          if (explicit) bits.push(explicit);
-          else if (waiting) bits.push(waiting);
-          if (!bits.length) bits.push(`${s.where} · ${timeStr}`);
-          note = bits.join(" &mdash; "); title = escapeHtml(s.title);
+    html += `<div class="ct-titlebar"><div class="ct-titlebar-info">${questIconHTML(charId)}<div><h3>${escapeHtml(c.name)}</h3><div class="ct-progress">${p.done} / ${p.total}</div><div class="ct-bar-track"><div class="ct-bar-fill" style="width:${pct}%"></div></div></div></div></div>`;
+    html += `<div class="choice-tree"><div class="ct-flow-center"><div class="ct-flow">`;
+    for (let r = 0; r < numRows; r++) {
+      const isRTL = r % 2 === 1;
+      const start = r * COLS;
+      const end = Math.min(start + COLS, steps.length);
+      html += `<div class="ct-row${isRTL ? " ct-rtl" : ""}">`;
+      for (let j = 0; j < end - start; j++) {
+        const idx = start + j;
+        const s = steps[idx];
+        const done = !!state.flags[s.flag];
+        const isCurrent = !done && idx === firstIncomplete;
+        const isLocked = !done && !isCurrent;
+        const devAction = REPLAY_MAP[s.flag];
+        if (j > 0) {
+          const prevDone = !!state.flags[steps[start + j - 1].flag];
+          html += `<div class="ct-h-line${prevDone && done ? " ct-h-done" : ""}"></div>`;
         }
-      } else {
-        badge = icon("lock") + " Locked"; note = ""; title = "???";
-      }
-      if (isLocked && cheats) { title = escapeHtml(s.title); note = `${s.where} &middot; ${timeStr}`; }
-      html += `<div class="ct-node ${cls}">`;
-      html += `<div class="ct-row"><span class="ct-title">${title}</span><span class="ct-badge">${badge}</span></div>`;
-      if (note) html += `<div class="ct-meta">${note}</div>`;
-      const devAction = REPLAY_MAP[s.flag];
-      if (done && devAction) {
-        const replayed = !!state.choiceTreeReplays[s.flag];
-        if (cheats) {
-          html += `<div class="ct-replay ct-cheat" data-replay="${escapeHtml(devAction)}" data-flag="${escapeHtml(s.flag)}">&#9654; Replay</div>`;
-        } else if (!replayed) {
-          html += `<div class="ct-replay" data-replay="${escapeHtml(devAction)}" data-flag="${escapeHtml(s.flag)}">&#9654; Replay (1x)</div>`;
+        let cls, nodeIcon, title;
+        if (done) {
+          cls = "ct-done"; nodeIcon = "✓"; title = escapeHtml(s.title);
+        } else if (isCurrent) {
+          const avail = s.avail ? s.avail() : true;
+          cls = "ct-current"; nodeIcon = avail ? "●" : "🔒"; title = escapeHtml(s.title);
         } else {
-          html += `<div class="ct-replay ct-replayed">&#9654; Replayed</div>`;
+          cls = "ct-locked"; nodeIcon = "🔒"; title = cheats ? escapeHtml(s.title) : "???";
         }
-      }
-      if (isLocked && cheats && devAction) {
-        html += `<div class="ct-replay ct-cheat" data-replay="${escapeHtml(devAction)}" data-flag="${escapeHtml(s.flag)}">&#9654; Play</div>`;
+        let playable = false, badge = "";
+        if (done && devAction) {
+          const replayed = !!state.choiceTreeReplays[s.flag];
+          if (cheats) { playable = true; badge = `<div class="ct-replay-badge ct-cheat">&#9654; Replay</div>`; }
+          else if (!replayed) { playable = true; badge = `<div class="ct-replay-badge">&#9654; 1&times;</div>`; }
+          else { badge = `<div class="ct-replay-badge ct-used">&#10003;</div>`; }
+        }
+        if (isLocked && cheats && devAction) { playable = true; badge = `<div class="ct-replay-badge ct-cheat">&#9654; Play</div>`; }
+        html += `<div class="ct-node ${cls}${playable ? " ct-playable" : ""}"${playable ? ` data-replay="${escapeHtml(devAction)}" data-flag="${escapeHtml(s.flag)}"` : ""}>`;
+        html += `<div class="ct-node-icon">${nodeIcon}</div>`;
+        html += `<div class="ct-node-title">${title}</div>`;
+        if (badge) html += badge;
+        html += `</div>`;
       }
       html += `</div>`;
-    });
-    html += `</div>`;
+      if (r < numRows - 1) {
+        const lastDone = !!state.flags[steps[end - 1].flag];
+        const nextDone = end < steps.length && !!state.flags[steps[end].flag];
+        const side = isRTL ? "ct-v-left" : "ct-v-right";
+        html += `<div class="ct-v-wrap ${side}${lastDone && nextDone ? " ct-v-done" : ""}"><div class="ct-v-line"></div></div>`;
+      }
+    }
+    html += `</div></div></div>`;
     if (firstIncomplete === -1) {
-      html += `<div class="ct-footer">${icon("sparkles")} That's everything ${escapeHtml(c.name)} has for now — new chapters coming in the next update.</div>`;
+      html += `<div class="ct-footer">${icon("sparkles")} All chapters explored &mdash; more coming soon.</div>`;
     }
     root.innerHTML = html;
     root.querySelector("[data-back]").addEventListener("click", () => { state.panelRoom = null; renderPanel(); });
-    root.querySelectorAll("[data-replay]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const aid = btn.dataset.replay;
-        const flag = btn.dataset.flag;
+    root.querySelectorAll("[data-replay]").forEach((node) => {
+      node.addEventListener("click", () => {
+        const aid = node.dataset.replay;
+        const flag = node.dataset.flag;
         if (!cheatsUnlocked()) { if (!state.choiceTreeReplays) state.choiceTreeReplays = {}; state.choiceTreeReplays[flag] = true; }
         state.panel = null; state.panelRoom = null;
         renderPanel();
