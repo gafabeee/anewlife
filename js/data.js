@@ -1152,35 +1152,56 @@ window.GAME_DATA = {
 
   ntrIntro: {
     lines: [
-      { speaker: "narrator", text: "After a long flight and a day that already feels too full, you finally arrive at the house where you’ll be staying during your exchange." },
-      { speaker: "serena", text: "Serena opens the door with a warm but measured smile. “You must be the new guest. Come in — I’ll show you around.”" },
-      { speaker: "player", text: "Thanks. The listing didn’t say much about the house." },
-      { speaker: "serena", text: "“There’s not much to say. It’s a quiet place. I like it that way.” She closes the door behind you and gestures down the hall." },
-      { speaker: "narrator", text: "The house is well-kept but lived-in. Framed photos on the walls, a faint smell of coffee from the kitchen. Someone else’s life, still in progress." },
-      { speaker: "valentina", text: "A girl on the couch looks up from her phone. “Oh — new roommate?” She gives a small wave without getting up. “I’m Amber.”" },
-      { speaker: "serena", text: "“Amber is also an exchange student. She’s been here a few months.” Serena pauses. “Your room is upstairs. Take your time settling in.”" },
-      { speaker: "serena", text: "“Once you’re ready, feel free to look around. The kitchen is open, the living room is shared. Everyone here started as a stranger.”" }
+      { speaker: “narrator”, text: “After a long flight and a day that already feels too full, you finally arrive at the house where you’ll be staying during your exchange.” },
+      { speaker: “serena”, text: “Serena opens the door before you can knock twice. Her smile is warm but careful — the kind a woman gives when she’s been doing everything alone for too long. “You must be the new guest. Come in.”” },
+      { speaker: “player”, text: “Thanks. I wasn’t sure I had the right place.” },
+      { speaker: “serena”, text: “”You do. I’m Serena — I own the house.” She takes your bag without asking and sets it by the stairs. “Let me show you around before I let you disappear into your room.”” },
+      { speaker: “narrator”, text: “The house is well-kept but lived-in. Framed photos on the walls, a faint smell of coffee from the kitchen. Someone else’s life, still in progress.” },
+      { speaker: “serena”, text: “She walks you through the ground floor with practiced ease — the kitchen first, then the living room. “Kitchen is always open. I cook most evenings. The living room is shared — try not to leave your shoes by the couch, it drives me insane.”” },
+      { speaker: “valentina”, text: “A girl on the couch looks up from her phone. “Oh — new roommate?” She gives a small wave without getting up. “I’m Amber.”” },
+      { speaker: “serena”, text: “”Amber is an exchange student. She’s been here a few months.” Serena touches your arm lightly, steering you toward the stairs. “Your room is up here. Come.”” },
+      { speaker: “narrator”, text: “She leads you upstairs, pointing out the bathroom, the other rooms, then stops at yours. It’s small but clean, the window cracked open to let the evening air in.” },
+      { speaker: “serena”, text: “”It’s not much, but it’s yours for now.” She lingers in the doorway. “Leave your things. I want to show you the neighborhood before it gets dark — it’ll save you from getting lost tomorrow.”” },
+      { speaker: “player”, text: “You don’t have to do all this.” },
+      { speaker: “serena”, text: “Something softens in her expression. “I know. But this house has been too quiet for too long. It’s nice to have someone new to show things to.”” }
     ]
   },
   ntrIntroOutside: {
     lines: [
-      { speaker: "narrator", text: "You step outside to get a sense of the neighborhood. The street is quiet — a few houses, a park across the road, the sound of birds." },
-      { speaker: "kira", text: "A girl jogs past and slows down when she notices you. “New face. You just move in with Serena?”" },
-      { speaker: "player", text: "Yeah, just arrived today." },
-      { speaker: "kira", text: "“I’m Kira. I run here every morning.” She stretches without stopping. “If you ever want to join, I start at six. No excuses accepted.”" },
-      { speaker: "narrator", text: "She takes off before you can answer. Quick, direct — and already gone." },
-      { speaker: "narrator", text: "Down the street you notice a small supermarket. Might be worth checking out." }
+      { speaker: “narrator”, text: “Serena walks beside you with her arms loosely crossed, pointing out things as you go — the mailbox that sticks, the neighbor’s cat that thinks it owns the sidewalk, the shortcut through the park.” },
+      { speaker: “serena”, text: “”The park is just across the road. Good for clearing your head. I used to walk there every evening after—“ She catches herself. “Well. It’s nice.”” },
+      { speaker: “kira”, text: “A girl jogs past and slows down when she notices the two of you. “Serena! New recruit?” She grins, barely out of breath.” },
+      { speaker: “serena”, text: “”Kira, this is our new exchange student. Try not to scare him off on day one.”” },
+      { speaker: “kira”, text: “”I’m Kira. I run here every morning.” She stretches without stopping. “If you ever want to join, I start at six. No excuses accepted.”” },
+      { speaker: “narrator”, text: “She takes off before you can answer. Quick, direct — and already gone.” },
+      { speaker: “serena”, text: “Serena watches her go with a small smile. “She’s like that. All energy, no filter.” She turns back to you. “There’s a supermarket just down the street. Let me introduce you — you’ll need it sooner than you think.”” }
     ]
   },
   ntrIntroMarket: {
     lines: [
-      { speaker: "narrator", text: "The supermarket is small but well-organized. A woman behind the counter looks up as the bell rings." },
-      { speaker: "harper", text: "“Welcome. You’re new around here, aren’t you?” She smiles — polite, practiced. “I’m Harper. I run this place.”" },
-      { speaker: "player", text: "Just moved into the house up the street." },
-      { speaker: "harper", text: "“Serena’s place. Good — she could use the company.” She pauses, then adds: “We all could, probably.”" },
-      { speaker: "narrator", text: "She twists the ring on her finger absentmindedly, then catches herself and stops." },
-      { speaker: "harper", text: "“If you need anything, this is the only shop in walking distance. I’m here most days.”" },
-      { speaker: "narrator", text: "You head back to the house. Four women — each with their own story, their own walls. The exchange has begun." }
+      { speaker: “narrator”, text: “The supermarket is small but well-organized. A bell chimes as Serena holds the door open for you.” },
+      { speaker: “serena”, text: “”This is where I get everything for the house. Harper runs it — she’s—“” },
+      { speaker: “narrator”, text: “Serena stops mid-sentence. Standing by the register, leaning against the counter like he owns the building, is a man in a tailored jacket. Broad shoulders, an expensive watch, and a smile that sharpens the moment he sees Serena.” },
+      { speaker: “narrator”, text: “”Well.” The man straightens up, his eyes moving from Serena to you and back. “Look who decided to leave the house.” His voice is smooth — the kind of smooth that’s been practiced in mirrors.” },
+      { speaker: “serena”, text: “Serena’s posture changes instantly. Her shoulders pull back, her jaw tightens. “Marcus.”” },
+      { speaker: “narrator”, text: “Marcus steps closer. He’s taller than you expected, and he moves with the easy confidence of a man who’s used to being the most important person in any room.” },
+      { speaker: “narrator”, text: “”And who’s this?” He looks at you — not unkindly, but the way someone looks at something they’re measuring. “A new tenant? I didn’t realize you were still running the exchange program, Serena.”” },
+      { speaker: “serena”, text: “”I didn’t realize I needed your permission.” Her voice is even, but there’s an edge to it that wasn’t there five minutes ago.” },
+      { speaker: “narrator”, text: “Marcus laughs — short, warm, almost genuine. “You don’t. I’m just surprised, that’s all. It’s good. The house could use some life in it.” He looks at you again. “She doesn’t let many people in. Consider yourself lucky.”” },
+      { speaker: “player”, text: “I’m just here for the exchange.” },
+      { speaker: “narrator”, text: “”Sure you are.” Marcus smiles. It doesn’t quite reach his eyes. He turns back to Serena and his voice drops, softer now — familiar. “I left some paperwork at the house. I’ll come by this week to pick it up. We can talk then.”” },
+      { speaker: “serena”, text: “”There’s nothing to talk about, Marcus.”” },
+      { speaker: “narrator”, text: “”There’s always something to talk about.” He holds her gaze for a beat too long, then nods at you — polite, distant, final. “Welcome to the neighborhood.”” },
+      { speaker: “narrator”, text: “He leaves. The bell chimes behind him. Serena exhales slowly, like she’s been holding her breath since the moment she saw him.” },
+      { speaker: “harper”, text: “A woman behind the counter clears her throat gently. “Sorry about that. He comes in for coffee and stays to make everyone uncomfortable.” She offers a careful smile. “I’m Harper. I run this place.”” },
+      { speaker: “player”, text: “Who was that?” },
+      { speaker: “serena”, text: “”Marcus.” She says the name the way you’d say a splinter you can’t get out. “He was my husband’s business partner. He still acts like that gives him a say in my life.”” },
+      { speaker: “narrator”, text: “She’s already walking toward the door, the tour clearly over. But she pauses, one hand on the frame, and glances back at you.” },
+      { speaker: “serena”, text: “”Don’t worry about him. He’s—“ A pause. “He’s just someone who doesn’t know when to let go.”” },
+      { speaker: “narrator”, text: “You follow her back to the house. The walk is quieter this time. Serena doesn’t point out the mailbox or the cat or the shortcut. She’s somewhere else — behind the composed smile, doing the math on something you can’t see.” },
+      { speaker: “narrator”, text: “At the front door she turns to you, and the warmth is back, deliberate and gentle.” },
+      { speaker: “serena”, text: “”Thank you for walking with me. I forgot how nice it is to not do everything alone.” A small smile. “Get some rest. Tomorrow this place starts feeling like home.”” },
+      { speaker: “narrator”, text: “She disappears inside. The porch light clicks on behind you — a timer, not a person. But for a moment it felt like someone left it on just for you.” }
     ]
   },
   ntrQuests: {
