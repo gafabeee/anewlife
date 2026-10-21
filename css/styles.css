@@ -753,8 +753,8 @@ body{
 /* Same width as .scene-video and the establishing shot — a photo or gif
    dropped mid-scene used to render at half the size of the clip above it,
    which read as a mistake rather than a choice. */
-.scene-image{ max-width:820px; margin: 0 auto 14px; }
-.scene-image img{ width:100%; border-radius:10px; border:1px solid var(--border); display:block; }
+.scene-image{ max-width:420px; margin:12px auto 14px; text-align:center; }
+.scene-image img{ width:100%; border-radius:12px; border:1px solid var(--border); display:block; box-shadow:0 2px 12px rgba(0,0,0,.35); }
 /* Opening shot of a scene — wide and cropped like a establishing frame,
    dimmed slightly so it sits behind the text instead of competing. */
 .scene-image.establishing{ max-width:820px; margin-bottom:16px; }
