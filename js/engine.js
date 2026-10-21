@@ -17100,7 +17100,7 @@ function checkBlackedZoeStage() {
       renderWorkplaceDetail(root, def);
       return;
     }
-    if (def.id === "gym" && !ntrModeOn()) {
+    if (def.id === "gym") {
       renderGymDetail(root, def);
       return;
     }
