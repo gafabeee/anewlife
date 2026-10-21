@@ -1277,7 +1277,7 @@ window.GAME_DATA = {
       {
         "step": 1,
         "title": "Late Harvest",
-        "room": "kitchen",
+        "room": "living_room",
         "context": "Serena is making preserves in the kitchen. The jars line up like soldiers.",
         "phrase": "“My husband planted the tree. I keep the fruit.”",
         "completionFlag": "serena_ntr_q1_complete",
@@ -1382,7 +1382,7 @@ window.GAME_DATA = {
       {
         "step": 4,
         "title": "The Ledger",
-        "room": "kitchen",
+        "room": "living_room",
         "context": "The debts are spread across the table. Something doesn’t add up.",
         "phrase": "“These numbers are wrong. I know they’re wrong.”",
         "completionFlag": "serena_ntr_q4_complete",
@@ -1529,7 +1529,7 @@ window.GAME_DATA = {
       {
         "step": 2,
         "title": "The Bleachers",
-        "room": "park",
+        "room": "gym",
         "context": "Kira is training after hours. She pushes harder than she needs to.",
         "phrase": "“He logs my runs. My routes. My pace. Says it’s coaching.”",
         "completionFlag": "kira_ntr_q2_complete",
@@ -1601,7 +1601,7 @@ window.GAME_DATA = {
       {
         "step": 4,
         "title": "The Medal",
-        "room": "park",
+        "room": "gym",
         "context": "Race day is over. Kira has something to tell you.",
         "phrase": "“I won. And the first person I wanted to tell was you.”",
         "completionFlag": "kira_ntr_q4_complete",
@@ -1808,7 +1808,7 @@ window.GAME_DATA = {
       {
         "step": 4,
         "title": "The Flowers",
-        "room": "living_room",
+        "room": "park",
         "context": "Ethan showed up. Flowers, charm, and a hidden agenda.",
         "phrase": "“He makes me feel crazy for having boundaries.”",
         "completionFlag": "valentina_ntr_q4_complete",
@@ -1914,7 +1914,7 @@ window.GAME_DATA = {
       {
         "step": 1,
         "title": "The Walk Home",
-        "room": "market",
+        "room": "park",
         "moneyCost": 8,
         "context": "Harper’s car is in the shop. It’s a long walk in the dark.",
         "phrase": "“Derek was supposed to pick me up. Again.”",
