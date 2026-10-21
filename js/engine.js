@@ -2734,7 +2734,7 @@
       return;
     }
     if (quest.moneyCost && state.money < quest.moneyCost) {
-      playSequence([{ speaker: "narrator", text: "You’ll need at least $" + quest.moneyCost + " before you can do this. Come back when you have the money." }], finishAfter);
+      playSequence([{ speaker: "narrator", text: "You’ll need at least $" + quest.moneyCost + " before you can do this. Come back when you have the money. Try getting a job somewhere." }], finishAfter);
       return;
     }
     if (quest.moneyCost) changeMoney(-quest.moneyCost);
