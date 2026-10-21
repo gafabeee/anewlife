@@ -17547,10 +17547,7 @@ function checkBlackedZoeStage() {
       playSequence([{ speaker: "narrator", text: job.textTooLate }], finishAfter);
       return;
     }
-    if (state.flags["ntrJobHiredDay_" + jobId] === state.day) {
-      playSequence([{ speaker: "narrator", text: "You just signed on today. The first shift starts tomorrow." }], finishAfter);
-      return;
-    }
+
 
     startNtrShift(jobId);
   }
@@ -17585,7 +17582,6 @@ function checkBlackedZoeStage() {
     if (!id) return null;
     if (ntrContractExpired(id)) return null;
     if (!isWorkday(state.day)) return null;
-    if (state.flags["ntrJobHiredDay_" + id] === state.day) return null;
     if (state.flags["ntrJobLastWorkDay_" + id] === state.day) return null;
     return id;
   }
