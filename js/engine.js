@@ -16758,6 +16758,43 @@ function checkBlackedZoeStage() {
     if (needsClaireStoreNight() || needsClaireQuest5() || needsClaireQuest7()) {
       addTarget("market");
     }
+    // NTR quest and action scene notification dots
+    if (ntrModeOn()) {
+      NTR_CHARS.forEach(function(cid) {
+        var qs = DATA.ntrQuests && DATA.ntrQuests[cid];
+        if (!qs) return;
+        var step = (state.ntrQuestProgress && state.ntrQuestProgress[cid]) || 0;
+        var branch = state.flags[cid + "_ntr_branch"] || null;
+        var q = qs[step];
+        if (q && q.room && !state.flags[q.completionFlag]) {
+          if (state.hour >= q.timeStart && state.hour < q.timeEnd) {
+            addTarget(q.room);
+          }
+        }
+      });
+      var _ntrActs = [
+        { c: "serena", f: "serena_ntr_q3_complete", s: "serena_ntr_action1_seen", r: "kitchen", t0: 21, t1: 24 },
+        { c: "serena", f: "serena_ntr_q5_complete", s: "serena_ntr_action2_seen", b: "a", r: "kitchen", t0: 23, t1: 24 },
+        { c: "serena", f: "serena_ntr_q5_complete", s: "serena_ntr_action3_seen", b: "b", r: "kitchen", t0: 22, t1: 24 },
+        { c: "kira", f: "kira_ntr_q3_complete", s: "kira_ntr_action1_seen", r: "park", t0: 6, t1: 9 },
+        { c: "kira", f: "kira_ntr_q5_complete", s: "kira_ntr_action2_seen", b: "a", r: "gym", t0: 20, t1: 24 },
+        { c: "kira", f: "kira_ntr_q5_complete", s: "kira_ntr_action3_seen", b: "b", r: "park", t0: 6, t1: 9 },
+        { c: "valentina", f: "valentina_ntr_q3_complete", s: "valentina_ntr_action1_seen", r: "sabrina_room", t0: 21, t1: 24 },
+        { c: "valentina", f: "valentina_ntr_q5_complete", s: "valentina_ntr_action2_seen", b: "a", r: "sabrina_room", t0: 22, t1: 24 },
+        { c: "valentina", f: "valentina_ntr_q5_complete", s: "valentina_ntr_action3_seen", b: "b", r: "sabrina_room", t0: 22, t1: 24 },
+        { c: "harper", f: "harper_ntr_q3_complete", s: "harper_ntr_action1_seen", r: "market", t0: 20, t1: 24 },
+        { c: "harper", f: "harper_ntr_q5_complete", s: "harper_ntr_action2_seen", b: "a", r: "market", t0: 21, t1: 24 },
+        { c: "harper", f: "harper_ntr_q5_complete", s: "harper_ntr_action3_seen", b: "b", r: "market", t0: 8, t1: 12 }
+      ];
+      _ntrActs.forEach(function(a) {
+        if (!state.flags[a.f]) return;
+        if (state.flags[a.s]) return;
+        if (a.b && state.flags[a.c + "_ntr_branch"] !== a.b) return;
+        if (state.hour >= a.t0 && state.hour < a.t1) {
+          addTarget(a.r);
+        }
+      });
+    }
     return rooms;
   }
 
@@ -18043,28 +18080,29 @@ function checkBlackedZoeStage() {
     grantBond("kira", 10, 5, 0);
     addNtrCorruption("kira", 8);
     var beats = [
-      "narrator::Early morning. The trail is empty. Kira is at the fountain, not stretching. Waiting. When she sees you, she doesn’t pretend otherwise.",
-      "kira::“You’re late.”",
-      "player::By two minutes.",
-      "kira::“Two minutes is a lot.” She steps closer. “I’ve been thinking about the bleachers. About what I said.”",
+      "narrator::Early morning. The park trail is quiet. Kira is stretching by the fountain, but she stops when she sees you. Not surprised — she was counting on you showing up.",
+      "kira::“You came.”",
+      "player::You said six. It’s six.",
+      "kira::“I’ve been thinking about the bleachers. About what I said.” She pulls her hoodie tighter. “About what I didn’t say.”",
       "player::About Tyler?",
-      "kira::“About you.” She grabs the front of your shirt. Not aggressive — decided. “The storage shed by the track. Nobody uses it this early.”",
-      "narrator::The shed is dim. Running equipment, spare cones, a mat rolled in the corner. Kira closes the door and turns to you. She’s still in her running gear — sports bra, shorts, skin still warm from the sprint.",
+      "kira::“About you.” She looks around the empty trail. “Not here. My place is ten minutes. Tyler’s at a team meeting until noon.”",
+      "narrator::You walk together. She doesn’t touch you, but she stays close enough that her shoulder brushes yours with every step. Her apartment is small, second floor, and she locks the door behind you both.",
+      "narrator::Her room is exactly what you’d expect: trophies on a shelf, running shoes lined up by the door, a single photo of a finish line on the wall. She pulls the blinds closed.",
       "kira::“I don’t do this. I don’t—” She stops. “Actually, I’ve never done anything for myself. Everything is for times, for Tyler, for the team. This is for me.”",
       "narrator::She kneels. Athletic, controlled, like everything she does. But her hands are shaking.",
       { speaker: "narrator", text: "She takes you in her mouth with the same intensity she brings to everything — focused, committed, no half-measures. Her hands grip your hips and she doesn’t break eye contact.", video: "kira/action1/kiraOral.1.mp4" },
       "kira::She stands, turns around, braces against the wall. “Now.”",
-      { speaker: "narrator", text: "She leans back into you, one hand against the concrete, finding a rhythm that builds like a sprint — steady, then faster, then everything at once.", video: "kira/action1/kiraCowgirlReverse.2.mp4" },
-      "narrator::She turns around and pushes you down onto the mat. Climbs on top.",
+      { speaker: "narrator", text: "She leans back into you, one hand against the wall, finding a rhythm that builds like a sprint — steady, then faster, then everything at once.", video: "kira/action1/kiraCowgirlReverse.2.mp4" },
+      "narrator::She turns around and pushes you down onto the bed. Climbs on top.",
       { speaker: "narrator", text: "She rides you with the same competitive fire she puts into every race. Her abs flex, her breathing is controlled, and she watches your face like she’s checking her splits.", video: "kira/action1/kiraCowgirl.3.mp4" },
       "kira::“Faster—”",
-      { speaker: "narrator", text: "You flip her over and take her from behind on the mat. She drops to her elbows and bites her forearm to stay quiet. The shed walls are thin.", video: "kira/action1/kiradoggy.4.mp4" },
-      { speaker: "narrator", text: "You pull her against you, side by side on the mat. Slower now, deeper. Her hand finds yours and squeezes with each thrust, a rhythm that says everything words can’t.", video: "kira/action1/kiradeladoCreampie.5.mp4" },
+      { speaker: "narrator", text: "You flip her over and take her from behind. She drops to her elbows and bites the pillow to stay quiet. The walls are thin.", video: "kira/action1/kiradoggy.4.mp4" },
+      { speaker: "narrator", text: "You pull her against you, side by side. Slower now, deeper. Her hand finds yours and squeezes with each thrust, a rhythm that says everything words can’t.", video: "kira/action1/kiradeladoCreampie.5.mp4" },
       "narrator::She finishes with a sound she swallows, whole body tensing, then releasing. You follow.",
-      "narrator::She lies on the mat, staring at the ceiling, chest heaving. Smiling. Not the race smile.",
-      "kira::“Same time tomorrow?”",
+      "narrator::She lies there, staring at the ceiling, chest heaving. Smiling. Not the race smile.",
+      "kira::“Same time tomorrow? Park. Then here.”",
       "player::Count on it.",
-      "kira::“Don’t be late.” She’s already lacing her shoes."
+      "kira::“Don’t be late.” She’s already lacing her running shoes."
     ];
     playSequence(beats.map(parseCasualLine), finishAfter, "Leave");
   }
