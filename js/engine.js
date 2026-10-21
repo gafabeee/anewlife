@@ -16179,7 +16179,7 @@ function checkBlackedZoeStage() {
     return String(path).split("/").map(encodeURIComponent).join("/");
   }
   function imageHTML(src, cls) {
-    return `<div class="scene-image${cls ? " " + cls : ""}"><img src="${assetSrc(src)}" alt=""></div>`;
+    return `<div class="scene-image${cls ? " " + cls : ""}" style="min-height:60px;background:#300;border:2px solid red;padding:8px;margin:8px 0;"><img src="${assetSrc(src)}" alt="" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\'color:red;font-size:14px;\'>IMAGE NOT FOUND: ${src}</div>';"><div style="color:#ff0;font-size:11px;opacity:0.5;">Loading: ${src}</div></div>`;
   }
   function mediaHTML(beat) {
     if (beat.video) return videoHTML(beat.video);
