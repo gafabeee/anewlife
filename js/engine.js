@@ -2733,6 +2733,11 @@
       playSequence([{ speaker: "narrator", text: nm + " is here, but this isn’t the right moment. Try again later." }], finishAfter);
       return;
     }
+    if (quest.moneyCost && state.money < quest.moneyCost) {
+      playSequence([{ speaker: "narrator", text: "You’ll need at least $" + quest.moneyCost + " before you can do this. Come back when you have the money." }], finishAfter);
+      return;
+    }
+    if (quest.moneyCost) changeMoney(-quest.moneyCost);
     state.flags[quest.completionFlag] = true;
     addNtrCorruption(charId, quest.corruptionReward || 0);
     advanceNtrQuest(charId);
@@ -17678,7 +17683,7 @@ function checkBlackedZoeStage() {
         items.push({ title: quest.title, note: cName + " isn’t ready yet. Corruption: " + corr + "/" + quest.corruptionRequired + ".", charId: id });
       } else {
         var rm = quest.room ? roomTitle(quest.room) : scheduleRoomAt(id, quest.timeStart, quest.timeEnd);
-        items.push({ title: quest.title, note: "Find " + cName + " at " + rm + " (" + quest.timeStart + ":00–" + quest.timeEnd + ":00).", charId: id });
+        items.push({ title: quest.title, note: "Find " + cName + " at " + rm + " (" + quest.timeStart + ":00–" + quest.timeEnd + ":00)." + (quest.moneyCost ? " Bring $" + quest.moneyCost + "." : ""), charId: id });
       }
     });
     if (DATA.ntrNetorareQuests) {
