@@ -17023,7 +17023,7 @@ function checkBlackedZoeStage() {
             ? `<span class="link-btn sleep-locked">${icon("lock")} Closed &mdash; opens ${clockLabel(GYM_OPEN.start)}</span>`
             : !gymPassActive()
               ? (state.money < GYM_PASS_COST
-                  ? `<span class="link-btn sleep-locked">${icon("lock")} Membership $${GYM_PASS_COST} &mdash; you have $${state.money}</span>`
+                  ? `<span class="link-btn sleep-locked">${icon("lock")} Membership $${GYM_PASS_COST} &mdash; you have $${state.money}</span><div style="font-size:13px;opacity:0.5;margin-top:6px;text-align:center;">Try getting a job somewhere to earn some money.</div>`
                   : `<span class="link-btn primary" id="btn-gym-pass">Join &mdash; $${GYM_PASS_COST} for ${GYM_PASS_DAYS} days</span>`)
               : trainedToday()
                 ? `<span class="link-btn sleep-locked">${icon("check")} Trained today &mdash; come back tomorrow</span>`
