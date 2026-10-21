@@ -210,33 +210,49 @@ body{
 .slot-row .slot-actions .link-btn{ margin:0; flex:1 1 auto; text-align:center; white-space:nowrap; }
 .slot-row .slot-actions .link-btn.primary{ flex:2 1 auto; }
 
+#create-screen{
+  display:flex; align-items:center; justify-content:center;
+  min-height:100vh; min-height:100dvh;
+  background:radial-gradient(ellipse at 50% 30%, rgba(45,65,80,.45) 0%, var(--bg) 70%);
+}
 .create-card{
-  width: 420px; max-width: 90vw;
-  background: var(--panel); border:1px solid var(--border); border-radius:14px;
-  padding: 28px 30px; text-align:left;
+  width: 440px; max-width: 92vw;
+  background: linear-gradient(170deg, rgba(30,42,56,.92) 0%, var(--panel) 40%);
+  border:1px solid var(--border); border-radius:18px;
+  padding: 34px 34px 28px; text-align:left;
+  box-shadow: 0 8px 40px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.04) inset;
 }
 .create-card h2{
-  margin:0 0 18px; color: var(--accent);
+  margin:0 0 24px; color: var(--accent);
   font-family: Georgia, serif; font-style: italic; text-align:center;
+  font-size:26px; letter-spacing:.5px;
 }
-.field{ margin-bottom:18px; }
-.field label{ display:block; font-size:11px; letter-spacing:1px; text-transform:uppercase; color: var(--muted); margin-bottom:6px; }
+.field{ margin-bottom:22px; }
+.field label{
+  display:block; font-size:11px; letter-spacing:1.2px; text-transform:uppercase;
+  color: var(--muted); margin-bottom:8px; font-weight:600;
+}
 .field input[type=text]{
-  width:100%; background: var(--panel-2); border:1px solid var(--border); border-radius:8px;
-  padding:10px 12px; color: var(--text); font-size:14px;
+  width:100%; background: var(--panel-2); border:1px solid var(--border); border-radius:10px;
+  padding:12px 14px; color: var(--text); font-size:15px;
+  transition: border-color .2s, box-shadow .2s;
 }
-.field input[type=text]:focus{ outline:none; border-color: var(--accent); }
-.create-actions{ text-align:center; margin-top:6px; }
+.field input[type=text]:focus{ outline:none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(64,224,208,.12); }
+.field input[type=text]::placeholder{ color: var(--muted); opacity:.6; }
+.create-actions{ text-align:center; margin-top:24px; display:flex; gap:10px; justify-content:center; }
+.create-actions .link-btn{ min-width:90px; padding:11px 28px; font-size:15px; font-weight:600; border-radius:10px; }
+.create-actions .link-btn.primary{ background:var(--accent); color:#0a0f14; border-color:var(--accent); }
+.create-actions .link-btn.primary:hover{ filter:brightness(1.15); }
 
-/* -- protagonist toggle (pill bar) -- */
+/* -- mode toggle (pill bar) -- */
 .cc-toggle{
   display:flex; gap:0; border-radius:10px; overflow:hidden;
   border:2px solid var(--border); background:var(--panel-2);
 }
 .cc-toggle-btn{
-  flex:1; text-align:center; padding:11px 0; cursor:pointer;
+  flex:1; text-align:center; padding:12px 0; cursor:pointer;
   font-size:14px; font-weight:600; color:var(--muted);
-  transition:background .2s, color .2s;
+  transition:background .25s, color .25s, opacity .25s;
   position:relative;
 }
 .cc-toggle-btn input{ position:absolute; opacity:0; pointer-events:none; }
@@ -245,6 +261,13 @@ body{
   background:var(--accent-2); color:#0a0f14;
 }
 .cc-toggle-btn + .cc-toggle-btn{ border-left:1px solid var(--border); }
+.cc-toggle-btn.cc-disabled{
+  opacity:.3; pointer-events:none; cursor:default;
+}
+.cc-mode-note{
+  font-size:12px; color:var(--muted); margin-top:6px; opacity:.7;
+  min-height:18px; transition: opacity .2s;
+}
 
 /* ---------- game screen ---------- */
 #game-screen{ display:flex; }

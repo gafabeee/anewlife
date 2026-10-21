@@ -23619,6 +23619,23 @@ function checkBlackedZoeStage() {
       startIntro();
       save({ force: true });
     });
+    // ── NTR + Blacked lock ──
+    function syncModeToggles() {
+      var isNtr = $("input-mode-ntr").checked;
+      var blackedLabel = document.getElementById("toggle-blacked");
+      var note = document.getElementById("mode-note");
+      if (isNtr) {
+        $("input-skin-white").checked = true;
+        if (blackedLabel) blackedLabel.classList.add("cc-disabled");
+        if (note) note.textContent = "Blacked mode is not available with NTR.";
+      } else {
+        if (blackedLabel) blackedLabel.classList.remove("cc-disabled");
+        if (note) note.textContent = "";
+      }
+    }
+    $("input-mode-roommate").addEventListener("change", syncModeToggles);
+    $("input-mode-ntr").addEventListener("change", syncModeToggles);
+    syncModeToggles();
     $("input-name").addEventListener("keydown", (e) => { if (e.key === "Enter") $("btn-start-game").click(); });
 
     $("btn-menu").addEventListener("click", () => { save({ force: true }); closeModal(); openMenu(); });
