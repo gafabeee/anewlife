@@ -2735,6 +2735,12 @@
       playSequence([{ speaker: charId, text: "Not yet. Come back later." }], finishAfter);
       return;
     }
+    if (step >= 4 && !state.flags[charId + "_ntr_action1_seen"]) {
+      var c = DATA.characters[charId];
+      var nm = c ? c.name : charId;
+      playSequence([{ speaker: nm, text: "There’s something between us that hasn’t happened yet. Find me at the right time and place." }], finishAfter);
+      return;
+    }
     if (quest.corruptionRequired > 0 && ntrCorruption(charId) < quest.corruptionRequired) {
       doSmallTalk(charId);
       return;
@@ -18669,11 +18675,16 @@ function checkBlackedZoeStage() {
         var rm = roomTitle(q.room);
         var meta = '<span>' + icon("marker") + ' ' + escapeHtml(rm) + '</span><span>' + icon("clock") + ' ' + q.timeStart + ':00\u2013' + q.timeEnd + ':00</span>';
         if (isCurrent) {
+          var _actionGated = currentStep >= 4 && !state.flags[id + "_ntr_action1_seen"];
           var corr = ntrCorruption(id);
-          if (corr < q.corruptionRequired) {
+          if (_actionGated) {
+            cls = "locked";
+            dot = NTR_LOCK_ICON;
+            meta += '<span class="req-later">' + icon("lock") + ' Complete the Action Scene first</span>';
+          } else if (corr < q.corruptionRequired) {
             meta += '<span class="req-later">' + icon("lock") + ' Corruption ' + corr + '/' + q.corruptionRequired + '</span>';
           } else {
-            meta += '<span class="req-now">\u25CF available</span>';
+            meta += '<span class="req-now">● available</span>';
           }
         }
         html += '<div class="alw-step ' + cls + '"><div class="alw-step-dot">' + dot + '</div><div class="alw-step-body"><div class="alw-step-title">' + escapeHtml(q.title) + '</div><div class="alw-step-meta">' + meta + '</div>';
