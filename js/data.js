@@ -132,14 +132,14 @@ window.GAME_DATA = {
   /* ---------------- intro: exchange-house arrival ---------------- */
   intro: {
     lines: [
-      { speaker: “narrator”, text: “After a long flight and a day that already feels too full, you finally arrive at the house where you'll be staying during your exchange.” },
-      { speaker: “serena”, text: “The door opens before you knock twice. A woman in her early thirties stands in the doorway — dark hair pulled loosely back, an apron still tied around her waist. “You must be the new tenant. Come in, I just finished cooking.”” },
-      { speaker: “player”, text: “Thanks. You're Serena, right? The one who manages the house?” },
-      { speaker: “serena”, text: “”That's me. Owner, manager, cook — whatever title sounds less exhausting.” She takes your bag before you can protest. “Your room is upstairs. I'll show you everything, but first — have you eaten?”” },
-      { speaker: “player”, text: “Not since the airport. That smells amazing, by the way.” },
-      { speaker: “serena”, text: “She smiles — the first real one. “Good answer. Drop your things. I'll fix you a plate, and then I'll show you around the neighborhood. You'll want to know where things are before the jet lag catches up.”” },
-      { speaker: “narrator”, text: “The house is warm and lived-in. Photos on the walls, books stacked on the hallway shelf, the faint scent of garlic and fresh bread. It already feels less like a rental and more like someone's home.” },
-      { speaker: “serena”, text: “”This is your home now, for as long as you're here. The others will introduce themselves eventually — they always do.” She pauses at the kitchen doorway. “Eat first. Then we walk.”” }
+      { speaker: "narrator", text: "After a long flight and a day that already feels too full, you finally arrive at the house where you'll be staying during your exchange." },
+      { speaker: "serena", text: "The door opens before you knock twice. A woman in her early thirties stands in the doorway — dark hair pulled loosely back, an apron still tied around her waist. ‘You must be the new tenant. Come in, I just finished cooking.’" },
+      { speaker: "player", text: "Thanks. You're Serena, right? The one who manages the house?" },
+      { speaker: "serena", text: "‘That's me. Owner, manager, cook — whatever title sounds less exhausting.’ She takes your bag before you can protest. ‘Your room is upstairs. I'll show you everything, but first — have you eaten?’" },
+      { speaker: "player", text: "Not since the airport. That smells amazing, by the way." },
+      { speaker: "serena", text: "She smiles — the first real one. ‘Good answer. Drop your things. I'll fix you a plate, and then I'll show you around the neighborhood. You'll want to know where things are before the jet lag catches up.’" },
+      { speaker: "narrator", text: "The house is warm and lived-in. Photos on the walls, books stacked on the hallway shelf, the faint scent of garlic and fresh bread. It already feels less like a rental and more like someone's home." },
+      { speaker: "serena", text: "‘This is your home now, for as long as you're here. The others will introduce themselves eventually — they always do.’ She pauses at the kitchen doorway. ‘Eat first. Then we walk.’" }
     ]
   },
 
