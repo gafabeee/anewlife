@@ -17032,6 +17032,32 @@ function checkBlackedZoeStage() {
           <div style="margin-top:14px;"><span class="link-btn" id="btn-room-back">&larr; Back</span></div>
         </div>
       </div>`;
+    // In NTR mode, show any NTR characters whose schedule puts them here.
+    if (ntrModeOn()) {
+      var ntrIds = typeof NTR_CHARS !== "undefined" ? NTR_CHARS : [];
+      var gymNtr = [];
+      for (var ni = 0; ni < ntrIds.length; ni++) {
+        if (characterCurrentRoom(ntrIds[ni]) === "gym") gymNtr.push(ntrIds[ni]);
+      }
+      if (gymNtr.length) {
+        var ntrHtml = '<div class="gym-ntr-chars" style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px;">';
+        for (var gi = 0; gi < gymNtr.length; gi++) {
+          var gc = DATA.characters[gymNtr[gi]];
+          var gn = gc ? gc.name : gymNtr[gi];
+          ntrHtml += '<span class="link-btn" data-gym-ntr="' + gymNtr[gi] + '">Talk to ' + gn + '</span>';
+        }
+        ntrHtml += '</div>';
+        var backDiv = root.querySelector("#btn-room-back");
+        if (backDiv && backDiv.parentNode) {
+          var wrapper = document.createElement("div");
+          wrapper.innerHTML = ntrHtml;
+          backDiv.parentNode.insertBefore(wrapper.firstChild, backDiv.parentNode.firstChild);
+        }
+        root.querySelectorAll("[data-gym-ntr]").forEach(function(b) {
+          b.addEventListener("click", function() { talkToCharacter(b.dataset.gymNtr); });
+        });
+      }
+    }
     const btn = $("btn-workout");
     if (btn) btn.addEventListener("click", doWorkout);
     const cls = $("btn-gym-class");
