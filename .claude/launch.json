@@ -4,7 +4,7 @@
     {
       "name": "game",
       "runtimeExecutable": "powershell",
-      "runtimeArgs": ["-Command", "cd 'C:\\Users\\celio\\Downloads\\penes-20261014T174733Z-1-001\\penes'; python -m http.server 8793"],
+      "runtimeArgs": ["-Command", "cd 'C:\\Users\\celio\\Downloads\\penes\\penes'; python -m http.server 8793"],
       "port": 8793
     }
   ]

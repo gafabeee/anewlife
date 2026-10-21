@@ -244,7 +244,32 @@
     lily_q4_complete: { stat: "intelligence", min: 8 },
     maya_q4_complete: { stat: "intelligence", min: 8 },
     sabrina_q4_complete: { stat: "intelligence", min: 8 },
-    claire_q4_complete: { stat: "intelligence", min: 8 }
+    claire_q4_complete: { stat: "intelligence", min: 8 },
+
+    // NTR — Serena: widow rebuilding; charisma to connect, intelligence late
+    serena_ntr_q1_complete: { stat: "charisma", min: 2 },
+    serena_ntr_q2_complete: { stat: "charisma", min: 4 },
+    serena_ntr_q3_complete: { stat: "intelligence", min: 5 },
+    serena_ntr_q4_complete: { stat: "charisma", min: 7 },
+    serena_ntr_q5_complete: { stat: "intelligence", min: 8 },
+    // NTR — Kira: the runner; fitness to keep up, confidence to push through
+    kira_ntr_q1_complete: { stat: "fitness", min: 2 },
+    kira_ntr_q2_complete: { stat: "fitness", min: 4 },
+    kira_ntr_q3_complete: { stat: "confidence", min: 5 },
+    kira_ntr_q4_complete: { stat: "fitness", min: 7 },
+    kira_ntr_q5_complete: { stat: "confidence", min: 8 },
+    // NTR — Amber: the artist; intelligence to understand her, charisma later
+    valentina_ntr_q1_complete: { stat: "intelligence", min: 2 },
+    valentina_ntr_q2_complete: { stat: "intelligence", min: 4 },
+    valentina_ntr_q3_complete: { stat: "charisma", min: 5 },
+    valentina_ntr_q4_complete: { stat: "intelligence", min: 7 },
+    valentina_ntr_q5_complete: { stat: "charisma", min: 8 },
+    // NTR — Harper: store owner; confidence to show up, intelligence to close
+    harper_ntr_q1_complete: { stat: "confidence", min: 2 },
+    harper_ntr_q2_complete: { stat: "confidence", min: 4 },
+    harper_ntr_q3_complete: { stat: "intelligence", min: 5 },
+    harper_ntr_q4_complete: { stat: "confidence", min: 7 },
+    harper_ntr_q5_complete: { stat: "intelligence", min: 8 }
   };
   function statGateMet(flag) {
     const g = QUEST_STAT_GATES[flag];
@@ -1186,7 +1211,7 @@
       if (id === "lily_room") return "Serena’s Room";
       if (id === "maya_room") return "Kira’s Room";
       if (id === "noelle_room") return "Harper’s Room";
-      if (id === "sabrina_room") return "Sabrina’s Room";
+      if (id === "sabrina_room") return "Amber’s Room";
     }
     return title;
   }
@@ -1198,7 +1223,7 @@
       if (id === "lily_room") return "Serena’s room, kept tidy with quiet, deliberate care.";
       if (id === "maya_room") return "Kira’s space — scattered with fashion sketches and half-finished outfits.";
       if (id === "noelle_room") return "Harper’s room — warm and inviting, everything placed with effortless style.";
-      if (id === "sabrina_room") return "Sabrina’s room — where she retreats between study sessions.";
+      if (id === "sabrina_room") return "Amber’s room — stylish and curated, every detail placed with quiet intention.";
     }
     return desc;
   }
@@ -1261,6 +1286,17 @@
     const blocks = (!isWorkday(state.day) && sched.weekend) ? sched.weekend : sched.weekday;
     const hit = (blocks || []).find((b) => state.hour >= b.start && state.hour < b.end);
     return hit ? hit.room : null;
+  }
+  function scheduleRoomAt(charId, hour, hourEnd) {
+    var sched = DATA.characterSchedules && DATA.characterSchedules[charId];
+    if (!sched) return "the house";
+    var blocks = sched.weekday || [];
+    var end = hourEnd || (hour + 1);
+    for (var h = hour; h < end; h++) {
+      var hit = blocks.find(function(b) { return h >= b.start && h < b.end; });
+      if (hit && hit.room) return roomTitle(hit.room);
+    }
+    return "the house";
   }
   function characterCurrentRoom(charId) {
     if (blackedModeOn() && charId === "noelle") return null;
@@ -1569,22 +1605,22 @@
     },
     valentina: {
       early: [
-        "Sabrina is here, scrolling through her phone with practised disinterest.",
-        "Sabrina is here, adjusting something in the mirror she’s already adjusted twice.",
-        "Sabrina is here. She notices you and goes back to her nails.",
-        "Sabrina is here, draped across the furniture like she’s posing for something."
+        "Amber is here, scrolling through her phone with practised disinterest.",
+        "Amber is here, adjusting something in the mirror she’s already adjusted twice.",
+        "Amber is here. She notices you and goes back to her nails.",
+        "Amber is here, draped across the furniture like she’s posing for something."
       ],
       warm: [
-        "Sabrina is here, and the phone goes face-down a little too quickly.",
-        "Sabrina is here, and she watches you come in with more attention than she’d admit.",
-        "Sabrina is here. The eye-roll she gives you is the affectionate kind.",
-        "Sabrina is here, and has somehow made space next to her without moving."
+        "Amber is here, and the phone goes face-down a little too quickly.",
+        "Amber is here, and she watches you come in with more attention than she’d admit.",
+        "Amber is here. The eye-roll she gives you is the affectionate kind.",
+        "Amber is here, and has somehow made space next to her without moving."
       ],
       close: [
-        "Sabrina is here, and doesn’t bother with the act at all.",
-        "Sabrina is here, and she’s looking at you like she’s already decided something.",
-        "Sabrina is here. “Finally,” she says, and it isn’t dressed up as a complaint.",
-        "Sabrina is here, and her hand finds your sleeve before either of you speaks."
+        "Amber is here, and doesn’t bother with the act at all.",
+        "Amber is here, and she’s looking at you like she’s already decided something.",
+        "Amber is here. “Finally,” she says, and it isn’t dressed up as a complaint.",
+        "Amber is here, and her hand finds your sleeve before either of you speaks."
       ]
     },
     harper: {
@@ -2675,7 +2711,8 @@
     var quests = DATA.ntrQuests && DATA.ntrQuests[charId];
     if (!quests) { doSmallTalk(charId); return; }
     var step = ntrQuestStep(charId);
-    var quest = quests.find(function(q) { return q.step === step; });
+    var branch = state.flags[charId + "_ntr_branch"] || null;
+    var quest = quests.find(function(q) { return q.step === step && (!q.branch || !branch || q.branch === branch); });
     if (!quest || !quest.lines || quest.lines.length === 0) { doSmallTalk(charId); return; }
     if (quest.preRequisiteFlag && !state.flags[quest.preRequisiteFlag]) {
       playSequence([{ speaker: charId, text: "Not yet. Come back later." }], finishAfter);
@@ -2683,6 +2720,13 @@
     }
     if (quest.corruptionRequired > 0 && ntrCorruption(charId) < quest.corruptionRequired) {
       doSmallTalk(charId);
+      return;
+    }
+    if (quest.completionFlag && !statGateMet(quest.completionFlag)) {
+      var gateLabel = statGateLabel(quest.completionFlag);
+      var c = DATA.characters[charId];
+      var nm = c ? c.name : charId;
+      playSequence([{ speaker: "narrator", text: nm + " is here, but you’re not ready for this conversation yet. " + (gateLabel || "") }], finishAfter);
       return;
     }
     if (quest.timeStart && (state.hour < quest.timeStart || state.hour >= quest.timeEnd)) {
@@ -2701,6 +2745,24 @@
       return b;
     });
     if (quest.video) beats[beats.length - 1].video = quest.video;
+    if (quest.branchChoice) {
+      var bc = quest.branchChoice;
+      var choices = bc.options.map(function(opt) {
+        return {
+          label: opt.label,
+          onSelect: function() {
+            state.flags[charId + "_ntr_branch"] = opt.branch;
+            if (opt.response) {
+              playSequence([parseCasualLine(opt.response)], finishAfter);
+            } else {
+              finishAfter();
+            }
+          }
+        };
+      });
+      playSequence(beats, null, null, choices);
+      return;
+    }
     if (quest.replies && quest.replies.length > 0) {
       if (beats.length === 1) {
         playBeatWithOptionalReplies(beats[0], quest.replies, finishAfter, quest.closing);
@@ -10513,7 +10575,7 @@ function checkBlackedZoeStage() {
   }
   function visitPark() {
     navigateTo("outside", "park");
-    if (ntrModeOn()) { if (checkArrivalEvents()) return; render(); return; }
+    if (ntrModeOn()) { if (checkNtrArrivalEvents()) return; if (checkArrivalEvents()) return; render(); return; }
     if (checkBlackedClaireQuest()) return;
     if (needsClaireQuest1()) {
       if (!questTimeOK("claire_q1_complete")) {
@@ -15833,6 +15895,7 @@ function checkBlackedZoeStage() {
     else { navigateTo("house", id); }
 
     if (checkArrivalEvents()) { save(); return; }
+    if (checkNtrArrivalEvents()) { save(); return; }
     if (maybePlayNetorareQuest()) { save(); return; }
     if (maybePlayNtrRivalEvent()) { save(); return; }
     if (maybeCasual(id)) { save(); return; }
@@ -16600,6 +16663,7 @@ function checkBlackedZoeStage() {
       rooms.add(target);
       if (DATA.upstairs.some((u) => u.id === target)) rooms.add("upstairs_hall");
       if (DATA.outside.some((o) => o.id === target)) rooms.add("outside");
+      if (DATA.rooms.some((r) => r.id === target && !r.isHub)) rooms.add("foyer");
     };
     activeQuests().forEach((q) => {
       if (q.id === "lily_shampoo" && !hasItem(q.itemId) && isFirstDayAfterAnyHire()) {
@@ -17162,6 +17226,7 @@ function checkBlackedZoeStage() {
       }
       if (card.dataset.locked === "true") {
         if (card.dataset.workLocked === "true") card.addEventListener("click", blockedByWork);
+        else if (isTutorialActive()) card.addEventListener("click", () => showToast("Follow the orange marker — it shows where to go next.", "warn"));
         return;
       }
       card.addEventListener("click", () => goRoom(card.dataset.room));
@@ -17383,7 +17448,7 @@ function checkBlackedZoeStage() {
       if (corr < quest.corruptionRequired) {
         items.push({ title: quest.title, note: cName + " isn’t ready yet. Corruption: " + corr + "/" + quest.corruptionRequired + ".", charId: id });
       } else {
-        var rm = roomTitle(quest.room);
+        var rm = quest.room ? roomTitle(quest.room) : scheduleRoomAt(id, quest.timeStart, quest.timeEnd);
         items.push({ title: quest.title, note: "Find " + cName + " at " + rm + " (" + quest.timeStart + ":00–" + quest.timeEnd + ":00).", charId: id });
       }
     });
@@ -17398,7 +17463,7 @@ function checkBlackedZoeStage() {
         if (rQuest.preRequisiteFlag && !state.flags[rQuest.preRequisiteFlag]) return;
         var rival = DATA.ntrRivals && DATA.ntrRivals[id];
         var rivalName = rival ? rival.name : "Someone";
-        var rm = roomTitle(rQuest.room);
+        var rm = rQuest.room ? roomTitle(rQuest.room) : scheduleRoomAt(id, rQuest.timeStart, rQuest.timeEnd);
         items.push({ title: "\u26A0 " + rQuest.title, note: rivalName + " is making moves. Check " + rm + " (" + rQuest.timeStart + ":00\u2013" + rQuest.timeEnd + ":00).", charId: id });
       });
     }
@@ -17413,6 +17478,26 @@ function checkBlackedZoeStage() {
   }
   function ntrRivalInfluence(charId) {
     return (state.ntrRivalInfluence && state.ntrRivalInfluence[charId]) || 0;
+  }
+  function setupNtrQuestJump(charId, targetStep) {
+    state.flags.ntr_intro_complete = true;
+    state.flags.tutorialFreed = true;
+    state.flags.houseHubUnlocked = true;
+    if (!state.ntrQuestProgress) state.ntrQuestProgress = {};
+    if (!state.ntrCorruption) state.ntrCorruption = {};
+    state.ntrQuestProgress[charId] = targetStep;
+    var quests = DATA.ntrQuests[charId] || [];
+    var cumCorr = 0;
+    for (var i = 0; i < targetStep && i < quests.length; i++) {
+      if (quests[i].completionFlag) state.flags[quests[i].completionFlag] = true;
+      cumCorr += quests[i].corruptionReward || 0;
+    }
+    state.ntrCorruption[charId] = Math.max(state.ntrCorruption[charId] || 0, cumCorr);
+    var quest = quests[targetStep];
+    if (quest && quest.timeStart != null) {
+      state.hour = quest.timeStart;
+      state.minute = 0;
+    }
   }
   function advanceNtrRivals() {
     if (!ntrModeOn()) return;
@@ -17492,6 +17577,484 @@ function checkBlackedZoeStage() {
       return true;
     }
     return false;
+  }
+
+
+  /* ========== NTR ACTION SCENES & STORY EVENTS ========== */
+
+  /* ---- Husband Letter Discovery ----
+     After Serena Q2, the player can find the letter in the foyer/study.
+     This triggers once when entering the foyer if the flag conditions are met. */
+  function needsHusbandLetterDiscovery() {
+    return ntrModeOn()
+      && !!state.flags.serena_ntr_q2_complete
+      && !state.flags.foundHusbandLetter
+      && state.room === "foyer";
+  }
+  function playHusbandLetterDiscovery() {
+    state.flags.foundHusbandLetter = true;
+    var beats = [
+      "narrator::The study door is ajar. It’s never ajar. Serena keeps it locked — her husband’s room, untouched since he died.",
+      "narrator::Inside, the desk is neat. Dust on everything. A box sits on the chair, lid off — Serena must have opened it after the wine. Letters, receipts, a leather folder.",
+      "narrator::One envelope stands out. Unsealed, addressed to Marcus. The handwriting matches the ones on the doormat.",
+      "narrator::You read it. Then you read it again.",
+      "narrator::It’s a settlement confirmation. Dated three weeks before he died. The debt was paid. Every cent. Marcus acknowledged it in writing.",
+      "narrator::Marcus has been collecting on a debt that doesn’t exist. For two years.",
+      "narrator::You fold the letter and put it in your pocket. Serena needs to see this. But she needs to be ready first."
+    ];
+    playSequence(beats.map(parseCasualLine), finishAfter);
+  }
+
+  /* ---- NTR Arrival Events (checked when entering rooms in NTR mode) ---- */
+  function checkNtrArrivalEvents() {
+    if (!ntrModeOn()) return false;
+    if (needsHusbandLetterDiscovery()) { playHusbandLetterDiscovery(); return true; }
+    if (needsSerenaNtrAction1()) { playSerenaNtrAction1(); return true; }
+    if (needsSerenaNtrAction2()) { playSerenaNtrAction2(); return true; }
+    if (needsSerenaNtrAction3()) { playSerenaNtrAction3(); return true; }
+    if (needsKiraNtrAction1()) { playKiraNtrAction1(); return true; }
+    if (needsKiraNtrAction2()) { playKiraNtrAction2(); return true; }
+    if (needsKiraNtrAction3()) { playKiraNtrAction3(); return true; }
+    if (needsAmberNtrAction1()) { playAmberNtrAction1(); return true; }
+    if (needsAmberNtrAction2()) { playAmberNtrAction2(); return true; }
+    if (needsAmberNtrAction3()) { playAmberNtrAction3(); return true; }
+    if (needsHarperNtrAction1()) { playHarperNtrAction1(); return true; }
+    if (needsHarperNtrAction2()) { playHarperNtrAction2(); return true; }
+    if (needsHarperNtrAction3()) { playHarperNtrAction3(); return true; }
+    return false;
+  }
+
+  /* ============ SERENA ACTIONS ============ */
+
+  /* Action 1 — Kitchen, after Q3 */
+  function needsSerenaNtrAction1() {
+    return ntrModeOn() && !!state.flags.serena_ntr_q3_complete
+      && !state.flags.serena_ntr_action1_seen
+      && state.room === "kitchen" && state.hour >= 21 && state.hour < 24;
+  }
+  function playSerenaNtrAction1() {
+    state.flags.serena_ntr_action1_seen = true;
+    grantBond("serena", 10, 5, 0);
+    addNtrCorruption("serena", 8);
+    var beats = [
+      "narrator::The kitchen is dark except for the stove light. Serena is leaning against the counter with a glass of water, staring at nothing. She doesn’t hear you come in.",
+      "narrator::She turns and sees you. Doesn’t startle this time. Just looks at you with something raw and open in her expression.",
+      "serena::“I can’t stop thinking about what Marcus said. About the ‘arrangements.’ Every time he leaves I feel like I need to wash my skin off.”",
+      "player::You don’t owe him anything.",
+      "serena::“I know. I know that now.” She sets the glass down. “But I still feel it. His hands. The expectation. I want to feel something else.”",
+      "narrator::She steps toward you. Her hand finds your chest. Not tentative — decided.",
+      "serena::“Replace it. Please. I need someone who touches me because they want to, not because they think they’re owed.”",
+      "narrator::She kisses you. Softly at first, then hungry. Her hands pull at your shirt. She drops to her knees on the kitchen tile, looking up at you with eyes that have stopped asking permission.",
+      { speaker: "narrator", text: "She takes you in her mouth with a slow deliberation that says she’s thought about this. Her hands grip your thighs and she doesn’t look away. Every movement is hers — her pace, her choice.", video: "serena/action1/serenablowjob.1.mp4" },
+      "serena::She pulls back, breathless. “The counter. Lift me up.”",
+      "narrator::You lift her onto the kitchen counter. She wraps her legs around you and pulls you in. The same counter where Marcus leaned that afternoon, drinking coffee like he owned the place.",
+      { speaker: "narrator", text: "She gasps as you press into her, her back arching, one hand bracing against the cabinet. Her legs tighten around you. This kitchen is hers and she’s reclaiming it.", video: "serena/action1/serenamissionary.2.mp4" },
+      "serena::“Don’t stop— God, don’t stop—”",
+      "narrator::She shudders against you, face buried in your neck, fingers gripping your shoulders hard enough to leave marks. Then she goes still, breathing in uneven pulls.",
+      "serena::“That was mine.” She says it quietly. “Not his. Not the house’s. Mine.”",
+      "narrator::She slides off the counter and straightens her dress. Her hands are steady for the first time all week."
+    ];
+    playSequence(beats.map(parseCasualLine), finishAfter, "Leave");
+  }
+
+  /* Action 2 — Laundry, after Q4 */
+  function needsSerenaNtrAction2() {
+    return ntrModeOn() && !!state.flags.serena_ntr_q5_complete
+      && state.flags.serena_ntr_branch === "a"
+      && !state.flags.serena_ntr_action2_seen
+      && (state.room === "kitchen" || state.room === "foyer") && state.hour >= 23;
+  }
+  function playSerenaNtrAction2() {
+    state.flags.serena_ntr_action2_seen = true;
+    grantBond("serena", 15, 5, 0);
+    addNtrCorruption("serena", 10);
+    var beats = [
+      "narrator::The laundry room light is on past midnight. You hear the dryer running from the hallway — that low, steady tumble that means Serena is still awake, still working, still keeping the house together after everyone else has stopped noticing.",
+      "narrator::You find her folding towels on the counter beside the washing machine. Her hair is down — you’ve never seen it down — and she’s wearing an old cotton dress that’s too big for her. She looks smaller in it. Softer.",
+      "serena::“You should be asleep.” She doesn’t look up. Her hands keep folding. “Everyone else is.”",
+      "player::So should you.",
+      "serena::“Somebody has to do this.” A pause. “Marcus used to say the same thing. About the house. About the bills. Somebody has to. And then he’d leave it all to me anyway.”",
+      "narrator::She sets a towel down and finally looks at you. The fluorescent light makes everyone look tired, but on her it just looks honest.",
+      "serena::“You stayed. When he was here. In the kitchen.” Her voice is quieter now. “Nobody stays.”",
+      "player::I’m not going anywhere.",
+      "narrator::She turns back to the counter. The dryer clicks off. The house is silent — that heavy, two-in-the-morning kind of silent where everything you say sounds louder than it is.",
+      "serena::“I haven’t been touched by someone who wasn’t taking something from me in…” She stops folding. Her hands go still on the towel. “I don’t even know how long.”",
+      "narrator::You step closer. She doesn’t move away. Her back is to you and you can see her shoulders tense, then slowly release.",
+      "player::Then let someone give you something for once.",
+      "narrator::She turns around. The space between you disappears. She kisses you — slow, searching, real.",
+      "serena::“The door.” A whisper. “Lock the door.”",
+      "narrator::You turn the latch. When you turn back, she’s leaned against the washing machine, the cotton dress slipping off one shoulder.",
+      "narrator::She drops to her knees on the cold tile. The look she gives you isn’t submission — it’s hunger. Two years of nothing, and she’s done starving.",
+      { speaker: "narrator", text: "She takes you in her mouth with a tenderness that turns desperate. Her hands grip your thighs, pulling you closer, and the sound she makes is somewhere between relief and want. The washing machine hums behind her like a heartbeat.", video: "serena/action2/serenablowjob.1.mp4" },
+      "serena::She pulls back, breathing hard. “Turn me around.” Not a request. An instruction from the woman who runs this house.",
+      "narrator::She braces herself against the dryer. The metal is still warm. Her dress is bunched around her waist.",
+      "serena::“Don’t be gentle. I’ve had two years of gentle. I don’t want gentle.”",
+      { speaker: "narrator", text: "You take her from behind and she gasps, gripping the edge of the dryer hard enough that her knuckles go white. Every thrust pushes her forward and she pushes back, matching you, demanding more.", video: "serena/action2/serenadoggy.2.mp4" },
+      "serena::“God—” She buries her face in her arm. “Don’t stop. Please don’t stop.”",
+      "narrator::She pushes off the dryer and turns around. Before you can react she’s pushed you back onto the folding table and climbed on top, scattering clean linens.",
+      { speaker: "narrator", text: "She sets the pace — slow at first, then faster, her hips rolling in a rhythm that’s entirely hers. The fluorescent light catches the flush spreading down her neck. She’s not hiding anything anymore.", video: "serena/action2/serenacowgirl.3.mp4" },
+      "serena::“I’m close—” She grips your shoulders and shudders. Two years of pressure breaking all at once.",
+      "narrator::She collapses against your chest. The laundry room is a mess — towels on the floor, the table pushed sideways. She doesn’t move to clean any of it.",
+      "serena::“That was mine.” She says it into your chest. Quiet. Certain. “Just for me.”"
+    ];
+    playSequence(beats.map(parseCasualLine), finishAfter, "Leave");
+  }
+
+  /* Action 3 — Kitchen, after Q5 */
+  function needsSerenaNtrAction3() {
+    return ntrModeOn() && !!state.flags.serena_ntr_q5_complete
+      && state.flags.serena_ntr_branch === "b"
+      && !state.flags.serena_ntr_action3_seen
+      && state.room === "kitchen" && state.hour >= 22;
+  }
+  function playSerenaNtrAction3() {
+    state.flags.serena_ntr_action3_seen = true;
+    grantBond("serena", 20, 5, 0);
+    addNtrCorruption("serena", 12);
+    var beats = [
+      "narrator::The kitchen is warm. Candles on the counter — she bought them herself, for herself. Serena stands in the middle of her kitchen, her house, her life, with no debt hanging over it.",
+      "serena::“I made dinner. A real one. Not leftovers, not whatever was about to expire. An actual meal, for two.”",
+      "narrator::The table is set. Wine, bread, something that smells like thyme and butter. She cooked in bare feet and the apron is still on.",
+      "serena::“This is what I wanted. This. A kitchen that’s just a kitchen. Not a meeting room, not a payment counter. Just… food and someone to share it with.”",
+      "narrator::You eat. You talk. She laughs — really laughs, the kind that makes her put her hand over her mouth because she’s not used to the sound of it.",
+      "narrator::After dinner she stands at the sink. You come up behind her. She leans back into you.",
+      "serena::“Leave the dishes.” She turns around in your arms. “They can wait. For once, everything can wait.”",
+      { speaker: "narrator", text: "She kisses you against the counter, then sinks to her knees. There’s no desperation this time. Just certainty. She takes you in her mouth slowly, savoring, her eyes on yours.", video: "serena/action3/serenablowjob.1 (1).mp4" },
+      "narrator::She stands, takes your hand, and leads you to the counter. Turns around.",
+      { speaker: "narrator", text: "She braces against the counter and you enter her from behind. The candles flicker. She gasps, arches, and finds your hand with hers.", video: "serena/action3/serenamissionary.2.mp4" },
+      "narrator::She turns and pushes you into the chair. Straddles you.",
+      { speaker: "narrator", text: "She rides you in the kitchen chair, hands on your shoulders, forehead against yours. Every movement is unhurried. She has all the time in the world now.", video: "serena/action3/serenacowgirl.3.mp4" },
+      "serena::“Inside me. I want to feel you.”",
+      { speaker: "narrator", text: "She grinds against you, deeper, slower, until you both finish together. She holds you inside her, trembling, and doesn’t let go.", video: "serena/action3/serenacowgirlCreampie.4.mp4" },
+      "narrator::Afterwards she sits on your lap, head on your shoulder. The candles are burning low. The dishes are still in the sink.",
+      "serena::“This is what home feels like.”"
+    ];
+    playSequence(beats.map(parseCasualLine), finishAfter, "Leave");
+  }
+
+  /* ============ KIRA ACTIONS ============ */
+
+  /* Action 1 — Park, after Q3 */
+  function needsKiraNtrAction1() {
+    return ntrModeOn() && !!state.flags.kira_ntr_q3_complete
+      && !state.flags.kira_ntr_action1_seen
+      && state.room === "park" && state.hour >= 6 && state.hour < 9;
+  }
+  function playKiraNtrAction1() {
+    state.flags.kira_ntr_action1_seen = true;
+    grantBond("kira", 10, 5, 0);
+    addNtrCorruption("kira", 8);
+    var beats = [
+      "narrator::Early morning. The trail is empty. Kira is at the fountain, not stretching. Waiting. When she sees you, she doesn’t pretend otherwise.",
+      "kira::“You’re late.”",
+      "player::By two minutes.",
+      "kira::“Two minutes is a lot.” She steps closer. “I’ve been thinking about the bleachers. About what I said.”",
+      "player::About Tyler?",
+      "kira::“About you.” She grabs the front of your shirt. Not aggressive — decided. “The storage shed by the track. Nobody uses it this early.”",
+      "narrator::The shed is dim. Running equipment, spare cones, a mat rolled in the corner. Kira closes the door and turns to you. She’s still in her running gear — sports bra, shorts, skin still warm from the sprint.",
+      "kira::“I don’t do this. I don’t—” She stops. “Actually, I’ve never done anything for myself. Everything is for times, for Tyler, for the team. This is for me.”",
+      "narrator::She kneels. Athletic, controlled, like everything she does. But her hands are shaking.",
+      { speaker: "narrator", text: "She takes you in her mouth with the same intensity she brings to everything — focused, committed, no half-measures. Her hands grip your hips and she doesn’t break eye contact.", video: "kira/action1/kiraOral.1.mp4" },
+      "kira::She stands, turns around, braces against the wall. “Now.”",
+      { speaker: "narrator", text: "She leans back into you, one hand against the concrete, finding a rhythm that builds like a sprint — steady, then faster, then everything at once.", video: "kira/action1/kiraCowgirlReverse.2.mp4" },
+      "narrator::She turns around and pushes you down onto the mat. Climbs on top.",
+      { speaker: "narrator", text: "She rides you with the same competitive fire she puts into every race. Her abs flex, her breathing is controlled, and she watches your face like she’s checking her splits.", video: "kira/action1/kiraCowgirl.3.mp4" },
+      "kira::“Faster—”",
+      { speaker: "narrator", text: "You flip her over and take her from behind on the mat. She drops to her elbows and bites her forearm to stay quiet. The shed walls are thin.", video: "kira/action1/kiradoggy.4.mp4" },
+      { speaker: "narrator", text: "You pull her against you, side by side on the mat. Slower now, deeper. Her hand finds yours and squeezes with each thrust, a rhythm that says everything words can’t.", video: "kira/action1/kiradeladoCreampie.5.mp4" },
+      "narrator::She finishes with a sound she swallows, whole body tensing, then releasing. You follow.",
+      "narrator::She lies on the mat, staring at the ceiling, chest heaving. Smiling. Not the race smile.",
+      "kira::“Same time tomorrow?”",
+      "player::Count on it.",
+      "kira::“Don’t be late.” She’s already lacing her shoes."
+    ];
+    playSequence(beats.map(parseCasualLine), finishAfter, "Leave");
+  }
+
+  /* Action 2 — Gym area, after Q4 */
+  function needsKiraNtrAction2() {
+    return ntrModeOn() && !!state.flags.kira_ntr_q5_complete
+      && state.flags.kira_ntr_branch === "a"
+      && !state.flags.kira_ntr_action2_seen
+      && state.room === "gym" && state.hour >= 20;
+  }
+  function playKiraNtrAction2() {
+    state.flags.kira_ntr_action2_seen = true;
+    grantBond("kira", 15, 5, 0);
+    addNtrCorruption("kira", 10);
+    var beats = [
+      "narrator::The gym is empty. Closing time was an hour ago but Kira has a key. She’s sitting on the weight bench in the dark, the exit light casting everything in red.",
+      "kira::“Locked the door.” She stands. Pulls her tank top over her head. Underneath: just a sports bra and the body of someone who’s trained every day for a decade.",
+      "kira::“Tyler never came here. Not once. This was always mine. Now it’s ours.”",
+      { speaker: "narrator", text: "She pushes you onto the bench and kneels between your legs. Takes you in her mouth like it’s a personal best she’s chasing — relentless, focused, competitive even now.", video: "kira/action2/kiraBlowjob.1.mp4" },
+      "narrator::She straddles the bench and lowers herself onto you.",
+      { speaker: "narrator", text: "Face to face on the weight bench. Her hands brace on your chest. She moves with athlete’s precision — controlled, powerful, every motion deliberate.", video: "kira/action2/kiraMissionary.2.mp4" },
+      "kira::“Harder—”",
+      { speaker: "narrator", text: "She arches back, moaning, her body tightening. She squirts against you and doesn’t stop moving.", video: "kira/action2/kiraMissionarySquirt.3.mp4" },
+      "narrator::She turns around, hands on the bench.",
+      { speaker: "narrator", text: "You take her from behind, both of you gripping the weight bench for leverage. The metal frame creaks with each thrust.", video: "kira/action2/kiraDoggy.4.mp4" },
+      "narrator::She turns back around and climbs on top.",
+      { speaker: "narrator", text: "She rides you facing away, her back muscles flexing, pace building toward a finish line only she can see.", video: "kira/action2/kiraCowgirlSquirt.5.mp4" },
+      { speaker: "narrator", text: "She turns to face you for the last stretch. Eyes locked. The competitive mask is gone — underneath it is just a woman who finally chose herself.", video: "kira/action2/kiraCowgirlReverse.6.mp4" },
+      { speaker: "narrator", text: "You finish together. She collapses forward onto your chest, breathing hard, both of you covered in sweat. The gym is silent except for the hum of the ventilation.", video: "kira/action2/kirafacialCumshot.7.mp4" },
+      "kira::“New PR.” She grins against your chest. “In everything.”"
+    ];
+    playSequence(beats.map(parseCasualLine), finishAfter, "Leave");
+  }
+
+  /* Action 3 — Park, after Q5 */
+  function needsKiraNtrAction3() {
+    return ntrModeOn() && !!state.flags.kira_ntr_q5_complete
+      && state.flags.kira_ntr_branch === "b"
+      && !state.flags.kira_ntr_action3_seen
+      && state.room === "park" && state.hour >= 6 && state.hour < 9;
+  }
+  function playKiraNtrAction3() {
+    state.flags.kira_ntr_action3_seen = true;
+    grantBond("kira", 20, 5, 0);
+    addNtrCorruption("kira", 12);
+    var beats = [
+      "narrator::Dawn. The trail. She’s there before you, stretching against the railing. When she sees you she doesn’t say anything — just holds out her hand.",
+      "kira::“The shed.”",
+      "narrator::This time is different. No urgency. No competition. She leads you inside and closes the door and stands in front of you like she has all morning.",
+      "kira::“I’m free.” She says it simply. “No Tyler. No schedule. No one to perform for. Just this.”",
+      { speaker: "narrator", text: "She takes her time. Kneeling in front of you, she’s unhurried for the first time — tasting, exploring, savoring. No race. No clock.", video: "kira/action3/kiraBoquete.1.mp4" },
+      "narrator::She pulls you down onto the mat beside her.",
+      { speaker: "narrator", text: "She straddles you, hands on your chest, and moves with a rhythm that’s slow and deliberate. For once she’s not chasing anything — she’s already there.", video: "kira/action3/kiracowgirl.2.mp4" },
+      { speaker: "narrator", text: "You turn her over and take her from behind. She presses her face into the mat and reaches back for your hand. You take it.", video: "kira/action3/kiradoggy.3.mp4" },
+      { speaker: "narrator", text: "Face to face. Her legs around you, your forehead against hers. She comes quietly, squeezing your hand, and you follow right after.", video: "kira/action3/kiramissionary.4.mp4" },
+      "narrator::She lies beside you, fingers still intertwined with yours. The morning light comes through the cracks in the shed wall.",
+      "kira::“I don’t want to run today.” She turns to you. “I just want to be here.”",
+      "narrator::First time she’s ever said that. First time she’s ever wanted to stay still."
+    ];
+    playSequence(beats.map(parseCasualLine), finishAfter, "Leave");
+  }
+
+
+
+
+  /* ============ AMBER ACTIONS ============ */
+
+  /* Action 1 — Amber’s Room, after Q3 */
+  function needsAmberNtrAction1() {
+    return ntrModeOn() && !!state.flags.valentina_ntr_q3_complete
+      && !state.flags.valentina_ntr_action1_seen
+      && state.room === "sabrina_room" && state.hour >= 21;
+  }
+  function playAmberNtrAction1() {
+    state.flags.valentina_ntr_action1_seen = true;
+    grantBond("valentina", 10, 5, 0);
+    addNtrCorruption("valentina", 8);
+    var beats = [
+      "narrator::Amber’s room is dark except for the laptop screen on the floor, cycling through her portfolio like a screensaver. She’s sitting on the bed in an oversized shirt, hair still damp from the shower. She looks up when you knock.",
+      "valentina::“Hey.” Quiet. Not her usual bright. “I couldn’t sleep. My brain won’t stop ranking the photos. Third one from the left — should I have swapped it for the greenhouse close-up?”",
+      "player::The one you chose is better.",
+      "valentina::“You always say that.” She pulls her knees up. “But you also always mean it, which is annoying.”",
+      "narrator::You sit on the edge of the bed. The laptop cycles to the photo she took of you — the one from the garden, light behind your head. She reaches over and closes it.",
+      "valentina::“Ethan called again. I didn’t pick up.” She looks at her hands. “He left a voicemail. Three minutes long. I deleted it without listening.”",
+      "player::That’s progress.",
+      "valentina::“Is it?” She laughs, short and soft. “It doesn’t feel like progress. It feels like…” She turns to you. The light from the street catches her eyes. “It feels like I’m replacing one fixation with another.”",
+      "player::Is that what this is? A fixation?",
+      "valentina::“I don’t know what this is.” She moves closer. “I know what it isn’t. It isn’t safe. It isn’t smart. It isn’t what an exchange student is supposed to do with the guy who lives down the hall.”",
+      "narrator::She kisses you. Not tentative — certain. Like she’s done deliberating and the verdict was always going to be this.",
+      "narrator::Her shirt comes off in one motion. Underneath she’s wearing nothing and she doesn’t reach for the covers. She lets you look.",
+      "valentina::“I want this. Not because I’m lonely or broken or getting back at someone. I want this because you made me feel like my work matters and nobody has ever —”",
+      "narrator::You stop her with a kiss. She doesn’t need to explain.",
+      { speaker: "narrator", text: "She takes you in her mouth with a photographer’s attention to detail — studying every reaction, adjusting, finding the angle that makes your breath catch.", video: "amber/action1/amberblowjob.1.mp4" },
+      { speaker: "narrator", text: "She pulls you onto the bed and straddles you. Hands on your chest, hair falling around her face. She moves slow at first, finding the rhythm, eyes half-closed.", video: "amber/action1/ambercowgirl.2.mp4" },
+      { speaker: "narrator", text: "She turns around, still on top, arching her back. The streetlight paints her spine in silver. She reaches back and takes your hand.", video: "amber/action1/ambercowgirlreverse.3.mp4" },
+      { speaker: "narrator", text: "You lay her down gently. Face to face. She wraps her legs around you and pulls you in. Her eyes don’t leave yours.", video: "amber/action1/ambermissionary.4.mp4" },
+      { speaker: "narrator", text: "She turns over, presses her face into the pillow, reaches back for your hip. “Don’t stop.” Her voice is muffled and raw and honest.", video: "amber/action1/amberdoggy.5.mp4" },
+      "narrator::Afterwards she lies on her stomach, tracing patterns on your arm with one finger. The portfolio cycles on the closed laptop — a faint blue pulse in the dark.",
+      "valentina::“I’m going to win that grant.” She says it to the ceiling. “And when I do, the first photo I take will be of this room. This light. Right now.”",
+      "narrator::She picks up her phone, turns on the camera, and takes a photo of the ceiling. Click. Then she curls into you and falls asleep, and the camera stays where she dropped it."
+    ];
+    playSequence(beats.map(parseCasualLine), finishAfter, "Leave");
+  }
+  /* Action 2 — Branch A, after Q5 */
+  function needsAmberNtrAction2() {
+    return ntrModeOn() && !!state.flags.valentina_ntr_q5_complete
+      && state.flags.valentina_ntr_branch === "a"
+      && !state.flags.valentina_ntr_action2_seen
+      && state.room === "sabrina_room" && state.hour >= 22;
+  }
+  function playAmberNtrAction2() {
+    state.flags.valentina_ntr_action2_seen = true;
+    grantBond("valentina", 12, 6, 0);
+    addNtrCorruption("valentina", 10);
+    var beats = [
+      "narrator::You find Amber’s door open. Not ajar — open. Like she forgot it, or stopped caring who sees.",
+      "narrator::She’s pacing. Phone on the bed, screen up. Ethan’s name in the notification bar — six messages, unread, the timestamps climbing like a fever.",
+      "valentina::“He showed up.” She says it without turning. “At the caf… on Fourth. Where I was editing. Sat across from me and said he ’flew back for this.’”",
+      "player::What did he say?",
+      "valentina::“That the grant committee knows his father. That he could get me a second interview. That I’m ’throwing away a real career’ for —” she gestures at the room — “for this. For a house that isn’t mine and a guy who doesn’t even have a gallery.”",
+      "narrator::Her hands are shaking. Not from fear — from the effort of not answering.",
+      "player::Did you tell him to leave?",
+      "valentina::“I told him no. Three times. He ordered another coffee.” She sits on the bed. “He does that. Waits you out. Like patience is the same thing as respect.”",
+      "narrator::The phone buzzes again. His name. She stares at it.",
+      "player::Give me the phone.",
+      "valentina::“What?”",
+      "player::He’s not getting an answer tonight. Or any night.",
+      "narrator::She looks at you for a long moment. Then she picks up the phone and puts it in your hand, screen still lit with his name.",
+      "narrator::You type: “This is not Amber. She asked me to tell you to stop. This number will be blocked in sixty seconds. Don’t come back.”",
+      "narrator::You show her the message before sending. She reads it. Reads it again. Then she nods — once, small, certain — and you hit send.",
+      "narrator::Thirty seconds. Forty. The three dots appear. Then vanish. Then the screen goes dark. You block the number and set the phone face-down on the nightstand.",
+      "valentina::“He’ll call from another number.”",
+      "player::Then I’ll block that one too.",
+      "valentina::“He’ll show up at the house.”",
+      "player::Then he’ll find me at the door.",
+      "narrator::Something in her unwinds. Not all at once — a thread at a time, like a knot that’s been pulled from the wrong end for months finally finding the right hand.",
+      "valentina::“You know what the worst part is? Not the control. I could see the control.” She pulls her knees up. “The worst part is that he made me feel like I was only good when someone was watching. Like my work only existed if he approved of it.”",
+      "player::Your work existed before him.",
+      "valentina::“Yeah.” She looks at the wall where her prints are pinned — twelve photos, backlit by the desk lamp. “Yeah, it did.”",
+      "narrator::She stands. Crosses the room to you. Her hands settle on your chest, not pulling, just — resting. Feeling you breathe.",
+      "valentina::“You didn’t ask what I want. You didn’t negotiate. You just… stood there.” A breath. “Nobody has ever just stood there for me.”",
+      "narrator::She kisses you. Hard. The kind of kiss that comes after the wall breaks — not desperate but decided, the way someone kisses when they’ve stopped being afraid of what they want.",
+      "narrator::Her shirt comes off and she doesn’t fold it. She never doesn’t fold it. She drops it on the floor like it belongs there and presses against you, warm skin and the faint pulse of her heart still running fast.",
+      "valentina::“I want you to see me the way I see my work. No frame. No performance. Just —”",
+      "narrator::She doesn’t finish the sentence. She doesn’t need to.",
+      { speaker: "narrator", text: "“She kneels, looking up. Her hands are steady now — the trembling from Ethan’s messages gone. She takes you in slowly, deliberately, eyes on yours the entire time.”", video: "amber/action2/amberblowjob.1.mp4" },
+      { speaker: "narrator", text: "“She turns and bends over the edge of the bed, reaching back. ’Don’t be gentle,’ she says. ’I’m done with gentle.’”", video: "amber/action2/amberdoggy.2.mp4" },
+      { speaker: "narrator", text: "“Harder. She grips the sheets. The prints on the wall shiver in their clips and she doesn’t care. The camera on the nightstand falls and she doesn’t flinch.”", video: "amber/action2/amberdoggy2.3.mp4" },
+      { speaker: "narrator", text: "“She pushes you onto the bed and climbs on top. Her hands on your chest, hair falling everywhere. She moves like she photographs — finding the frame, adjusting, then committing.”", video: "amber/action2/ambercowgirl.4.mp4" },
+      "narrator::Afterwards she lies across you, one arm dangling off the bed, the other tracing the line of your jaw. The room smells like her shampoo and sweat and the faint chemical tang of fresh prints.",
+      "valentina::“He’s going to email. He’s going to find another way.”",
+      "player::Let him.",
+      "valentina::“That’s not a plan.”",
+      "player::It’s better than a plan. It’s indifference.",
+      "narrator::She laughs — really laughs, the sound muffled against your chest. Then she reaches for her camera on the floor, holds it above you both, and takes a photo of the ceiling.",
+      "valentina::“Same ceiling. Different woman.” She sets the camera down. “I like this one better.”",
+      "narrator::The phone stays face-down. The room is quiet. And somewhere across the city, Ethan is typing a message that will never arrive."
+    ];
+    playSequence(beats.map(parseCasualLine), finishAfter, "Leave");
+  }
+
+  /* Action 3 — Branch B, after Q5 */
+  function needsAmberNtrAction3() {
+    return ntrModeOn() && !!state.flags.valentina_ntr_q5_complete
+      && state.flags.valentina_ntr_branch === "b"
+      && !state.flags.valentina_ntr_action3_seen
+      && state.room === "sabrina_room" && state.hour >= 22;
+  }
+  function playAmberNtrAction3() {
+    state.flags.valentina_ntr_action3_seen = true;
+    grantBond("valentina", 12, 6, 0);
+    addNtrCorruption("valentina", 10);
+    var beats = [
+      "narrator::Amber’s door is closed. You almost walk past. Then you hear her laugh — quiet, private, the sound of someone who just hung up the phone and is still smiling at what they said.",
+      "narrator::You knock. She opens it wearing paint-stained jeans and nothing else. A streak of cadmium yellow runs from her collarbone to her hip, and she doesn’t cover it.",
+      "valentina::“I called Ethan.” She says it the way someone announces a dentist appointment — flatly, finished. “Twenty minutes ago. From this phone, which I then set down and did not throw.”",
+      "player::What did you say?",
+      "valentina::“I told him the grant committee contacted me directly. No connections, no name, no father’s Rolodex. They liked the work.” She leans against the doorframe. “And then I told him something I’ve wanted to say for two years.”",
+      "player::Which was?",
+      "valentina::“’I don’t need you to believe in me. I already did that part.’” She smiles — not the bright one she uses in public, but the slower one. The one that takes its time. “He was quiet for about eight seconds. Then he said ’You’ll regret this.’ And I said ’Probably. But not because of you.’”",
+      "narrator::She steps back into the room. The desk is covered in prints — new ones, from this week. You recognize the light in them: this house, this street, your silhouette in the garden at dusk.",
+      "valentina::“You know what you did? By not stepping in?” She picks up a print and turns it toward you. It’s the one from the kitchen — your hands around a coffee mug, morning light cutting through steam. “You let me find out I could do it myself.”",
+      "player::I knew you could.",
+      "valentina::“Yeah, well.” She sets the print down. “Knowing and proving are different countries. I needed the passport.”",
+      "narrator::She crosses to you. Her hands — yellow paint and all — settle on your shoulders. She looks at you the way she looks through a viewfinder: composing, deciding, then committing to the shot.",
+      "valentina::“I have a confession.” Close now. “The reason I’m not wearing a shirt is because I was painting and it was in the way. But the reason I opened the door without putting one on is because I heard your footsteps and I wanted you to see me exactly like this.”",
+      "player::Like what?",
+      "valentina::“Free.”",
+      "narrator::She kisses you and you taste turpentine and tea and the absolute absence of apology. Her hands leave yellow prints on your neck, your arms, wherever she touches — marking you the way she marks a contact sheet.",
+      "narrator::She pulls you into the room and kicks the door shut. The prints flutter on the desk. She doesn’t care.",
+      { speaker: "narrator", text: "“She drops to her knees on the paint-stained drop cloth, looking up through her hair. She takes her time — unhurried, exploratory, the way she handles a new lens. Learning by doing.”", video: "amber/action3/amberblowjob.1.mp4" },
+      { speaker: "narrator", text: "“She pulls you to the bed and climbs on, hands on your chest. Yellow fingerprints on your skin. She rides slow, watching your face like it’s a photograph she’s developing in real time.”", video: "amber/action3/ambercowgirl.2.mp4" },
+      { speaker: "narrator", text: "“She turns around, still on top. Her back is a canvas — paint, sweat, the ridge of her spine. She arches and reaches back for your hand.”", video: "amber/action3/ambercowgirlreverse.3.mp4" },
+      { speaker: "narrator", text: "“You lay her down. Face to face. She hooks her legs around you and pulls you close. Her eyes are open, steady, unafraid — the eyes of someone with nothing left to hide.”", video: "amber/action3/ambermissionary.4.mp4" },
+      { speaker: "narrator", text: "“’Don’t pull out.’ She whispers it into your neck. ’Stay.’ And you do — pressed together, nothing between you, her breath catching as she holds on.”", video: "amber/action3/ambermissionarycreampie.5.mp4" },
+      "narrator::She lies on top of you, cheek on your chest. Yellow paint drying in streaks across both of you. The room smells like linseed and skin and the particular silence of a woman who just proved something to herself.",
+      "valentina::“I’m going to win that grant.” She says it to the ceiling, same as before. But the voice is different. No tremor. No qualifier. “And the first thing I’m going to shoot is a series called ’Aftermath.’ Just… the mess you leave behind when you stop being careful.”",
+      "narrator::She holds up her hands. Yellow paint, drying. Your skin, marked. The sheets, ruined. She grins.",
+      "valentina::“Starting with this.”",
+      "narrator::She reaches for the camera. Click. And this time she doesn’t photograph the ceiling — she photographs you, tangled in her sheets with paint on your ribs, and the look on her face says she already knows the title."
+    ];
+    playSequence(beats.map(parseCasualLine), finishAfter, "Leave");
+  }
+
+  /* ============ HARPER ACTIONS ============ */
+
+  /* Action 1 — Market, after Q3 */
+  function needsHarperNtrAction1() {
+    return ntrModeOn() && !!state.flags.harper_ntr_q3_complete
+      && !state.flags.harper_ntr_action1_seen
+      && state.room === "market" && state.hour >= 20;
+  }
+  function playHarperNtrAction1() {
+    state.flags.harper_ntr_action1_seen = true;
+    grantBond("harper", 10, 5, 0);
+    addNtrCorruption("harper", 8);
+    var beats = [
+      "narrator::The market is closed. Harper is in the stockroom, sitting on a crate, the overhead bulb swinging slightly. She texted you ten minutes ago: “Back door’s open.”",
+      "harper::“Derek cancelled again.” She’s past being angry about it. She’s past feeling anything about it. “I bought wine for two. Seems a waste to drink alone.”",
+      "narrator::You drink. She talks. About the store, about Derek, about the version of herself she thought she’d be by thirty. The wine runs out before the words do.",
+      "harper::“You know what’s funny? I manage this whole store. Every shelf, every order, every employee schedule. I run this place. But at home I can’t even decide what we eat for dinner because he never tells me if he’s coming.”",
+      "narrator::She stands. Steps toward you. The overhead light casts her shadow long across the stockroom floor.",
+      "harper::“I’m tired of waiting for someone who never shows up. You’re here. You’re always here.”",
+      "narrator::She kisses you. It’s tentative at first, then certain. Three years of engagement and she kisses you like she’s discovering what wanting someone feels like.",
+      { speaker: "narrator", text: "She sinks to her knees on the stockroom floor. Takes you in her mouth with a thoroughness that comes from someone who does everything properly — even this.", video: "Harper/action1/harperBlowjob.1.mp4" },
+      "harper::She stands, turns around, leans against the shelving unit. “Here. Now. Before I remember I’m supposed to be responsible.”",
+      { speaker: "narrator", text: "She grips the shelf and you enter her from behind. Cans rattle. She doesn’t care. Her moan echoes off the stockroom walls and she covers her mouth, then takes her hand away.", video: "Harper/action1/harperCowgirl.2.mp4" },
+      { speaker: "narrator", text: "She turns to face you and wraps her legs around your waist against the shelving unit. Eye contact she’s never given anyone. The ring on her finger catches the light but she doesn’t look at it.", video: "Harper/action1/harperCowgirlreverse.3.mp4" },
+      "narrator::She finishes with her face buried in your neck, fingers dug into your back, the most undone you’ve ever seen her.",
+      "harper::“I should feel guilty.” She straightens her blouse. “I don’t.”"
+    ];
+    playSequence(beats.map(parseCasualLine), finishAfter, "Leave");
+  }
+
+  /* Action 2 — Market, after Q4 */
+  function needsHarperNtrAction2() {
+    return ntrModeOn() && !!state.flags.harper_ntr_q5_complete
+      && state.flags.harper_ntr_branch === "a"
+      && !state.flags.harper_ntr_action2_seen
+      && state.room === "market" && state.hour >= 21;
+  }
+  function playHarperNtrAction2() {
+    state.flags.harper_ntr_action2_seen = true;
+    grantBond("harper", 15, 5, 0);
+    addNtrCorruption("harper", 10);
+    var beats = [
+      "narrator::After closing. Harper has the back office set up — a blanket on the floor, candles (from aisle three, she admits), and a bottle of the good stuff from the top shelf.",
+      "harper::“I planned this.” She says it like a confession. “First time in my life I’ve planned something that’s just for me. Not for the store, not for Derek, not for anyone.”",
+      "narrator::She takes your hand and pulls you down to the blanket. Kisses you slowly, deliberately, like she’s writing a letter she’s been composing in her head.",
+      { speaker: "narrator", text: "She takes you in her mouth on the blanket, candlelight catching the curve of her back. Meticulous, unhurried, paying attention to every detail the way she does with everything.", video: "Harper/action2/harperblowjob.1.mp4" },
+      "harper::“I want you on top of me. I want to feel your weight. I want to feel present.”",
+      { speaker: "narrator", text: "You press into her and she arches off the blanket, one hand gripping yours, the other braced against the floor. She keeps her eyes open.", video: "Harper/action2/harpermissionary.2.mp4" },
+      "narrator::She turns over, pressing back against you.",
+      { speaker: "narrator", text: "From behind, her hands grip the blanket and she bites her lip. The candles flicker. She’s louder than the stockroom — no hand over her mouth this time.", video: "Harper/action2/harperdoggy.3.mp4" },
+      "narrator::You both finish on the office floor. She lies with her head on your chest, the store perfectly quiet around you.",
+      "harper::“You know the best part?” She looks up at you. “No one is going to cancel this. No one is going to be late. You’re already here.”"
+    ];
+    playSequence(beats.map(parseCasualLine), finishAfter, "Leave");
+  }
+
+  /* Action 3 — Market, after Q5 */
+  function needsHarperNtrAction3() {
+    return ntrModeOn() && !!state.flags.harper_ntr_q5_complete
+      && state.flags.harper_ntr_branch === "b"
+      && !state.flags.harper_ntr_action3_seen
+      && state.room === "market" && state.hour >= 8 && state.hour < 12;
+  }
+  function playHarperNtrAction3() {
+    state.flags.harper_ntr_action3_seen = true;
+    grantBond("harper", 20, 5, 0);
+    addNtrCorruption("harper", 12);
+    var beats = [
+      "narrator::Saturday morning. The market is closed but Harper is inside, music playing from her phone. She dances between the aisles. You’ve never seen her dance.",
+      "harper::“The ring is gone.” She holds up her bare hand. “The tan line will fade. Everything else already has.”",
+      "narrator::She pulls you between the shelves and kisses you in aisle one, produce section, where the light comes through the front windows.",
+      "narrator::She’s different today. Lighter. The manager mask is off. Underneath is someone who laughs too loud and wants too much and is completely done apologizing for either.",
+      { speaker: "narrator", text: "She pulls you into the back and drops to her knees. There’s joy in it now — no desperation, no guilt. Just a woman who chose what she wants.", video: "Harper/action3/harperblowjob.1.mp4" },
+      { speaker: "narrator", text: "On the blanket — the same blanket from last time, she kept it here — she pulls you over her. She wraps herself around you and holds on.", video: "Harper/action3/harperdoggy.2.mp4" },
+      { speaker: "narrator", text: "You lift her against the desk. She hooks her legs around you, hands in your hair, gasping against your mouth.", video: "Harper/action3/harpermissionary.3.mp4" },
+      { speaker: "narrator", text: "She pushes you into the chair and straddles you. Takes charge with the same confidence she runs the store with.", video: "Harper/action3/harperdoggy.4.mp4" },
+      { speaker: "narrator", text: "She rides you facing forward, hands on your shoulders, forehead against yours. The rhythm is theirs — no one else’s.", video: "Harper/action3/harpercowgirl.5.mp4" },
+      { speaker: "narrator", text: "She turns around, leaning back against your chest. Slower now. Building to something.", video: "Harper/action3/harpercowgirlreverse.6.mp4" },
+      { speaker: "narrator", text: "She finishes with you inside her, both of you shaking, holding on to each other like an anchor.", video: "Harper/action3/harpercowgirlreverseCumshot.7.mp4" },
+      "narrator::Afterwards she lies in your arms on the office floor. Her bare ring finger rests against your chest.",
+      "harper::“I’m not an errand.” She says it simply, finally, like a truth she’s been working up to for years. “I’m the whole store.”"
+    ];
+    playSequence(beats.map(parseCasualLine), finishAfter, "Leave");
   }
 
   function haremModeOn() { return !!state.flags.haremMode; }
@@ -18065,6 +18628,72 @@ function checkBlackedZoeStage() {
     if (blackedModeOn() && BLACKED_QUEST_LOG[charId]) return BLACKED_QUEST_LOG[charId];
     return CHARACTER_QUEST_LOG[charId];
   }
+  const REPLAY_MAP = {
+    lily_market_resolved:"lily_quest1_resolved", lily_shampoo_resolved:"lily_quest2_resolved",
+    lily_q1_complete:"lily_q1_seen", lily_q2_complete:"lily_q2_seen", lily_q3_complete:"lily_q3_seen",
+    lily_a1_invite:"lily_a1_invite_seen", casual_lily_kitchen_date:"lily_kitchen_date_seen",
+    lily_q4_complete:"lily_q4_seen", lily_q5_complete:"lily_q5_seen",
+    lily_final_talk:"lily_final_talk_seen", casual_lily_final:"lily_final_night_seen",
+    lily_q6_complete:"lily_q6_seen", lily_q7_complete:"lily_q7_seen", casual_lily_a3:"lily_a3_seen",
+    lily_q8_complete:"lily_q8_seen", lily_q9_complete:"lily_q9_seen", casual_lily_a4:"lily_a4_seen",
+    maya_q1_complete:"maya_q1_seen", maya_q2_complete:"maya_q2_seen", maya_q3_complete:"maya_q3_seen",
+    maya_a1_invite:"maya_a1_invite_seen", casual_maya_room_date:"maya_room_date_seen",
+    maya_q4_complete:"maya_q4_seen", maya_q5_complete:"maya_q5_seen", casual_maya_final:"maya_final_seen",
+    maya_q6_complete:"maya_q6_seen", maya_q7_complete:"maya_q7_seen", casual_maya_a3:"maya_a3_seen",
+    maya_q8_complete:"maya_q8_seen", maya_q9_complete:"maya_q9_seen", casual_maya_a4:"maya_a4_seen",
+    noelle_q1_complete:"noelle_q1_seen", noelle_q2_complete:"noelle_q2_seen", noelle_q3_complete:"noelle_q3_seen",
+    noelle_a1_invite:"noelle_a1_invite_seen", casual_noelle_room_date:"noelle_room_date_seen",
+    noelle_q4_complete:"noelle_q4_seen", noelle_q5_complete:"noelle_q5_seen", casual_noelle_final:"noelle_final_seen",
+    noelle_q6_complete:"noelle_q6_seen", noelle_q7_complete:"noelle_q7_seen", casual_noelle_a3:"noelle_a3_seen",
+    noelle_q8_complete:"noelle_q8_seen", noelle_q9_complete:"noelle_q9_seen", casual_noelle_a4:"noelle_a4_seen",
+    sabrina_q1_complete:"sabrina_q1_seen", sabrina_q2_complete:"sabrina_q2_seen", sabrina_q3_complete:"sabrina_q3_seen",
+    vivian_action1_seen:"vivian_action1_seen", vivian_action2_seen:"vivian_action2_seen",
+    vivian_action3_seen:"vivian_action3_seen", vivian_action4_seen:"vivian_action4_seen",
+    sabrina_q4_complete:"sabrina_q4_seen", sabrina_q5_complete:"sabrina_q5_seen", sabrina_q6_complete:"sabrina_q6_seen",
+    sabrina_q7_complete:"sabrina_q7_seen", sabrina_q8_complete:"sabrina_q8_seen", sabrina_q9_complete:"sabrina_q9_seen",
+    claire_q1_complete:"claire_q1_seen", claire_q2_complete:"claire_q2_seen", claire_q3_complete:"claire_q3_seen",
+    claire_a1_invite:"claire_a1_invite_seen", casual_claire_store_night:"claire_store_night_seen",
+    claire_q4_complete:"claire_q4_seen", claire_q5_complete:"claire_q5_seen",
+    claire_date_planned:"claire_date_invite_seen", casual_claire_final:"claire_final_seen",
+    claire_q6_complete:"claire_q6_seen", claire_q7_complete:"claire_q7_seen", casual_claire_a3:"claire_a3_seen",
+    claire_q8_complete:"claire_q8_seen", claire_q9_complete:"claire_q9_seen", casual_claire_a4:"claire_a4_seen",
+    zoe_q1_complete:"zoe_q1_seen", zoe_q2_complete:"zoe_q2_seen", zoe_q3_complete:"zoe_q3_seen",
+    casual_zoe_show:"zoe_show_seen", casual_zoe_action1:"zoe_action1_seen",
+    zoe_q4_complete:"zoe_q4_seen", zoe_q5_complete:"zoe_q5_seen", casual_zoe_final:"zoe_final_seen",
+    zoe_q6_complete:"zoe_q6_seen", zoe_q7_complete:"zoe_q7_seen", casual_zoe_a3:"zoe_a3_seen",
+    zoe_q8_complete:"zoe_q8_seen", zoe_q9_complete:"zoe_q9_seen", casual_zoe_a4:"zoe_a4_seen",
+    chloe_q1_complete:"chloe_q1_seen", chloe_q2_complete:"chloe_q2_seen", chloe_q3_complete:"chloe_q3_seen",
+    casual_chloe_action1:"chloe_action1_seen",
+    chloe_q4_complete:"chloe_q4_seen", chloe_q5_complete:"chloe_q5_seen", casual_chloe_final:"chloe_final_seen",
+    chloe_q6_complete:"chloe_q6_seen", chloe_q7_complete:"chloe_q7_seen", casual_chloe_a3:"chloe_a3_seen",
+    chloe_q8_complete:"chloe_q8_seen", chloe_q9_complete:"chloe_q9_seen", casual_chloe_a4:"chloe_a4_seen",
+    jade_q1_complete:"jade_q1_seen", jade_q2_complete:"jade_q2_seen", jade_q3_complete:"jade_q3_seen",
+    casual_jade_action1:"jade_action1_seen",
+    jade_q4_complete:"jade_q4_seen", jade_q5_complete:"jade_q5_seen", casual_jade_final:"jade_final_seen",
+    jade_q6_complete:"jade_q6_seen", jade_q7_complete:"jade_q7_seen", casual_jade_a3:"jade_a3_seen",
+    jade_q8_complete:"jade_q8_seen", jade_q9_complete:"jade_q9_seen", casual_jade_a4:"jade_a4_seen",
+    blk_lily_q1_complete:"blk_lily_q1_seen", blk_lily_q2_complete:"blk_lily_q2_seen", blk_lily_q3_complete:"blk_lily_q3_seen",
+    blk_lily_action1_seen:"blk_lily_a1_seen", blk_lily_q4_complete:"blk_lily_q4_seen",
+    blk_lily_q5_complete:"blk_lily_q5_seen", blk_lily_q6_complete:"blk_lily_q6_seen", blk_lily_action2_seen:"blk_lily_a2_seen",
+    blk_maya_q1_complete:"blk_maya_q1_seen", blk_maya_q2_complete:"blk_maya_q2_seen", blk_maya_q3_complete:"blk_maya_q3_seen",
+    blk_maya_action1_seen:"blk_maya_a1_seen", blk_maya_q4_complete:"blk_maya_q4_seen",
+    blk_maya_q5_complete:"blk_maya_q5_seen", blk_maya_q6_complete:"blk_maya_q6_seen", blk_maya_action2_seen:"blk_maya_a2_seen",
+    blk_sabrina_q1_complete:"blk_sabrina_q1_seen", blk_sabrina_q2_complete:"blk_sabrina_q2_seen", blk_sabrina_q3_complete:"blk_sabrina_q3_seen",
+    blk_sabrina_action1_seen:"blk_sabrina_a1_seen", blk_sabrina_q4_complete:"blk_sabrina_q4_seen",
+    blk_sabrina_q5_complete:"blk_sabrina_q5_seen", blk_sabrina_q6_complete:"blk_sabrina_q6_seen", blk_sabrina_action2_seen:"blk_sabrina_a2_seen",
+    blk_claire_q1_complete:"blk_claire_q1_seen", blk_claire_q2_complete:"blk_claire_q2_seen", blk_claire_q3_complete:"blk_claire_q3_seen",
+    blk_claire_action1_seen:"blk_claire_a1_seen", blk_claire_q4_complete:"blk_claire_q4_seen",
+    blk_claire_q5_complete:"blk_claire_q5_seen", blk_claire_q6_complete:"blk_claire_q6_seen", blk_claire_action2_seen:"blk_claire_a2_seen",
+    blk_jade_q1_complete:"blk_jade_q1_seen", blk_jade_q2_complete:"blk_jade_q2_seen", blk_jade_q3_complete:"blk_jade_q3_seen",
+    blk_jade_action1_seen:"blk_jade_a1_seen", blk_jade_q4_complete:"blk_jade_q4_seen",
+    blk_jade_q5_complete:"blk_jade_q5_seen", blk_jade_q6_complete:"blk_jade_q6_seen", blk_jade_action2_seen:"blk_jade_a2_seen",
+    blk_chloe_q1_complete:"blk_chloe_q1_seen", blk_chloe_q2_complete:"blk_chloe_q2_seen", blk_chloe_q3_complete:"blk_chloe_q3_seen",
+    blk_chloe_action1_seen:"blk_chloe_a1_seen", blk_chloe_q4_complete:"blk_chloe_q4_seen",
+    blk_chloe_q5_complete:"blk_chloe_q5_seen", blk_chloe_q6_complete:"blk_chloe_q6_seen",
+    blk_zoe_q1_complete:"blk_zoe_q1_seen", blk_zoe_q2_complete:"blk_zoe_q2_seen", blk_zoe_q3_complete:"blk_zoe_q3_seen",
+    blk_zoe_action1_seen:"blk_zoe_a1_seen", blk_zoe_q4_complete:"blk_zoe_q4_seen",
+    blk_zoe_q5_complete:"blk_zoe_q5_seen", blk_zoe_q6_complete:"blk_zoe_q6_seen", blk_zoe_action2_seen:"blk_zoe_a2_seen"
+  };
   /* Keep original ref for internal code that still reads CHARACTER_QUEST_LOG directly */
   Object.assign(CHARACTER_QUEST_LOG, {
     maya: { steps: [
@@ -18338,9 +18967,12 @@ function checkBlackedZoeStage() {
     var quests = DATA.ntrQuests[charId] || [];
     var total = quests.length;
     var visibleTotal = 0;
-    quests.forEach(function(q) { if (q.lines && q.lines.length > 0) visibleTotal++; });
     var completedVisible = 0;
-    for (var i = 0; i < quests.length; i++) { if (i < step && quests[i].lines && quests[i].lines.length > 0) completedVisible++; }
+    quests.forEach(function(q) {
+      if (!q.lines || q.lines.length === 0) return;
+      visibleTotal++;
+      if (q.step < step) completedVisible++;
+    });
     var pct = visibleTotal > 0 ? Math.round((completedVisible / visibleTotal) * 100) : 0;
     var rQuests = DATA.ntrNetorareQuests ? (DATA.ntrNetorareQuests[charId] || []) : [];
     var rStep = netorareStep(charId);
@@ -18363,54 +18995,138 @@ function checkBlackedZoeStage() {
     }
     html += '</div>';
 
-    // Netori quest chain
-    html += '<div class="alw-section-label avail" style="font-size:12px;margin-top:14px;margin-bottom:6px;"><svg viewBox="0 0 14 14" style="width:14px;height:14px;vertical-align:-2px;display:inline-block;" xmlns="http://www.w3.org/2000/svg"><path d="M7 12.5s-5.5-3.5-5.5-7A2.8 2.8 0 014.3 2.5C5.4 2.5 6.4 3.2 7 4c.6-.8 1.6-1.5 2.7-1.5A2.8 2.8 0 0112.5 5.5c0 3.5-5.5 7-5.5 7z" fill="#ec4899"/></svg>  Netori \u2014 ' + completedVisible + '/' + visibleTotal + '</div>';
-    html += '<div class="alw-quest-card"><div class="alw-progress"><div class="alw-progress-fill" style="width:' + pct + '%"></div></div><div class="alw-steps">';
-    quests.forEach(function(q, qi) {
-      if (!q.lines || q.lines.length === 0) return;
-      var completed = qi < step;
-      var isCurrent = qi === step;
-      var cls = completed ? "done" : (isCurrent ? "active" : "locked");
-      var dot = completed ? "\u2714" : (isCurrent ? "\u25B8" : NTR_LOCK_ICON);
-      var rm = roomTitle(q.room);
-      var meta = '<span>' + icon("marker") + ' ' + escapeHtml(rm) + '</span><span>' + icon("clock") + ' ' + q.timeStart + ':00\u2013' + q.timeEnd + ':00</span>';
-      if (isCurrent) {
-        if (corr < q.corruptionRequired) {
-          meta += '<span class="req-later">' + icon("lock") + ' Corruption ' + corr + '/' + q.corruptionRequired + '</span>';
-        } else {
-          meta += '<span class="req-now">\u25CF available</span>';
-        }
-      }
-      html += '<div class="alw-step ' + cls + '"><div class="alw-step-dot">' + dot + '</div><div class="alw-step-body"><div class="alw-step-title">' + escapeHtml(q.title) + '</div><div class="alw-step-meta">' + meta + '</div>';
-        if (q.context) html += '<div class="alw-step-desc">' + escapeHtml(q.context) + '</div>';
-        if (q.phrase) html += '<div class="alw-step-phrase">' + escapeHtml(q.phrase) + '</div>';
-        html += '</div></div>';
+    // Netori quest chain \u2014 choice-tree with fork support
+    var linearQ = [], forkQuest = null;
+    quests.forEach(function(q) {
+      linearQ.push(q);
+      if (q.branchChoice) forkQuest = q;
     });
+    var hasFork = !!forkQuest;
+    var playerBranch = state.flags[charId + "_ntr_branch"] || null;
+    var a1Done = !!state.flags[charId + "_ntr_action1_seen"];
+    var a2Done = !!state.flags[charId + "_ntr_action2_seen"];
+    var a3Done = !!state.flags[charId + "_ntr_action3_seen"];
+
+    function qNodeHtml(q, completed, isCurrent, isLocked) {
+      var cls, ttl;
+      if (completed) { cls = "ct-done"; ttl = escapeHtml(q.title); }
+      else if (isCurrent) { cls = "ct-current"; ttl = escapeHtml(q.title); }
+      else { cls = "ct-locked"; ttl = "???"; }
+      var h = '<div class="ct-node ' + cls + '">';
+      h += '<span class="ct-node-title">' + ttl + (isLocked ? '<span class="ct-node-lock">&#128274;</span>' : '') + '</span>';
+      if (!isLocked) {
+        var rm = roomTitle(q.room);
+        var meta = '<span>' + icon("marker") + ' ' + escapeHtml(rm) + '</span><span>' + icon("clock") + ' ' + q.timeStart + ':00\u2013' + q.timeEnd + ':00</span>';
+        if (isCurrent) {
+          var corrOk = !(q.corruptionRequired > 0 && corr < q.corruptionRequired);
+          var statOk = q.completionFlag ? statGateMet(q.completionFlag) : true;
+          if (!corrOk) meta += '<span class="req-later">' + icon("lock") + ' Corruption ' + corr + '/' + q.corruptionRequired + '</span>';
+          if (!statOk) { var sl = statGateLabel(q.completionFlag); if (sl) meta += '<span class="req-later">' + icon("lock") + ' ' + escapeHtml(sl) + '</span>'; }
+          if (corrOk && statOk) meta += '<span class="req-now">\u25CF available</span>';
+        }
+        h += '<div class="ct-node-meta" style="font-size:11px;margin-top:4px;opacity:.7;">' + meta + '</div>';
+        if (q.context) h += '<div class="ct-node-desc" style="font-size:11px;margin-top:2px;opacity:.5;">' + escapeHtml(q.context) + '</div>';
+        if (q.phrase) h += '<div class="ct-node-phrase" style="font-size:11px;margin-top:2px;font-style:italic;opacity:.6;">' + escapeHtml(q.phrase) + '</div>';
+      }
+      h += '</div>';
+      return h;
+    }
+    function actNodeHtml(label, done, available) {
+      var cls = done ? "ct-done ct-action" : (available ? "ct-current ct-action" : "ct-locked ct-action");
+      var h = '<div class="ct-node ' + cls + '">';
+      h += '<span class="ct-node-title">' + (done || available ? escapeHtml(label) : "???") + '</span>';
+      if (available) h += '<div class="ct-node-meta" style="font-size:11px;margin-top:4px;opacity:.7;"><span class="req-now">\u25CF available</span></div>';
+      h += '</div>';
+      return h;
+    }
+
+    html += '<div class="alw-section-label avail" style="font-size:12px;margin-top:14px;margin-bottom:6px;"><svg viewBox="0 0 14 14" style="width:14px;height:14px;vertical-align:-2px;display:inline-block;" xmlns="http://www.w3.org/2000/svg"><path d="M7 12.5s-5.5-3.5-5.5-7A2.8 2.8 0 014.3 2.5C5.4 2.5 6.4 3.2 7 4c.6-.8 1.6-1.5 2.7-1.5A2.8 2.8 0 0112.5 5.5c0 3.5-5.5 7-5.5 7z" fill="#ec4899"/></svg>  Netori \u2014 ' + completedVisible + '/' + visibleTotal + '</div>';
+    html += '<div class="alw-quest-card"><div class="alw-progress"><div class="alw-progress-fill" style="width:' + pct + '%"></div></div>';
+    html += '<div class="choice-tree"><div class="ct-flow">';
+
+    var visIdx = 0;
+    linearQ.forEach(function(q) {
+      if (!q.lines || q.lines.length === 0) return;
+      var completed = q.step < step;
+      var isCurrent = q.step === step;
+      var isLocked = !completed && !isCurrent;
+      if (visIdx > 0) html += '<div class="ct-h-line' + (completed ? ' ct-h-done' : '') + '"></div>';
+      html += qNodeHtml(q, completed, isCurrent, isLocked);
+      if (q.step === 3) {
+        var a1Avail = completed && !a1Done;
+        html += '<div class="ct-h-line' + (a1Done ? ' ct-h-done' : '') + '"></div>';
+        html += actNodeHtml("Action 1", a1Done, a1Avail);
+      }
+      visIdx++;
+    });
+    if (hasFork) {
+      var forkLabels = forkQuest.branchChoice ? forkQuest.branchChoice.options : [];
+      var labelA = forkLabels.length > 0 ? forkLabels[0].label : "Path A";
+      var labelB = forkLabels.length > 1 ? forkLabels[1].label : "Path B";
+      var q5Done = !!state.flags[charId + "_ntr_q5_complete"];
+      html += '<div class="ct-h-line' + (q5Done ? ' ct-h-done' : '') + '"></div>';
+      html += '<div class="ct-fork-inline">';
+
+      function renderActionBranch(brKey, brLabel, actLabel, actDone) {
+        var active = playerBranch === brKey;
+        var faded = playerBranch && playerBranch !== brKey;
+        var h = '<div class="ct-fork-arm' + (active ? ' ct-branch-active' : '') + (faded ? ' ct-branch-faded' : '') + '">';
+        h += '<div class="ct-fork-lead' + (active && q5Done ? ' ct-h-done' : '') + '"></div>';
+        var actAvail = q5Done && active && !actDone;
+        h += actNodeHtml(actLabel, actDone, actAvail);
+        h += '<div class="ct-fork-label">' + escapeHtml(brLabel) + '</div>';
+        h += '</div>';
+        return h;
+      }
+      html += renderActionBranch("a", labelA, "Action 2", a2Done);
+      html += renderActionBranch("b", labelB, "Action 3", a3Done);
+      html += '</div>';
+    }
+
+    html += '</div>';
+
     html += '</div></div>';
 
-    // Netorare quest chain
+    // Netorare quest chain \u2014 choice-tree style
     if (rQuests.length > 0) {
       var rPct = rTotal > 0 ? Math.round((rStep / rTotal) * 100) : 0;
       var rivalName = rival ? rival.name : "Rival";
       html += '<div class="alw-section-label waiting" style="font-size:12px;margin-top:14px;margin-bottom:6px;"><svg viewBox="0 0 14 14" style="width:14px;height:14px;vertical-align:-2px;display:inline-block;" xmlns="http://www.w3.org/2000/svg"><path d="M7 1L1 13h12L7 1z" fill="none" stroke="#e06060" stroke-width="1.5"/><path d="M7 6v3" stroke="#e06060" stroke-width="1.5" stroke-linecap="round"/><circle cx="7" cy="11" r=".8" fill="#e06060"/></svg>  Netorare \u2014 ' + escapeHtml(rivalName) + ' \u2014 ' + rStep + '/' + rTotal + '</div>';
-      html += '<div class="alw-quest-card" style="border-left:3px solid rgba(220,60,60,.5);"><div class="alw-progress"><div class="alw-progress-fill" style="width:' + rPct + '%;background:linear-gradient(90deg,#dc3c3c,#e06060);"></div></div><div class="alw-steps">';
+      html += '<div class="alw-quest-card" style="border-left:3px solid rgba(220,60,60,.5);"><div class="alw-progress"><div class="alw-progress-fill" style="width:' + rPct + '%;background:linear-gradient(90deg,#dc3c3c,#e06060);"></div></div>';
+      html += '<div class="choice-tree"><div class="ct-flow">';
       rQuests.forEach(function(rq, ri) {
         var completed = ri < rStep;
         var isCurrent = ri === rStep;
-        var cls = completed ? "done" : (isCurrent ? "active" : "locked");
-        var dot = completed ? "\u2714" : (isCurrent ? "\u25B8" : NTR_LOCK_ICON);
+        var isLocked = !completed && !isCurrent;
         var canStart = rq.preRequisiteFlag ? !!state.flags[rq.preRequisiteFlag] : true;
-        if (isCurrent && !canStart) { cls = "locked"; dot = NTR_LOCK_ICON; }
+        if (isCurrent && !canStart) isLocked = true;
+        if (ri > 0) {
+          var prevDone = (ri - 1) < rStep;
+          html += '<div class="ct-h-line' + (prevDone && completed ? ' ct-h-done' : '') + '"></div>';
+        }
+        var cls, title;
+        if (completed) {
+          cls = 'ct-done'; title = escapeHtml(rq.title);
+        } else if (isCurrent && canStart) {
+          cls = 'ct-current'; title = escapeHtml(rq.title);
+        } else {
+          cls = 'ct-locked'; title = '???';
+        }
         var rm = roomTitle(rq.room);
         var meta = '<span>' + icon("marker") + ' ' + escapeHtml(rm) + '</span><span>' + icon("clock") + ' ' + rq.timeStart + ':00\u2013' + rq.timeEnd + ':00</span>';
         if (isCurrent && !canStart) meta += '<span class="req-later">' + icon("lock") + ' Requires netori quest</span>';
         else if (isCurrent) meta += '<span class="req-now" style="color:#e06060;">\u25CF available</span>';
-        html += '<div class="alw-step ' + cls + '"><div class="alw-step-dot">' + dot + '</div><div class="alw-step-body"><div class="alw-step-title">' + escapeHtml(rq.title) + '</div><div class="alw-step-meta">' + meta + '</div>';
-        if (rq.context) html += '<div class="alw-step-desc">' + escapeHtml(rq.context) + '</div>';
-        if (rq.phrase) html += '<div class="alw-step-phrase" style="color:rgba(224,96,96,.7);">' + escapeHtml(rq.phrase) + '</div>';
-        html += '</div></div>';
+        var lockIcon = isLocked ? '<span class="ct-node-lock">&#128274;</span>' : '';
+        html += '<div class="ct-node ' + cls + '" style="border-color:rgba(220,60,60,.4);">';
+        html += '<span class="ct-node-title">' + title + lockIcon + '</span>';
+        if (!isLocked) {
+          html += '<div class="ct-node-meta" style="font-size:11px;margin-top:4px;opacity:.7;">' + meta + '</div>';
+          if (rq.context) html += '<div class="ct-node-desc" style="font-size:11px;margin-top:2px;opacity:.5;">' + escapeHtml(rq.context) + '</div>';
+          if (rq.phrase) html += '<div class="ct-node-phrase" style="font-size:11px;margin-top:2px;font-style:italic;color:rgba(224,96,96,.7);">' + escapeHtml(rq.phrase) + '</div>';
+        }
+        html += '</div>';
       });
-      html += '</div></div>';
+      html += '</div></div></div>';
     }
 
     root.innerHTML = html;
@@ -18483,46 +19199,68 @@ function checkBlackedZoeStage() {
   function renderCharacterQuestLog(root, charId) {
     const c = DATA.characters[charId];
     const log = questLogFor(charId);
-    $("panel-modal-blurb").textContent = `${c.name} — what you've shared, and what's ahead.`;
+    if (!log) { state.panelRoom = null; renderPanel(); return; }
+    if (!state.choiceTreeReplays) state.choiceTreeReplays = {};
+    $("panel-modal-blurb").textContent = "";
+    const cheats = cheatsUnlocked();
     let firstIncomplete = -1;
     for (let i = 0; i < log.steps.length; i++) { if (!state.flags[log.steps[i].flag]) { firstIncomplete = i; break; } }
-    let html = `<div class="quest-log-head">${questIconHTML(charId)}<h3>${escapeHtml(c.name)}</h3></div><div class="card-list">`;
-    log.steps.forEach((s, i) => {
-      const timeStr = timeWindowLabel(s.time);
-      let cls, badge, note;
-      if (state.flags[s.flag]) {
-        cls = "done"; badge = icon("check") + " Done"; note = `${s.where} &middot; ${timeStr}`;
-      } else if (i === firstIncomplete) {
-        const avail = s.avail ? s.avail() : true;
-        if (avail) { cls = "current"; badge = "&#9679; In progress"; note = `${s.where} &middot; ${timeStr}`; }
-        else {
-          cls = "locked"; badge = icon("lock") + " Locked";
-          // A Claire step that's only waiting on the calendar explains the
-          // wait in her own terms; anything else falls back to its hint.
-          // A step can be blocked by several things at once. The stat is
-          // always worth naming — it's the one the player can go and fix
-          // right now — so it leads, with the story reason after it.
-          const explicit = typeof s.lockedHint === "function" ? s.lockedHint() : s.lockedHint;
-          const waiting = charId === "claire" && claireGapDaysLeft(s.flag) > 0 ? claireWaitHint(s.flag) : null;
-          const bits = [];
-          if (!statGateMet(s.flag)) bits.push(`Needs ${statGateLabel(s.flag)}`);
-          if (explicit) bits.push(explicit);
-          else if (waiting) bits.push(waiting);
-          if (!bits.length) bits.push(`${s.where} · ${timeStr}`);
-          note = bits.join(" &mdash; ");
-        }
-      } else {
-        cls = "locked"; badge = icon("lock") + " Locked"; note = `${s.where} &middot; ${timeStr}`;
+    const p = questLogProgress(charId);
+    const pct = p.total > 0 ? Math.round((p.done / p.total) * 100) : 0;
+    const steps = log.steps;
+    let html = `<div class="ct-back" data-back="1">&larr; All companions</div>`;
+    html += `<div class="ct-titlebar"><div class="ct-titlebar-info">${questIconHTML(charId)}<div><h3>${escapeHtml(c.name)}</h3><div class="ct-progress">${p.done} / ${p.total}</div><div class="ct-bar-track"><div class="ct-bar-fill" style="width:${pct}%"></div></div></div></div><div class="ct-close" data-back="1">&times;</div></div>`;
+    html += `<div class="choice-tree"><div class="ct-flow">`;
+    steps.forEach((s, i) => {
+      const done = !!state.flags[s.flag];
+      const isCurrent = !done && i === firstIncomplete;
+      const isLocked = !done && !isCurrent;
+      const devAction = REPLAY_MAP[s.flag];
+      if (i > 0) {
+        const prevDone = !!state.flags[steps[i - 1].flag];
+        html += `<div class="ct-h-line${prevDone && done ? " ct-h-done" : ""}"></div>`;
       }
-      html += `<div class="quest-log-step ${cls}"><div class="quest-log-row"><span class="quest-log-title">${escapeHtml(s.title)}</span><span class="quest-log-badge">${badge}</span></div><div class="quest-log-note">${note}</div></div>`;
+      let cls, title, lockIcon = "";
+      if (done) {
+        cls = "ct-done"; title = escapeHtml(s.title);
+      } else if (isCurrent) {
+        const avail = s.avail ? s.avail() : true;
+        cls = "ct-current"; title = escapeHtml(s.title);
+        if (!avail) lockIcon = `<span class="ct-node-lock">&#128274;</span>`;
+      } else {
+        cls = "ct-locked"; title = cheats ? escapeHtml(s.title) : "???";
+        lockIcon = `<span class="ct-node-lock">&#128274;</span>`;
+      }
+      let playable = false, badge = "";
+      if (done && devAction) {
+        const replayed = !!state.choiceTreeReplays[s.flag];
+        if (cheats) { playable = true; badge = `<div class="ct-replay-badge ct-cheat">&#9654; Replay</div>`; }
+        else if (!replayed) { playable = true; badge = `<div class="ct-replay-badge">&#9654; 1&times;</div>`; }
+        else { badge = `<div class="ct-replay-badge ct-used">&#10003;</div>`; }
+      }
+      if (isLocked && cheats && devAction) { playable = true; badge = `<div class="ct-replay-badge ct-cheat">&#9654; Play</div>`; }
+      html += `<div class="ct-node ${cls}${playable ? " ct-playable" : ""}"${playable ? ` data-replay="${escapeHtml(devAction)}" data-flag="${escapeHtml(s.flag)}"` : ""}>`;
+      html += `<span class="ct-node-title">${title}${lockIcon}</span>`;
+      if (badge) html += badge;
+      html += `</div>`;
     });
-    html += "</div>";
+    html += `</div></div>`;
     if (firstIncomplete === -1) {
-      html += `<div class="quest-card-more standalone">${icon("sparkles")} That's everything ${escapeHtml(c.name)} has for now — new quests coming in the next update.</div>`;
+      html += `<div class="ct-footer">${icon("sparkles")} All chapters explored &mdash; more coming soon.</div>`;
     }
-    html += `<div class="actions" style="margin-top:14px;"><span class="link-btn" id="btn-charlog-back">&larr; All companions</span></div>`;
     root.innerHTML = html;
-    root.querySelector("#btn-charlog-back").addEventListener("click", () => { state.panelRoom = null; renderPanel(); });
+    root.querySelectorAll("[data-back]").forEach(el => el.addEventListener("click", () => { state.panelRoom = null; renderPanel(); }));
+    root.querySelectorAll("[data-replay]").forEach((node) => {
+      node.addEventListener("click", () => {
+        const aid = node.dataset.replay;
+        const flag = node.dataset.flag;
+        if (!cheatsUnlocked()) { if (!state.choiceTreeReplays) state.choiceTreeReplays = {}; state.choiceTreeReplays[flag] = true; }
+        state.panel = null; state.panelRoom = null;
+        renderPanel();
+        const result = applyDevAction(aid);
+        if (result) { state.view = result.view; if (result.room !== undefined) state.room = result.room; render(); }
+      });
+    });
   }
 
   /* One row per character: her header (portrait, scene, replay button)
@@ -19778,6 +20516,95 @@ function checkBlackedZoeStage() {
     }
   ];
 
+  const NTR_DEV_ACTIONS = [
+    {
+      group: "Save / Time",
+      actions: [
+        { id: "reset_game", label: "Reset to fresh save (Day 1)" },
+        { id: "advance_day", label: "+1 Day (skip to next morning)" },
+        { id: "advance_3h", label: "+3 hours (same day)" },
+        { id: "add_money_100", label: "+$100" }
+      ]
+    },
+    {
+      group: "Player Stats",
+      actions: [
+        { id: "stat_fitness_5", label: "+5 Fitness" },
+        { id: "stat_charisma_5", label: "+5 Charisma" },
+        { id: "stat_confidence_5", label: "+5 Confidence" },
+        { id: "stat_intelligence_5", label: "+5 Intelligence" },
+        { id: "stats_reset", label: "Reset all to 0" }
+      ]
+    },
+    {
+      group: "NTR Setup",
+      actions: [
+        { id: "ntr_skip_intro", label: "Skip NTR intro (unlock house)" },
+        { id: "ntr_corruption_all_20", label: "Set all corruption to 20" },
+        { id: "ntr_corruption_all_40", label: "Set all corruption to 40" },
+        { id: "ntr_corruption_all_60", label: "Set all corruption to 60" },
+        { id: "ntr_corruption_all_100", label: "Set all corruption to 100" }
+      ]
+    },
+    {
+      group: "NTR — Serena",
+      actions: [
+        { id: "ntr_serena_q0", label: "Q0: Late Plates" },
+        { id: "ntr_serena_q1", label: "Q1: The Envelope" },
+        { id: "ntr_serena_q2", label: "Q2: Wine and Walls" },
+        { id: "ntr_serena_q3", label: "Q3: Closed Door" },
+        { id: "ntr_serena_a1", label: "Action 1: The Kitchen" },
+        { id: "ntr_serena_q4", label: "Q4: Laundry Room" },
+        { id: "ntr_serena_a2", label: "Action 2: Counter Claim" },
+        { id: "ntr_serena_q5", label: "Q5: Her Kitchen" },
+        { id: "ntr_serena_a3", label: "Action 3: Hers" }
+      ]
+    },
+    {
+      group: "NTR — Kira",
+      actions: [
+        { id: "ntr_kira_q0", label: "Q0: Wrong Lane" },
+        { id: "ntr_kira_q1", label: "Q1: Pacer" },
+        { id: "ntr_kira_q2", label: "Q2: Water Break" },
+        { id: "ntr_kira_q3", label: "Q3: The Bleachers" },
+        { id: "ntr_kira_a1", label: "Action 1: The Gym" },
+        { id: "ntr_kira_q4", label: "Q4: Cool Down" },
+        { id: "ntr_kira_a2", label: "Action 2: Off-Track" },
+        { id: "ntr_kira_q5", label: "Q5: Off the Record" },
+        { id: "ntr_kira_a3", label: "Action 3: Finish Line" }
+      ]
+    },
+    {
+      group: "NTR — Amber",
+      actions: [
+        { id: "ntr_valentina_q0", label: "Q0" },
+        { id: "ntr_valentina_q1", label: "Q1" },
+        { id: "ntr_valentina_q2", label: "Q2" },
+        { id: "ntr_valentina_q3", label: "Q3" },
+        { id: "ntr_valentina_a1", label: "Action 1" },
+        { id: "ntr_valentina_q4", label: "Q4" },
+        { id: "ntr_valentina_a2", label: "Action 2" },
+        { id: "ntr_valentina_q5", label: "Q5" },
+        { id: "ntr_valentina_a3", label: "Action 3" },
+        { id: "ntr_valentina_a4", label: "Action 4" }
+      ]
+    },
+    {
+      group: "NTR — Harper",
+      actions: [
+        { id: "ntr_harper_q0", label: "Q0: Regular" },
+        { id: "ntr_harper_q1", label: "Q1: The Walk Home" },
+        { id: "ntr_harper_q2", label: "Q2: Inventory" },
+        { id: "ntr_harper_q3", label: "Q3: The Ring" },
+        { id: "ntr_harper_a1", label: "Action 1: After Hours" },
+        { id: "ntr_harper_q4", label: "Q4: The Shelf" },
+        { id: "ntr_harper_a2", label: "Action 2: Stockroom" },
+        { id: "ntr_harper_q5", label: "Q5: Not an Errand" },
+        { id: "ntr_harper_a3", label: "Action 3: Closed" }
+      ]
+    },
+  ];
+
   /* Returns where the player should land right after the flags are set —
      wherever that story beat would actually leave them in real play — so
      "jump to a moment" really means landing on it, not just flipping
@@ -19854,6 +20681,7 @@ function checkBlackedZoeStage() {
     changeMoney(500);
     showToast("Everything unlocked — save is at 100%.", "bond");
   }
+
 
   function applyDevAction(id) {
     const f = state.flags;
@@ -20492,6 +21320,191 @@ function checkBlackedZoeStage() {
         f.blk_zoe_stage_planned = true;
         f.blk_zoe_stage_day = state.day;
         playBlackedZoeStage();
+        return null;
+
+      case "ntr_skip_intro":
+        f.ntr_intro_complete = true;
+        f.tutorialFreed = true;
+        f.houseHubUnlocked = true;
+        return { view: "house", room: null };
+      case "ntr_corruption_all_20":
+      case "ntr_corruption_all_40":
+      case "ntr_corruption_all_60":
+      case "ntr_corruption_all_100": {
+        var lvl = parseInt(id.split("_").pop());
+        if (!state.ntrCorruption) state.ntrCorruption = {};
+        NTR_CHARS.forEach(function(cid) { state.ntrCorruption[cid] = lvl; });
+        return null;
+      }
+
+      case "ntr_serena_q0":
+        setupNtrQuestJump("serena", 0);
+        talkToNtrCharacter("serena");
+        return null;
+      case "ntr_serena_q1":
+        setupNtrQuestJump("serena", 1);
+        talkToNtrCharacter("serena");
+        return null;
+      case "ntr_serena_q2":
+        setupNtrQuestJump("serena", 2);
+        talkToNtrCharacter("serena");
+        return null;
+      case "ntr_serena_q3":
+        setupNtrQuestJump("serena", 3);
+        talkToNtrCharacter("serena");
+        return null;
+      case "ntr_serena_a1":
+        setupNtrQuestJump("serena", 4);
+        playSerenaNtrAction1();
+        return null;
+      case "ntr_serena_q4":
+        setupNtrQuestJump("serena", 4);
+        f.serena_ntr_action1_seen = true;
+        talkToNtrCharacter("serena");
+        return null;
+      case "ntr_serena_a2":
+        setupNtrQuestJump("serena", 6);
+        f.serena_ntr_branch = "a";
+        playSerenaNtrAction2();
+        return null;
+      case "ntr_serena_q5":
+        setupNtrQuestJump("serena", 5);
+        f.serena_ntr_action1_seen = true;
+        f.serena_ntr_branch = "a";
+        talkToNtrCharacter("serena");
+        return null;
+      case "ntr_serena_a3":
+        setupNtrQuestJump("serena", 6);
+        f.serena_ntr_branch = "b";
+        playSerenaNtrAction3();
+        return null;
+
+      case "ntr_kira_q0":
+        setupNtrQuestJump("kira", 0);
+        talkToNtrCharacter("kira");
+        return null;
+      case "ntr_kira_q1":
+        setupNtrQuestJump("kira", 1);
+        talkToNtrCharacter("kira");
+        return null;
+      case "ntr_kira_q2":
+        setupNtrQuestJump("kira", 2);
+        talkToNtrCharacter("kira");
+        return null;
+      case "ntr_kira_q3":
+        setupNtrQuestJump("kira", 3);
+        talkToNtrCharacter("kira");
+        return null;
+      case "ntr_kira_a1":
+        setupNtrQuestJump("kira", 4);
+        playKiraNtrAction1();
+        return null;
+      case "ntr_kira_q4":
+        setupNtrQuestJump("kira", 4);
+        f.kira_ntr_action1_seen = true;
+        talkToNtrCharacter("kira");
+        return null;
+      case "ntr_kira_a2":
+        setupNtrQuestJump("kira", 6);
+        f.kira_ntr_branch = "a";
+        playKiraNtrAction2();
+        return null;
+      case "ntr_kira_q5":
+        setupNtrQuestJump("kira", 5);
+        f.kira_ntr_action1_seen = true;
+        f.kira_ntr_branch = "a";
+        talkToNtrCharacter("kira");
+        return null;
+      case "ntr_kira_a3":
+        setupNtrQuestJump("kira", 6);
+        f.kira_ntr_branch = "b";
+        playKiraNtrAction3();
+        return null;
+
+      case "ntr_valentina_q0":
+        setupNtrQuestJump("valentina", 0);
+        talkToNtrCharacter("valentina");
+        return null;
+      case "ntr_valentina_q1":
+        setupNtrQuestJump("valentina", 1);
+        talkToNtrCharacter("valentina");
+        return null;
+      case "ntr_valentina_q2":
+        setupNtrQuestJump("valentina", 2);
+        talkToNtrCharacter("valentina");
+        return null;
+      case "ntr_valentina_q3":
+        setupNtrQuestJump("valentina", 3);
+        talkToNtrCharacter("valentina");
+        return null;
+      case "ntr_valentina_a1":
+        setupNtrQuestJump("valentina", 4);
+        playAmberNtrAction1();
+        return null;
+      case "ntr_valentina_q4":
+        setupNtrQuestJump("valentina", 4);
+        f.valentina_ntr_action1_seen = true;
+        talkToNtrCharacter("valentina");
+        return null;
+      case "ntr_valentina_a2":
+        setupNtrQuestJump("valentina", 6);
+        f.valentina_ntr_branch = "a";
+        playAmberNtrAction2();
+        return null;
+      case "ntr_valentina_q5":
+        setupNtrQuestJump("valentina", 5);
+        f.valentina_ntr_action1_seen = true;
+        f.valentina_ntr_branch = "a";
+        talkToNtrCharacter("valentina");
+        return null;
+      case "ntr_valentina_a3":
+        setupNtrQuestJump("valentina", 6);
+        f.valentina_ntr_branch = "b";
+        playAmberNtrAction3();
+        return null;
+      case "ntr_valentina_a4":
+        return null;
+
+      case "ntr_harper_q0":
+        setupNtrQuestJump("harper", 0);
+        talkToNtrCharacter("harper");
+        return null;
+      case "ntr_harper_q1":
+        setupNtrQuestJump("harper", 1);
+        talkToNtrCharacter("harper");
+        return null;
+      case "ntr_harper_q2":
+        setupNtrQuestJump("harper", 2);
+        talkToNtrCharacter("harper");
+        return null;
+      case "ntr_harper_q3":
+        setupNtrQuestJump("harper", 3);
+        talkToNtrCharacter("harper");
+        return null;
+      case "ntr_harper_a1":
+        setupNtrQuestJump("harper", 4);
+        playHarperNtrAction1();
+        return null;
+      case "ntr_harper_q4":
+        setupNtrQuestJump("harper", 4);
+        f.harper_ntr_action1_seen = true;
+        talkToNtrCharacter("harper");
+        return null;
+      case "ntr_harper_a2":
+        setupNtrQuestJump("harper", 6);
+        f.harper_ntr_branch = "a";
+        playHarperNtrAction2();
+        return null;
+      case "ntr_harper_q5":
+        setupNtrQuestJump("harper", 5);
+        f.harper_ntr_action1_seen = true;
+        f.harper_ntr_branch = "a";
+        talkToNtrCharacter("harper");
+        return null;
+      case "ntr_harper_a3":
+        setupNtrQuestJump("harper", 6);
+        f.harper_ntr_branch = "b";
+        playHarperNtrAction3();
         return null;
 
       case "maya_intro_seen":
@@ -21242,8 +22255,9 @@ function checkBlackedZoeStage() {
 
   function renderDevToolsView(root) {
     $("panel-modal-blurb").textContent = "Developer tools — jump to any story checkpoint for testing. Not part of the real game.";
-    const actions = blackedModeOn() ? BLACKED_DEV_ACTIONS : DEV_ACTIONS;
-    let html = '<div class="panel-title">Developer' + (blackedModeOn() ? ' <span style="color:var(--accent-2);font-size:12px;">(Blacked Mode)</span>' : '') + '</div>';
+    const actions = ntrModeOn() ? NTR_DEV_ACTIONS : blackedModeOn() ? BLACKED_DEV_ACTIONS : DEV_ACTIONS;
+    var modeTag = ntrModeOn() ? ' <span style="color:var(--accent-2);font-size:12px;">(NTR Mode)</span>' : blackedModeOn() ? ' <span style="color:var(--accent-2);font-size:12px;">(Blacked Mode)</span>' : '';
+    let html = '<div class="panel-title">Developer' + modeTag + '</div>';
     actions.forEach((group) => {
       html += `<div class="dev-group"><h3>${escapeHtml(group.group)}</h3><div class="dev-actions">`;
       group.actions.forEach((a) => {
@@ -21735,13 +22749,16 @@ function checkBlackedZoeStage() {
       let workBlocked = false;
       if (travelWorkAllowed && !travelWorkAllowed.has(id)) { locked = true; workBlocked = true; }
       if (travelShiftActive) { locked = true; workBlocked = true; }
-      return `<div class="travel-btn${locked ? " locked" : ""}" data-travel="${id}"${locked ? ' data-locked="true"' : ""}${workBlocked ? ' data-work-locked="true"' : ""}><span>${label}</span><span>${locked ? icon("lock") : "&#8250;"}</span></div>`;
+      const pinged = !locked && travelNotify.has(id);
+      const ping = pinged ? '<span class="room-ping" style="margin-left:6px"></span>' : "";
+      return `<div class="travel-btn${locked ? " locked" : ""}" data-travel="${id}"${locked ? ' data-locked="true"' : ""}${workBlocked ? ' data-work-locked="true"' : ""}><span>${label}${ping}</span><span>${locked ? icon("lock") : "&#8250;"}</span></div>`;
     };
     const travel = $("quick-travel");
     travel.innerHTML = travelBtn("foyer", "House") + travelBtn("upstairs_hall", "Upstairs") + travelBtn("outside", "Outside");
     travel.querySelectorAll("[data-travel]").forEach((b) => {
       if (b.dataset.locked === "true") {
         if (b.dataset.workLocked === "true") b.addEventListener("click", () => { (activeShiftBlocker() || blockedByWork)(); });
+        else if (travelLocked) b.addEventListener("click", () => showToast("Follow the orange marker — it shows where to go next.", "warn"));
         return;
       }
       b.addEventListener("click", () => goRoom(b.dataset.travel));
@@ -21799,6 +22816,19 @@ function checkBlackedZoeStage() {
     if (!state.flags["preText_lily_market"]) return "Go find Lily in the Kitchen and talk to her.";
     if (!state.flags["casual_noelle_room_intro"]) return "Take your bag up to your room.";
     return "The shared house. Where do you want to go?";
+  }
+  function upstairsBlurb() {
+    if (isTutorialActive() && !state.flags["casual_noelle_room_intro"]) return "Your room is up here — go unpack your bag.";
+    return "The private rooms on the second floor.";
+  }
+  function outsideBlurb() {
+    if (isTutorialActive()) {
+      var lm = DATA.quests.find(function(q) { return q.id === "lily_market"; });
+      if (lm && questStarted(lm) && !questResolved(lm)) return "Head to the Supermarket to buy Lily’s groceries.";
+      var ls = DATA.quests.find(function(q) { return q.id === "lily_shampoo"; });
+      if (ls && questStarted(ls) && !hasItem(ls.itemId)) return "Pick up shampoo at the Supermarket.";
+    }
+    return "Somewhere in town to visit.";
   }
 
   /* ---------------- sidebar panel popups ----------------
@@ -22219,8 +23249,8 @@ function checkBlackedZoeStage() {
     if (state.minigame) { renderMinigame(root); return; }
     switch (state.view) {
       case "house": renderRoomsView(root, DATA.rooms, houseBlurb()); break;
-      case "upstairs": renderRoomsView(root, DATA.upstairs, "The private rooms on the second floor."); break;
-      case "outside": renderRoomsView(root, DATA.outside, "Somewhere in town to visit."); break;
+      case "upstairs": renderRoomsView(root, DATA.upstairs, upstairsBlurb()); break;
+      case "outside": renderRoomsView(root, DATA.outside, outsideBlurb()); break;
       case "work": {
         const parts = (state.room || "").split("/");
         renderWorkHubView(root, parts[0], parts[1] || null);
