@@ -380,15 +380,15 @@ window.GAME_DATA = {
       weekday: [
         { start: 0, end: 8, room: null },
         { start: 8, end: 14, room: "market" },
-        { start: 14, end: 17, room: "park" },
-        { start: 17, end: 20, room: "market" },
-        { start: 20, end: 24, room: null }
+        { start: 14, end: 15, room: "park" },
+        { start: 15, end: 23, room: "market" },
+        { start: 23, end: 24, room: null }
       ],
       weekend: [
         { start: 0, end: 10, room: null },
-        { start: 10, end: 15, room: "park" },
-        { start: 15, end: 20, room: "market" },
-        { start: 20, end: 24, room: null }
+        { start: 10, end: 14, room: "park" },
+        { start: 14, end: 23, room: "market" },
+        { start: 23, end: 24, room: null }
       ]
     }
   },
@@ -1246,6 +1246,7 @@ window.GAME_DATA = {
         "step": 0,
         "title": "Still Water",
         "completionFlag": "serena_ntr_q0_complete",
+        "room": "kitchen",
         "corruptionRequired": 0,
         "corruptionReward": 5,
         "timeStart": 20,
@@ -1640,7 +1641,6 @@ window.GAME_DATA = {
       },
       {
         "step": 5,
-        "step": 5,
         "title": "The Finish Line",
         "room": "park",
         "context": "Kira is at the park one last time. She’s made a decision.",
@@ -1713,7 +1713,7 @@ window.GAME_DATA = {
       {
         "step": 1,
         "title": "The Grant",
-        "room": "garden",
+        "room": "park",
         "context": "Amber is shooting flowers in the garden. She’s building a portfolio.",
         "phrase": "“I need a theme. Something that says I see the world differently.”",
         "completionFlag": "valentina_ntr_q1_complete",
@@ -1745,7 +1745,7 @@ window.GAME_DATA = {
       {
         "step": 2,
         "title": "The Bridge",
-        "room": "outside",
+        "room": "park",
         "context": "Amber asked you to scout locations by the river.",
         "phrase": "“You don’t make me feel like my camera is competition.”",
         "completionFlag": "valentina_ntr_q2_complete",
@@ -1808,7 +1808,7 @@ window.GAME_DATA = {
       {
         "step": 4,
         "title": "The Flowers",
-        "room": "outside",
+        "room": "living_room",
         "context": "Ethan showed up. Flowers, charm, and a hidden agenda.",
         "phrase": "“He makes me feel crazy for having boundaries.”",
         "completionFlag": "valentina_ntr_q4_complete",

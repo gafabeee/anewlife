@@ -23306,7 +23306,7 @@ function checkBlackedZoeStage() {
      than in em.js.  Even if someone swaps em.js for a version where
      unlocked() returns true, the engine independently checks that the real
      code was entered.  Same pattern as the early-access gate above. */
-  const _CV_H = "954df47e020223fc04d43f708690ae1bc1c9aca0c547a3b96c919c2008028202";
+  const _CV_H = "bbafd53175bdfec4bfa9fb28397ba7937634c0046dd21ac2e9dfb18f1d65688b";
   const _CV_K = "anewlife_cv_v1";
   const _CV_S = "anewlife/cv/v1";
   let _cvToken = null;
