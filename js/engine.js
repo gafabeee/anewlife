@@ -23076,35 +23076,51 @@ function checkBlackedZoeStage() {
      changelog. Unread entries put a dot on the News button until opened. */
   const NEWS = [
     {
-      id: "v0_2_3_release",
+      id: "v0_2_4_release",
       kind: "release",
       date: "Out now",
-      title: "v0.2.3 — New Faces",
-      lead: "Blacked Mode gets its own companion, and the original path gets a new one.",
+      title: "v0.2.4 — Close Quarters",
+      lead: "NTR Mode arrives with new characters, rivals, jobs, and a full quest system.",
       sections: [
         {
           heading: "New",
           items: [
-            "Sabrina is now exclusive to Blacked Mode with her own full quest line.",
-            "Meet Vivian — a new companion who takes Sabrina’s place in the original mode, with four brand-new intimate scenes.",
-            "Dynamic character names and portraits that adapt to your chosen mode."
+            "NTR Mode with four new female characters: Serena, Kira, Valentina, and Harper.",
+            "Three male rivals with encounter images: Marcus, Tyler, Ethan, and Derek.",
+            "Full NTR quest system with corruption, stat gates, and branching dialogue.",
+            "NTR job system: work at the market, diner, or hotel to earn money.",
+            "Money cost requirement for market and cinema quests.",
+            "Gym now fully functional in NTR Mode.",
+            "Dynamic character schedules — characters move around the house and town throughout the day."
           ]
         },
         {
           heading: "Changed",
           items: [
-            "Character selection at game start now determines which companion you meet.",
-            "Quest log, hints, phone messages and keepsakes update to match your mode."
+            "Characters appear in realistic locations outside of quest hours.",
+            "Job contracts now let you work on the same day you sign up.",
+            "Quest tracker shows money requirements for upcoming quests.",
+            "Rival encounter images display during key story moments."
           ]
         }
       ]
     },
     {
-      id: "v0_2_3_harem_postponed",
+      id: "v0_2_5_upcoming",
       kind: "next",
-      date: "Postponed",
-      title: "Harem Mode",
-      lead: "Harem Mode has been postponed. More details on Patreon."
+      date: "November 4",
+      title: "v0.2.5 — New Scenes",
+      lead: "New intimate scenes for every character in the game.",
+      sections: [
+        {
+          heading: "Coming",
+          items: [
+            "Brand-new scenes for all characters across every mode.",
+            "Expanded quest lines and deeper story content.",
+            "More details on Patreon closer to release."
+          ]
+        }
+      ]
     }
   ];
   /* Read state lives in localStorage rather than the save file: News sits
