@@ -17806,7 +17806,7 @@ function checkBlackedZoeStage() {
       if (a.branch && state.flags[a.charId + "_ntr_branch"] !== a.branch) return;
       var cName = DATA.characters[a.charId] ? DATA.characters[a.charId].name : a.charId;
       var rm = roomTitle(a.room);
-      items.push({ title: "❤ " + a.title, note: "Visit " + cName + " at " + rm + " (" + a.timeStart + ":00–" + a.timeEnd + ":00).", charId: a.charId });
+      items.unshift({ title: "❤ " + a.title, note: "Visit " + cName + " at " + rm + " (" + a.timeStart + ":00–" + a.timeEnd + ":00).", charId: a.charId });
     });
     return items;
   }
