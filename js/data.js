@@ -120,20 +120,26 @@ window.GAME_DATA = {
       ntrRival: "Derek",
       ntrRivalRole: "Emotionally distant fiancé",
       description: "Harper manages the local supermarket and is engaged to Derek, a man who’s forgotten three anniversaries in a row. She’s organized, kind, and twists the ring on her finger when she thinks about taking it off. The market is her refuge — or it was, until someone started showing up for more than groceries."
+    },
+    marcus: {
+      id: "marcus",
+      name: "Marcus",
+      color: "#8b9dc3",
+      role: "Business partner"
     }
   },
 
   /* ---------------- intro: exchange-house arrival ---------------- */
   intro: {
     lines: [
-      { speaker: "narrator", text: "After a long flight and a day that already feels too full, you finally arrive at the house where you'll be staying during your exchange." },
-      { speaker: "lily", text: "Lily opens the door before you can knock a second time. “You made it. Come in, your timing is actually perfect.”" },
-      { speaker: "player", text: "Thanks. I wasn't sure if I was at the right place." },
-      { speaker: "lily", text: "“You are. I'm Lily, the owner. The house gets a little noisy when someone new arrives, so everyone is pretending they are not curious.”" },
-      { speaker: "sabrina", text: "Vivian looks over from the living room and lifts a hand in greeting. “Welcome. It feels chaotic now, but you get used to the rhythm of the house pretty fast.”" },
-      { speaker: "player", text: "It already feels like everyone here knows each other better than I know what to do with my suitcase." },
-      { speaker: "lily", text: "“That settles itself soon enough. This is your home for now. Your room is ready, the shared spaces are open, and you can take your time getting used to everyone.”" },
-      { speaker: "lily", text: "“Once you've caught your breath, just move around the house however you want. Everyone here arrived as a stranger once.”" }
+      { speaker: “narrator”, text: “After a long flight and a day that already feels too full, you finally arrive at the house where you'll be staying during your exchange.” },
+      { speaker: “serena”, text: “The door opens before you knock twice. A woman in her early thirties stands in the doorway — dark hair pulled loosely back, an apron still tied around her waist. “You must be the new tenant. Come in, I just finished cooking.”” },
+      { speaker: “player”, text: “Thanks. You're Serena, right? The one who manages the house?” },
+      { speaker: “serena”, text: “”That's me. Owner, manager, cook — whatever title sounds less exhausting.” She takes your bag before you can protest. “Your room is upstairs. I'll show you everything, but first — have you eaten?”” },
+      { speaker: “player”, text: “Not since the airport. That smells amazing, by the way.” },
+      { speaker: “serena”, text: “She smiles — the first real one. “Good answer. Drop your things. I'll fix you a plate, and then I'll show you around the neighborhood. You'll want to know where things are before the jet lag catches up.”” },
+      { speaker: “narrator”, text: “The house is warm and lived-in. Photos on the walls, books stacked on the hallway shelf, the faint scent of garlic and fresh bread. It already feels less like a rental and more like someone's home.” },
+      { speaker: “serena”, text: “”This is your home now, for as long as you're here. The others will introduce themselves eventually — they always do.” She pauses at the kitchen doorway. “Eat first. Then we walk.”” }
     ]
   },
 
@@ -1151,8 +1157,32 @@ window.GAME_DATA = {
   ],
 
   ntrIntro: { lines: [] },
-  ntrIntroOutside: { lines: [] },
-  ntrIntroMarket: { lines: [] },
+  ntrIntroOutside: { lines: [
+    { speaker: "narrator", text: "Serena walks beside you through the neighborhood, pointing out landmarks with the ease of someone who's lived here her whole life." },
+    { speaker: "serena", text: ""That's the park — it's nice in the morning if you're an early riser. And over there is the gym, in case you need to burn off my cooking."" },
+    { speaker: "player", text: "You seem to know every corner of this place." },
+    { speaker: "serena", text: ""I grew up three streets over. Moved into the house after my husband passed." She says it plainly, without asking for sympathy. "It was his idea to rent the rooms. I just… kept it going."" },
+    { speaker: "player", text: "I'm sorry. That must have been hard." },
+    { speaker: "serena", text: ""It was." A beat. "But the house is full now, and that helps." She catches your eye briefly, then looks away. "Come on. There's a market up ahead — you'll need to know where it is. I practically live there."" },
+    { speaker: "narrator", text: "She walks a half-step ahead, pointing things out, filling the silence with small facts about the town. But every now and then she glances back at you — like she's checking whether you're still listening." }
+  ] },
+  ntrIntroMarket: { lines: [
+    { speaker: "narrator", text: "The market is bright and busy. Serena grabs a basket from the stack by the entrance and starts scanning the aisles like she's done it a thousand times." },
+    { speaker: "serena", text: ""The produce here is decent, and the bread is baked fresh every morning. I usually come around—"" },
+    { speaker: "marcus", text: "A deep voice cuts in from behind you. "Serena. Twice in one week. People are going to talk."" },
+    { speaker: "narrator", text: "A tall man steps into view — well-dressed for a Tuesday afternoon, with the kind of easy confidence that comes from always being the tallest person in the room. He looks at Serena first, then at you — like he's measuring something." },
+    { speaker: "serena", text: ""Marcus." Her tone shifts — still polite, but with a guard that wasn't there a second ago. "This is the new tenant. I'm showing him around."" },
+    { speaker: "marcus", text: "He extends a hand, grip firm. "Marcus. I was David's business partner — Serena's late husband. I help keep things running around the house. Financially, at least."" },
+    { speaker: "player", text: "Nice to meet you. She's been a great guide so far." },
+    { speaker: "marcus", text: "His smile doesn't quite reach his eyes. "She always is. Serena has a way of making people feel… at home." He turns back to her. "I was going to stop by later — there's some paperwork on the property taxes. But I see you're busy."" },
+    { speaker: "serena", text: ""I'm showing a new tenant the neighborhood, Marcus. It's part of the job."" },
+    { speaker: "marcus", text: ""Of course it is." He holds her gaze a beat too long, then steps back. "Well. Don't let me interrupt the tour." He looks at you again — friendly, but the kind of friendly that's keeping score. "Welcome to the house. I'm sure I'll be seeing you around."" },
+    { speaker: "narrator", text: "He turns and walks toward the registers, unhurried. Serena watches him go, her jaw tight." },
+    { speaker: "serena", text: ""Marcus is… helpful. He was close to my husband, so he still looks after things." She puts a tin of coffee in the basket a little harder than necessary. "Sometimes more than he needs to."" },
+    { speaker: "player", text: "Seems like he cares about you." },
+    { speaker: "serena", text: "She pauses. "He cares about a lot of things." She doesn't elaborate. "Come on. Let's finish up and head back. It's getting late, and the others will want to meet you."" },
+    { speaker: "narrator", text: "You catch Marcus watching from the next aisle as you leave. He lifts a hand in a half-wave — more to Serena than to you. She doesn't wave back." }
+  ] },
   ntrQuests: {},
   ntrRivalEvents: {},
   ntrRivals: {},

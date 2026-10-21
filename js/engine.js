@@ -21666,12 +21666,27 @@ function checkBlackedZoeStage() {
 
   /* ---------------- intro ---------------- */
   function startIntro() {
-    if (ntrModeOn()) { startNtrIntro(); return; }
-    var intro = DATA.intro;
     playSequence(
-      intro.lines.map((l) => ({ speaker: l.speaker, text: l.text })),
-      () => { state.flags.houseHubUnlocked = true; navigateTo("house", null); finishAfter(); },
-      "Enter the house"
+      DATA.intro.lines.map(function(l) { return { speaker: l.speaker, text: l.text }; }),
+      function() {
+        state.flags.houseHubUnlocked = true;
+        playSequence(
+          DATA.ntrIntroOutside.lines.map(function(l) { return { speaker: l.speaker, text: l.text }; }),
+          function() {
+            playSequence(
+              DATA.ntrIntroMarket.lines.map(function(l) { return { speaker: l.speaker, text: l.text }; }),
+              function() {
+                state.flags.tutorialFreed = true;
+                navigateTo("house", null);
+                finishAfter();
+              },
+              "Head home"
+            );
+          },
+          "Go to the market"
+        );
+      },
+      "Go outside"
     );
   }
 
