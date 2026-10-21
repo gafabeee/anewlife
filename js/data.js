@@ -1241,6 +1241,7 @@ window.GAME_DATA = {
     "serena": [
       {
         "step": 0,
+        "title": "Still Water",
         "completionFlag": "serena_ntr_q0_complete",
         "corruptionRequired": 0,
         "corruptionReward": 5,
