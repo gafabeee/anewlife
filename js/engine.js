@@ -23086,21 +23086,7 @@ function checkBlackedZoeStage() {
           heading: "New",
           items: [
             "NTR Mode with four new female characters: Serena, Kira, Valentina, and Harper.",
-            "Three male rivals with encounter images: Marcus, Tyler, Ethan, and Derek.",
-            "Full NTR quest system with corruption, stat gates, and branching dialogue.",
-            "NTR job system: work at the market, diner, or hotel to earn money.",
-            "Money cost requirement for market and cinema quests.",
-            "Gym now fully functional in NTR Mode.",
-            "Dynamic character schedules — characters move around the house and town throughout the day."
-          ]
-        },
-        {
-          heading: "Changed",
-          items: [
-            "Characters appear in realistic locations outside of quest hours.",
-            "Job contracts now let you work on the same day you sign up.",
-            "Quest tracker shows money requirements for upcoming quests.",
-            "Rival encounter images display during key story moments."
+            "Three male rivals with encounter images: Marcus, Tyler, Ethan, and Derek."
           ]
         }
       ]
