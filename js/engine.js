@@ -22789,16 +22789,16 @@ function checkBlackedZoeStage() {
   function startNtrIntro() {
     var intro = DATA.ntrIntro;
     playSequence(
-      intro.lines.map(function(l) { return { speaker: l.speaker, text: l.text }; }),
+      intro.lines.map(function(l) { var b = { speaker: l.speaker, text: l.text }; if (l.image) b.image = l.image; if (l.video) b.video = l.video; return b; }),
       function() {
         state.flags.houseHubUnlocked = true;
         var outside = DATA.ntrIntroOutside;
         playSequence(
-          outside.lines.map(function(l) { return { speaker: l.speaker, text: l.text }; }),
+          outside.lines.map(function(l) { var b = { speaker: l.speaker, text: l.text }; if (l.image) b.image = l.image; if (l.video) b.video = l.video; return b; }),
           function() {
             var market = DATA.ntrIntroMarket;
             playSequence(
-              market.lines.map(function(l) { return { speaker: l.speaker, text: l.text }; }),
+              market.lines.map(function(l) { var b = { speaker: l.speaker, text: l.text }; if (l.image) b.image = l.image; if (l.video) b.video = l.video; return b; }),
               function() {
                 state.flags.ntr_intro_complete = true;
                 state.flags.tutorialFreed = true;
