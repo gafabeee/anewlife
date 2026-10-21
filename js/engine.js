@@ -14772,13 +14772,19 @@ function checkBlackedZoeStage() {
   }
   function pendingShiftJobId() {
     const id = jobDueToday();
-    if (!id) return null;
-    const job = DATA.jobs[id];
-    const lockStart = shiftLockStartHour(job);
-    if (state.hour >= lockStart && state.hour <= job.latestStartHour) return id;
+    if (id) {
+      const job = DATA.jobs[id];
+      const lockStart = shiftLockStartHour(job);
+      if (state.hour >= lockStart && state.hour <= job.latestStartHour) return id;
+    }
+    var ntrId = typeof pendingNtrShiftJobId === "function" ? pendingNtrShiftJobId() : null;
+    if (ntrId) {
+      var nj = ntrJobData(ntrId);
+      return nj ? nj.locationId : null;
+    }
     return null;
   }
-  function isWorkLockActive() { return !!pendingShiftJobId(); }
+  function isWorkLockActive() { return !!pendingShiftJobId() || isNtrWorkLockActive(); }
   /* The lock exists to stop the player doing something ELSE when they're
      due on shift — not to pin them where they're standing. Corridors have
      to stay open or there's no route to work at all: the sidebar's House
@@ -14787,9 +14793,13 @@ function checkBlackedZoeStage() {
      buttons at "I'm going to be late for work". Passages open, activities
      shut, workplace open. */
   function workLockRooms(jobId) {
+    if (ntrModeOn() && DATA.ntrJobs && DATA.ntrJobs[jobId]) {
+      return ntrWorkLockRooms(jobId);
+    }
     return new Set(["outside", "house", "upstairs_hall", "foyer", jobId]);
   }
   function blockedByWork() {
+    if (isNtrWorkLockActive()) { blockedByNtrWork(); return; }
     playSequence([{ speaker: "player", text: "I need to get moving, or I'm going to be late for work." }], finishAfter);
   }
 
@@ -17078,15 +17088,15 @@ function checkBlackedZoeStage() {
   }
 
   function renderRoomDetail(root, def) {
-    if (def.id === "market" && !(ntrModeOn() && def.characterId)) {
+    if (def.id === "market" && !ntrModeOn()) {
       renderMarketDetail(root, def);
       return;
     }
-    if (DATA.jobs[def.id] && !(ntrModeOn() && def.characterId)) {
+    if (DATA.jobs[def.id] && !ntrModeOn()) {
       renderWorkplaceDetail(root, def);
       return;
     }
-    if (def.id === "gym" && !(ntrModeOn() && def.characterId)) {
+    if (def.id === "gym" && !ntrModeOn()) {
       renderGymDetail(root, def);
       return;
     }
@@ -17139,32 +17149,44 @@ function checkBlackedZoeStage() {
 
     if (!def.characterId) {
       $("story-text").textContent = roomDesc(def.id) || def.description;
-      // The park is the free alternative to a paid gym — nothing here
-      // touches Fitness, so training still has to be bought. The cinema
-      // sells the same thing the desk gives away, in two-hour blocks.
       let acts = [];
       if (!isTutorialActive()) {
         if (def.id === "park") acts = PARK_ACTIVITIES;
         else if (def.id === "cinema") acts = [FILM_ACTIVITY];
       }
+      let ntrJobHtml = "";
+      if (ntrModeOn() && DATA.ntrJobs && DATA.ntrJobs[def.id]) {
+        const ntrHired = isNtrHired(def.id);
+        const ntrExpired = ntrHired && ntrContractExpired(def.id);
+        let ntrLabel = "Apply for work";
+        if (ntrHired && !ntrExpired) ntrLabel = "Work a shift";
+        else if (ntrExpired) ntrLabel = "Renew contract";
+        ntrJobHtml += `<span class="link-btn" id="btn-ntr-work" style="border-color:var(--accent-2);color:var(--accent-2)">${ntrLabel}</span>`;
+        if (ntrHired && !ntrExpired) {
+          ntrJobHtml += `<span class="link-btn" id="btn-ntr-quit" style="opacity:0.6">Quit job</span>`;
+        }
+      }
       root.innerHTML = `${placeArtHTML(def)}<div class="actions">
+        ${ntrJobHtml}
         ${acts.length
           ? acts.map((a) => {
-              // Spent for today reads on the button itself — finding out by
-              // clicking and being told no is the worst version of a cap.
               const spent = activityExhausted(a);
               const tail = spent
                 ? "done for today"
                 : `${a.cost ? "$" + a.cost + " &middot; " : ""}${a.minutes}min`;
               return `<span class="link-btn${spent ? " spent" : ""}" data-activity="${a.id}">${escapeHtml(a.label)} &mdash; ${tail}</span>`;
             }).join("")
-          : '<div class="empty-note">Nothing to do here yet.</div>'}
+          : (ntrJobHtml ? "" : '<div class="empty-note">Nothing to do here yet.</div>')}
         <div style="margin-top:14px;"><span class="link-btn" id="btn-room-back">&larr; Back</span></div>
       </div>`;
       root.querySelectorAll("[data-activity]").forEach((b) => b.addEventListener("click", () => {
         const act = acts.find((a) => a.id === b.dataset.activity);
         if (act) runActivity(act);
       }));
+      const ntrWBtn = $("btn-ntr-work");
+      if (ntrWBtn) ntrWBtn.addEventListener("click", () => ntrWorkAt(def.id));
+      const ntrQBtn = $("btn-ntr-quit");
+      if (ntrQBtn) ntrQBtn.addEventListener("click", () => quitNtrJob(def.id));
       $("btn-room-back").addEventListener("click", navBack);
       return;
     }
@@ -17187,16 +17209,33 @@ function checkBlackedZoeStage() {
     // now arrives through the character's own quest chain, at the place
     // and hour it's written for, instead of a button that ignored all of
     // that and played a scene with no lead-in.
+    let ntrWorkBtn = "";
+    if (ntrModeOn() && DATA.ntrJobs && DATA.ntrJobs[def.id]) {
+      const ntrHired = isNtrHired(def.id);
+      const ntrExpired = ntrHired && ntrContractExpired(def.id);
+      let ntrLabel = "Apply for work";
+      if (ntrHired && !ntrExpired) ntrLabel = "Work a shift";
+      else if (ntrExpired) ntrLabel = "Renew contract";
+      ntrWorkBtn = `<span class="occ-btn" id="btn-ntr-work" style="border-color:var(--accent-2);color:var(--accent-2)"><span class="occ-icon">${icon("check")}</span>${ntrLabel}</span>`;
+      if (ntrHired && !ntrExpired) {
+        ntrWorkBtn += `<span class="occ-btn" id="btn-ntr-quit" style="opacity:0.6">Quit job</span>`;
+      }
+    }
     let html = `
       <div class="occupant-portrait-wrap">${portraitHTML(def.characterId, "occupant-portrait")}</div>
       <div class="occupant-actions">
         <span class="occ-btn talk" id="btn-talk"><span class="occ-icon">${icon("talk")}</span>Talk</span>
+        ${ntrWorkBtn}
         <span class="occ-btn back" id="btn-room-back"><span class="occ-icon">&#8592;</span>Go Back</span>
       </div>`;
     root.innerHTML = html;
 
     const talkBtn = $("btn-talk");
     if (talkBtn) talkBtn.addEventListener("click", () => talkToCharacter(def.characterId));
+    const ntrWBtn = $("btn-ntr-work");
+    if (ntrWBtn) ntrWBtn.addEventListener("click", () => ntrWorkAt(def.id));
+    const ntrQBtn = $("btn-ntr-quit");
+    if (ntrQBtn) ntrQBtn.addEventListener("click", () => quitNtrJob(def.id));
     $("btn-room-back").addEventListener("click", navBack);
   }
 
@@ -17400,12 +17439,203 @@ function checkBlackedZoeStage() {
   const HAREM_QUESTS = [];
 
   function blackedModeOn() { return !!state.flags.blackedMode; }
-  function ntrModeOn() { return !!state.flags.ntrMode; }
+
+  /* ================ NTR WORK MECHANIC ================
+     Separate from the roommate-mode job system. Three locations, $10/day,
+     1-week (5 workday) contract, work-lock when shift hour arrives. */
+
+  function ntrJobData(jobId) {
+    return (DATA.ntrJobs && DATA.ntrJobs[jobId]) || null;
+  }
+  function availableNtrJobIds() {
+    return Object.keys(DATA.ntrJobs || {});
+  }
+  function isNtrHired(jobId) {
+    return !!state.flags["ntrJobHired_" + jobId];
+  }
+  function heldNtrJobId() {
+    return availableNtrJobIds().find(function(id) { return isNtrHired(id); }) || null;
+  }
+  function ntrContractShiftsLeft(jobId) {
+    var total = (ntrJobData(jobId) || {}).contractDays || 5;
+    var worked = state.flags["ntrShiftCount_" + jobId] || 0;
+    return Math.max(0, total - worked);
+  }
+  function ntrContractExpired(jobId) {
+    return isNtrHired(jobId) && ntrContractShiftsLeft(jobId) <= 0;
+  }
+
+  function ntrWorkAt(jobId) {
+    var job = ntrJobData(jobId);
+    if (!job) return;
+
+    if (!isNtrHired(jobId)) {
+      var held = heldNtrJobId();
+      if (held && held !== jobId) {
+        playSequence([{ speaker: "narrator", text: "You already have a contract at " + ntrJobData(held).title + ". Finish or quit that one first." }], finishAfter);
+        return;
+      }
+      playSequence(
+        [{ speaker: "narrator", text: job.textHireOffer }],
+        null,
+        "Continue",
+        [
+          {
+            label: "Sign the contract",
+            onSelect: function() {
+              state.flags["ntrJobHired_" + jobId] = true;
+              state.flags["ntrJobHiredDay_" + jobId] = state.day;
+              state.flags["ntrShiftCount_" + jobId] = 0;
+              advanceTime(1);
+              playSequence(job.textHireAccept.map(parseCasualLine), finishAfter);
+            }
+          },
+          {
+            label: "Not right now",
+            onSelect: function() {
+              playSequence([{ speaker: "narrator", text: job.textHireDecline }], finishAfter);
+            }
+          }
+        ]
+      );
+      return;
+    }
+
+    if (ntrContractExpired(jobId)) {
+      playSequence(
+        [{ speaker: "narrator", text: job.textContractOver }],
+        null,
+        "Continue",
+        [
+          {
+            label: "Sign another week",
+            onSelect: function() {
+              state.flags["ntrShiftCount_" + jobId] = 0;
+              state.flags["ntrJobHiredDay_" + jobId] = state.day;
+              advanceTime(1);
+              playSequence([{ speaker: "narrator", text: "You sign the new contract. Another week, same terms." }], finishAfter);
+            }
+          },
+          {
+            label: "Quit",
+            onSelect: function() {
+              delete state.flags["ntrJobHired_" + jobId];
+              delete state.flags["ntrJobHiredDay_" + jobId];
+              delete state.flags["ntrShiftCount_" + jobId];
+              delete state.flags["ntrJobLastWorkDay_" + jobId];
+              playSequence([{ speaker: "narrator", text: "You hand back the contract. Free again." }], finishAfter);
+            }
+          }
+        ]
+      );
+      return;
+    }
+
+    if (!isWorkday(state.day)) {
+      playSequence([{ speaker: "narrator", text: job.textWrongDay }], finishAfter);
+      return;
+    }
+    if (state.flags["ntrJobLastWorkDay_" + jobId] === state.day) {
+      playSequence([{ speaker: "narrator", text: job.textAlreadyWorked }], finishAfter);
+      return;
+    }
+    if (state.hour > job.latestStartHour) {
+      playSequence([{ speaker: "narrator", text: job.textTooLate }], finishAfter);
+      return;
+    }
+    if (state.flags["ntrJobHiredDay_" + jobId] === state.day) {
+      playSequence([{ speaker: "narrator", text: "You just signed on today. The first shift starts tomorrow." }], finishAfter);
+      return;
+    }
+
+    startNtrShift(jobId);
+  }
+
+  function startNtrShift(jobId) {
+    var job = ntrJobData(jobId);
+    state.hour = Math.max(state.hour, job.startHour);
+    playSequence([{ speaker: "narrator", text: job.textArrival }], function() {
+      advanceTime(3);
+      completeNtrShift(jobId);
+    });
+  }
+
+  function completeNtrShift(jobId) {
+    var job = ntrJobData(jobId);
+    state.flags["ntrJobLastWorkDay_" + jobId] = state.day;
+    state.flags["ntrShiftCount_" + jobId] = (state.flags["ntrShiftCount_" + jobId] || 0) + 1;
+    changeMoney(job.pay);
+    replaceNav("outside", job.locationId);
+    var shiftsLeft = ntrContractShiftsLeft(jobId);
+    var note = "Money +$" + job.pay;
+    if (shiftsLeft > 0) {
+      note += " \u2014 " + shiftsLeft + " shift" + (shiftsLeft !== 1 ? "s" : "") + " left on your contract.";
+    } else {
+      note += " \u2014 Contract complete. You can renew or move on.";
+    }
+    playSequence([{ speaker: "narrator", text: job.textShiftDone + "\n\n" + note }], finishAfter);
+  }
+
+  function ntrJobDueToday() {
+    var id = heldNtrJobId();
+    if (!id) return null;
+    if (ntrContractExpired(id)) return null;
+    if (!isWorkday(state.day)) return null;
+    if (state.flags["ntrJobHiredDay_" + id] === state.day) return null;
+    if (state.flags["ntrJobLastWorkDay_" + id] === state.day) return null;
+    return id;
+  }
+  function ntrShiftLockStartHour(job) {
+    return job.startHour <= 8 ? 6 : job.startHour;
+  }
+  function pendingNtrShiftJobId() {
+    var id = ntrJobDueToday();
+    if (!id) return null;
+    var job = ntrJobData(id);
+    var lockStart = ntrShiftLockStartHour(job);
+    if (state.hour >= lockStart && state.hour <= job.latestStartHour) return id;
+    return null;
+  }
+  function isNtrWorkLockActive() { return !!pendingNtrShiftJobId(); }
+  function ntrWorkLockRooms(jobId) {
+    var job = ntrJobData(jobId);
+    return new Set(["outside", "house", "upstairs_hall", "foyer", job.locationId]);
+  }
+  function blockedByNtrWork() {
+    playSequence([{ speaker: "player", text: "I need to get to work. I signed a contract." }], finishAfter);
+  }
+
+  function quitNtrJob(jobId) {
+    playSequence(
+      [{ speaker: "narrator", text: "Are you sure? You signed a contract for the week. Quitting early means walking away from the remaining shifts." }],
+      null,
+      "Continue",
+      [
+        {
+          label: "Quit anyway",
+          onSelect: function() {
+            delete state.flags["ntrJobHired_" + jobId];
+            delete state.flags["ntrJobHiredDay_" + jobId];
+            delete state.flags["ntrShiftCount_" + jobId];
+            delete state.flags["ntrJobLastWorkDay_" + jobId];
+            playSequence([{ speaker: "narrator", text: "You hand in your notice. No hard feelings." }], finishAfter);
+          }
+        },
+        {
+          label: "Keep working",
+          onSelect: function() { finishAfter(); }
+        }
+      ]
+    );
+  }
+
+
+    function ntrModeOn() { return !!state.flags.ntrMode; }
 
   /* ---- NTR corruption & rival engine ---- */
   const NTR_CORRUPTION_MILESTONES = [20, 40, 60, 80, 100];
   const NTR_CHARS = ["serena", "kira", "valentina", "harper"];
-  const NTR_RIVALS = { serena: "Marcus", kira: "Tyler", valentina: "Damon", harper: "Derek" };
+  const NTR_RIVALS = { serena: "Marcus", kira: "Tyler", valentina: "Ethan", harper: "Derek" };
   const NTR_LOCK_ICON = '<svg viewBox="0 0 14 14" style="width:14px;height:14px;vertical-align:-2px;display:inline-block;" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="8" height="7" rx="1.5" fill="#888"/><path d="M5 6V4.5a2 2 0 014 0V6" fill="none" stroke="#888" stroke-width="1.5"/><circle cx="7" cy="9.5" r="1" fill="#555"/></svg>';
 
   function ntrCorruption(charId) {

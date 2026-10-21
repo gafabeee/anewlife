@@ -93,6 +93,14 @@ window.GAME_DATA = {
       portrait: "assets/portraits/marcus.jpeg",
       ntrOnly: true
     },
+    tyler: {
+      id: "tyler",
+      name: "Tyler",
+      color: "#b04040",
+      role: "Possessive boyfriend",
+      portrait: "assets/portraits/Tyler.jpeg",
+      ntrOnly: true
+    },
     kira: {
       id: "kira",
       name: "Kira",
@@ -117,6 +125,14 @@ window.GAME_DATA = {
       ntrRivalRole: "Charming ex",
       description: "Amber is an exchange student with a camera always within reach and an eye for beauty in forgotten places. She’s warm and a little reckless — the kind of girl who’ll climb a fire escape for a sunset photo. Her ex Ethan is back in the picture, all charm and apologies, and she hasn’t decided yet whether she’s over him."
     },
+    ethan: {
+      id: "ethan",
+      name: "Ethan",
+      color: "#6a8a50",
+      role: "Charming ex",
+      portrait: "assets/portraits/Ethan.jpeg",
+      ntrOnly: true
+    },
     harper: {
       id: "harper",
       name: "Harper",
@@ -128,6 +144,14 @@ window.GAME_DATA = {
       ntrRival: "Derek",
       ntrRivalRole: "Emotionally distant fiancé",
       description: "Harper manages the local supermarket and is engaged to Derek, a man who’s forgotten three anniversaries in a row. She’s organized, kind, and twists the ring on her finger when she thinks about taking it off. The market is her refuge — or it was, until someone started showing up for more than groceries."
+    },
+    derek: {
+      id: "derek",
+      name: "Derek",
+      color: "#606080",
+      role: "Emotionally distant fiancé",
+      portrait: "assets/portraits/Derek.jpeg",
+      ntrOnly: true
     }
   },
 
@@ -1481,15 +1505,15 @@ window.GAME_DATA = {
           { "speaker": "kira", "text": "“You’re getting faster.” She doesn’t look at you when she says it. “Or I’m getting slower. Don’t tell anyone.”" },
           { "speaker": "narrator", "text": "A car pulls into the parking lot. Engine too loud, bass thumping through closed windows. Kira’s jaw tightens before she even sees it." },
           { "speaker": "narrator", "text": "Tyler steps out. He’s built like someone who lifts for the mirror, not for sport. Tank top, gold chain, sunglasses at six in the morning. He walks toward you both like he owns the park." },
-          { "speaker": "narrator", "text": "“Babe.” He doesn’t say it to be affectionate. He says it like a label. “Who’s this?”" },
+          { "speaker": "tyler", "text": "“Babe.” He doesn’t say it to be affectionate. He says it like a label. “Who’s this?”" },
           { "speaker": "kira", "text": "“A friend. From the house.” She stops running. Her breathing is controlled — not from the run, but from practice. “I told you about the exchange program.”" },
           { "speaker": "narrator", "text": "Tyler looks you up and down. Takes his time. The sunglasses make it impossible to read his eyes, which is probably the point." },
-          { "speaker": "narrator", "text": "“You run together every morning?” He asks you, not her." },
+          { "speaker": "tyler", "text": "“You run together every morning?” He asks you, not her." },
           { "speaker": "player", "text": "When I can keep up." },
           { "speaker": "narrator", "text": "Tyler smiles. It doesn’t reach anywhere near his eyes." },
-          { "speaker": "narrator", "text": "“That’s sweet.” He puts his arm around Kira. Heavy. Possessive. She doesn’t lean into it. “Kira’s got regionals in three weeks. She doesn’t need distractions.”" },
+          { "speaker": "tyler", "text": "“That’s sweet.” He puts his arm around Kira. Heavy. Possessive. She doesn’t lean into it. “Kira’s got regionals in three weeks. She doesn’t need distractions.”" },
           { "speaker": "kira", "text": "“He’s not a distraction.” Quiet. Firm." },
-          { "speaker": "narrator", "text": "Tyler squeezes her shoulder. Too hard to be casual. “I’ll pick you up after practice. We’ll get lunch.” It’s not a question." },
+          { "speaker": "tyler", "text": "He squeezes her shoulder. Too hard to be casual. “I’ll pick you up after practice. We’ll get lunch.” It’s not a question." },
           { "speaker": "narrator", "text": "He walks back to the car, tosses one more look over his shoulder at you, and drives off. The bass fades down the street." },
           { "speaker": "kira", "text": "“Sorry about that.” She starts stretching again. Her hands are steady but the muscle in her jaw is working. “He gets… protective.”" },
           { "speaker": "player", "text": "That didn’t look like protective." },
@@ -1554,15 +1578,15 @@ window.GAME_DATA = {
           { "speaker": "narrator", "text": "She stops. Picks at the tape still wrapped around her right hand from yesterday." },
           { "speaker": "kira", "text": "“Like a trap. And every time I think about pulling free I picture all the threads snapping and I don’t know what’s left underneath.”" },
           { "speaker": "narrator", "text": "A car turns into the parking lot. Tyler’s car. The bass is off this time. He gets out quickly, spots you both on the bleachers, and walks over with that same heavy stride." },
-          { "speaker": "narrator", "text": "“There you are.” He looks at you first, then at Kira. “You didn’t answer my calls.”" },
+          { "speaker": "tyler", "text": "“There you are.” He looks at you first, then at Kira. “You didn’t answer my calls.”" },
           { "speaker": "kira", "text": "“I was busy.”" },
-          { "speaker": "narrator", "text": "“Busy sitting in the park with him?” Tyler steps closer. His shadow falls across the both of you. “I thought we talked about this.”" },
+          { "speaker": "tyler", "text": "“Busy sitting in the park with him?” He steps closer. His shadow falls across the both of you. “I thought we talked about this.”" },
           { "speaker": "player", "text": "She can talk to whoever she wants." },
           { "speaker": "narrator", "text": "Tyler turns to you. Slowly. The kind of slow that’s supposed to feel threatening." },
-          { "speaker": "narrator", "text": "“Mind your business, man. This is between me and my girlfriend.” He reaches for Kira’s arm. The same arm." },
+          { "speaker": "tyler", "text": "“Mind your business, man. This is between me and my girlfriend.” He reaches for Kira’s arm. The same arm." },
           { "speaker": "kira", "text": "“Don’t touch me.” She stands. Eye to eye. She’s taller than you expected, or maybe she’s just standing straighter than she has in months. “Don’t touch me, Tyler.”" },
           { "speaker": "narrator", "text": "Something shifts. Tyler sees it — sees that she means it. For a second his face flickers between anger and the realization that anger won’t work this time." },
-          { "speaker": "narrator", "text": "“Fine.” He steps back. Points at you. “This isn’t over.” Then he walks to the car. The door slams. The tires screech out of the lot." },
+          { "speaker": "tyler", "text": "“Fine.” He steps back. Points at you. “This isn’t over.” Then he walks to the car. The door slams. The tires screech out of the lot." },
           { "speaker": "narrator", "text": "Kira sits back down. Her hands are shaking but her eyes are dry." },
           { "speaker": "kira", "text": "“That’s the first time I ever said that to him.” She stares at the track. “Four years. And that’s the first time.”" },
           { "speaker": "player", "text": "How does it feel?" },
@@ -1791,15 +1815,15 @@ window.GAME_DATA = {
         "lines": [
           { "speaker": "narrator", "text": "You hear raised voices from the front porch. Amber’s voice — tight and controlled — and a man’s voice, smooth and insistent." },
           { "speaker": "narrator", "text": "Ethan is taller than you imagined. Designer jacket, perfect stubble, the kind of tan that comes from a lamp. He’s standing too close to Amber, holding a bouquet of flowers like a prop." },
-          { "speaker": "narrator", "text": "“Just dinner, Ambs. One dinner. I flew here for you.”" },
+          { "speaker": "ethan", "text": "“Just dinner, Ambs. One dinner. I flew here for you.”" },
           { "speaker": "valentina", "text": "“You flew here for a conference. I saw the LinkedIn post.”" },
-          { "speaker": "narrator", "text": "He laughs — easy, practiced. “Okay, both. But mostly you. I miss you. I miss us.”" },
+          { "speaker": "ethan", "text": "He laughs — easy, practiced. “Okay, both. But mostly you. I miss you. I miss us.”" },
           { "speaker": "narrator", "text": "Amber sees you in the doorway. Something in her shoulders relaxes." },
           { "speaker": "valentina", "text": "“Ethan, this is my friend. From the house.”" },
           { "speaker": "narrator", "text": "Ethan looks at you the way men look at furniture — assessing whether it’s in the way." },
-          { "speaker": "narrator", "text": "“The exchange student?” He extends a hand. Firm grip. Too firm. “She told me about you. Says you carry her camera bag.” He smiles. “That’s nice.”" },
+          { "speaker": "ethan", "text": "“The exchange student?” He extends a hand. Firm grip. Too firm. “She told me about you. Says you carry her camera bag.” He smiles. “That’s nice.”" },
           { "speaker": "valentina", "text": "“That’s not—” She stops. Takes a breath. “Ethan, I said I’d think about dinner. I haven’t thought about it yet.”" },
-          { "speaker": "narrator", "text": "“What’s to think about?” He steps closer. “It’s pasta, babe, not a proposal.” He touches her arm. She doesn’t pull away, but she doesn’t lean in either." },
+          { "speaker": "ethan", "text": "“What’s to think about?” He steps closer. “It’s pasta, babe, not a proposal.” He touches her arm. She doesn’t pull away, but she doesn’t lean in either." },
           { "speaker": "narrator", "text": "He leaves the flowers on the porch railing and walks back to his rental car. Before he gets in, he looks at you — a long, measuring look — and smiles." },
           { "speaker": "narrator", "text": "Amber watches the car pull away. She picks up the flowers, studies them, and sets them on the step without bringing them inside." },
           { "speaker": "valentina", "text": "“He does this.” She sits on the porch step. “Shows up. Makes it seem easy. Makes me feel crazy for having boundaries.”" },
@@ -1972,15 +1996,15 @@ window.GAME_DATA = {
           { "speaker": "player", "text": "You look tired." },
           { "speaker": "harper", "text": "“I am tired.” No armor. Just the truth. “I’ve been covering every shift because my evening cashier quit. Derek said he’d help. That was a week ago.”" },
           { "speaker": "narrator", "text": "The door chimes. A man walks in — tall, neat hair, button-down shirt that’s too crisp for a Tuesday evening. He’s holding his phone and doesn’t look up from it as he crosses to the counter." },
-          { "speaker": "narrator", "text": "“Hey. I need to grab a few things.” He kisses Harper on the cheek without making eye contact. Quick, mechanical — the gesture of someone checking a box." },
+          { "speaker": "derek", "text": "“Hey. I need to grab a few things.” He kisses Harper on the cheek without making eye contact. Quick, mechanical — the gesture of someone checking a box." },
           { "speaker": "harper", "text": "“Derek, this is—”" },
-          { "speaker": "narrator", "text": "“Yeah, hey.” He glances at you for half a second. “Babe, did you call the insurance company? I left you a voicemail about the deductible.”" },
+          { "speaker": "derek", "text": "“Yeah, hey.” He glances at you for half a second. “Babe, did you call the insurance company? I left you a voicemail about the deductible.”" },
           { "speaker": "harper", "text": "“I was doing inventory. And covering the register. And fixing the produce situation.”" },
-          { "speaker": "narrator", "text": "“Right. Well, can you call them tomorrow? Before noon. It’s time-sensitive.” He’s already walking toward the aisle. He grabs a six-pack and a bag of chips and comes back." },
+          { "speaker": "derek", "text": "“Right. Well, can you call them tomorrow? Before noon. It’s time-sensitive.” He’s already walking toward the aisle. He grabs a six-pack and a bag of chips and comes back." },
           { "speaker": "narrator", "text": "He puts them on the counter. Doesn’t take out his wallet." },
           { "speaker": "harper", "text": "“That’s twelve eighty.”" },
-          { "speaker": "narrator", "text": "“Put it on the account.” He says it with a small laugh, like it’s a joke. Harper doesn’t laugh. She bags the items and slides them across." },
-          { "speaker": "narrator", "text": "He picks up the bag. Checks his phone again. “I’ll be home late. Don’t wait up.” Another cheek kiss. Same as before. Same everything." },
+          { "speaker": "derek", "text": "“Put it on the account.” He says it with a small laugh, like it’s a joke. Harper doesn’t laugh. She bags the items and slides them across." },
+          { "speaker": "derek", "text": "He picks up the bag. Checks his phone again. “I’ll be home late. Don’t wait up.” Another cheek kiss. Same as before. Same everything." },
           { "speaker": "narrator", "text": "The bell chimes as he leaves. The store goes quiet." },
           { "speaker": "narrator", "text": "Harper stares at the door for a long time. Then she looks down at her left hand. The ring. She turns it. Slowly. All the way around. Then she does something she’s never done in front of you — she slides it off. Sets it on the counter next to the register. Stares at it." },
           { "speaker": "harper", "text": "“He didn’t introduce himself to you.” Her voice is flat. “My fianc— walked into my store, talked about insurance, took beer he didn’t pay for, and didn’t even ask your name.”" },
@@ -2080,5 +2104,70 @@ window.GAME_DATA = {
     "kira": [],
     "valentina": [],
     "harper": []
-  }
+  },
+  ntrJobs: {
+    market: {
+      title: "Supermarket",
+      locationId: "market",
+      pay: 10,
+      startHour: 7,
+      latestStartHour: 10,
+      contractDays: 5,
+      textHireOffer: "A laminated card pinned to the noticeboard by the entrance reads: PART-TIME HELP WANTED — ask at the counter. The woman behind the register looks you over without stopping what she’s doing.",
+      textHireAccept: [
+        "narrator::She slides a single sheet of paper across the counter. It’s a contract — one week minimum, $10 a day, Monday to Friday, starting tomorrow morning at seven.",
+        "narrator::You sign it. She tears off the bottom copy and hands it to you without ceremony.",
+        "narrator::“Seven o’clock. Don’t be late.”"
+      ],
+      textHireDecline: "You step away from the noticeboard. The card stays pinned where it was.",
+      textArrival: "You clock in at the supermarket. The fluorescent lights hum the same way they did yesterday.",
+      textShiftDone: "You finish stocking the last shelf and clock out. Another shift down.",
+      textTooLate: "The morning shift started without you. You’ll have to come earlier tomorrow.",
+      textAlreadyWorked: "You already worked today. Come back tomorrow.",
+      textWrongDay: "The store doesn’t need you on weekends.",
+      textContractOver: "Your one-week contract is up. You can sign on for another week if you want to keep working here."
+    },
+    diner: {
+      title: "The Nightowl",
+      locationId: "diner",
+      pay: 10,
+      startHour: 18,
+      latestStartHour: 21,
+      contractDays: 5,
+      textHireOffer: "A hand-written note on the door says HELP WANTED — EVENINGS. Inside, the woman behind the counter is wiping it down for what looks like the hundredth time today.",
+      textHireAccept: [
+        "narrator::She pulls a crumpled contract from under the counter and smooths it out. One week, $10 a night, six to close, weekdays.",
+        "narrator::You sign. She folds the paper and puts it in a drawer that doesn’t quite close.",
+        "narrator::“Tomorrow. Six. Don’t be early, there’s nothing to do before six.”"
+      ],
+      textHireDecline: "You leave the note on the door where it was. The woman goes back to wiping.",
+      textArrival: "You push through the door of the Nightowl. The evening crowd — such as it is — hasn’t arrived yet.",
+      textShiftDone: "You hang the apron up and step out into the night. The neon sign buzzes behind you.",
+      textTooLate: "It’s too late to start — the evening shift is already underway.",
+      textAlreadyWorked: "You already worked tonight.",
+      textWrongDay: "The Nightowl doesn’t need you on weekends.",
+      textContractOver: "Your one-week contract is done. You can re-sign if you want to keep the evening shifts."
+    },
+    hotel: {
+      title: "The Ashgrove",
+      locationId: "hotel",
+      pay: 10,
+      startHour: 10,
+      latestStartHour: 14,
+      contractDays: 5,
+      textHireOffer: "A small card in the window reads FRONT DESK — PART TIME. The lobby is empty. A woman behind the desk looks up when you walk in.",
+      textHireAccept: [
+        "narrator::She produces a form from somewhere behind the computer. One week minimum, $10 a day, ten to afternoon, weekdays.",
+        "narrator::You fill it in. She reads it upside-down while you write.",
+        "narrator::“Ten o’clock tomorrow. The lanyard’s in the drawer.”"
+      ],
+      textHireDecline: "You leave the lobby. The card stays in the window.",
+      textArrival: "You badge in at the Ashgrove. The lobby smells like carpet shampoo, same as always.",
+      textShiftDone: "You hand the lanyard back and step outside. The afternoon light hits different after a shift indoors.",
+      textTooLate: "The desk shift started without you. Too late for today.",
+      textAlreadyWorked: "You already did today’s shift.",
+      textWrongDay: "No shifts on the weekend.",
+      textContractOver: "Your week is up at the Ashgrove. Sign another contract if you want to keep the desk shifts."
+    }
+  },
 };
