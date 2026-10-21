@@ -1210,7 +1210,6 @@
     if (ntrModeOn()) {
       if (id === "lily_room") return "Serena’s Room";
       if (id === "maya_room") return "Kira’s Room";
-      if (id === "noelle_room") return "Harper’s Room";
       if (id === "sabrina_room") return "Amber’s Room";
     }
     return title;
@@ -1222,7 +1221,6 @@
     if (ntrModeOn()) {
       if (id === "lily_room") return "Serena’s room, kept tidy with quiet, deliberate care.";
       if (id === "maya_room") return "Kira’s space — scattered with fashion sketches and half-finished outfits.";
-      if (id === "noelle_room") return "Harper’s room — warm and inviting, everything placed with effortless style.";
       if (id === "sabrina_room") return "Amber’s room — stylish and curated, every detail placed with quiet intention.";
     }
     return desc;
@@ -16752,6 +16750,7 @@ function checkBlackedZoeStage() {
       </div>`;
     }
     list.forEach((r) => {
+      if (ntrModeOn() && r.id === "noelle_room") return;
       // A pending shift narrows the player's available destination to the
       // workplace. Keep the orange guide aligned with that route instead of
       // leaving quest pings on rooms that cannot be entered during the shift.
