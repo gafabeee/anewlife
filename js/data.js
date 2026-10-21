@@ -345,17 +345,19 @@ window.GAME_DATA = {
     kira: {
       ntrOnly: true,
       weekday: [
-        { start: 0, end: 8, room: null },
+        { start: 0, end: 7, room: "maya_room" },
+        { start: 7, end: 8, room: "kitchen" },
         { start: 8, end: 12, room: "park" },
         { start: 12, end: 19, room: "gym" },
         { start: 19, end: 22, room: "park" },
-        { start: 22, end: 24, room: null }
+        { start: 22, end: 24, room: "maya_room" }
       ],
       weekend: [
-        { start: 0, end: 9, room: null },
+        { start: 0, end: 9, room: "maya_room" },
         { start: 9, end: 13, room: "park" },
         { start: 13, end: 17, room: "gym" },
-        { start: 17, end: 24, room: null }
+        { start: 17, end: 20, room: "park" },
+        { start: 20, end: 24, room: "maya_room" }
       ]
     },
     valentina: {
@@ -363,8 +365,8 @@ window.GAME_DATA = {
       weekday: [
         { start: 0, end: 11, room: "sabrina_room" },
         { start: 11, end: 16, room: "living_room" },
-        { start: 16, end: 20, room: "sabrina_room" },
-        { start: 20, end: 24, room: "sabrina_room" }
+        { start: 16, end: 19, room: "park" },
+        { start: 19, end: 24, room: "sabrina_room" }
       ],
       weekend: [
         { start: 0, end: 12, room: "sabrina_room" },
@@ -376,16 +378,17 @@ window.GAME_DATA = {
     harper: {
       ntrOnly: true,
       weekday: [
-        { start: 0, end: 9, room: null },
-        { start: 9, end: 14, room: "market" },
+        { start: 0, end: 8, room: null },
+        { start: 8, end: 14, room: "market" },
         { start: 14, end: 17, room: "park" },
-        { start: 17, end: 24, room: null }
+        { start: 17, end: 20, room: "market" },
+        { start: 20, end: 24, room: null }
       ],
       weekend: [
-        { start: 0, end: 11, room: null },
-        { start: 11, end: 15, room: "park" },
-        { start: 15, end: 19, room: "market" },
-        { start: 19, end: 24, room: null }
+        { start: 0, end: 10, room: null },
+        { start: 10, end: 15, room: "park" },
+        { start: 15, end: 20, room: "market" },
+        { start: 20, end: 24, room: null }
       ]
     }
   },
