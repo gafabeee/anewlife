@@ -1305,6 +1305,25 @@
     // schedule doesn't know that — without this she stands in the booth of
     // a cinema she no longer works at. She's back once q6 has run.
     if (charId === "jade" && state.flags.casual_jade_final && !state.flags.jade_back) return null;
+    // NTR quest-location override: character MUST be at quest room during quest hours
+    if (ntrModeOn() && ch && ch.ntrOnly) {
+      var _qs = DATA.ntrQuests && DATA.ntrQuests[charId];
+      if (_qs) {
+        var _step = (state.ntrQuestProgress && state.ntrQuestProgress[charId]) || 0;
+        var _branch = state.flags[charId + "_ntr_branch"] || null;
+        for (var _qi = 0; _qi < _qs.length; _qi++) {
+          var _q = _qs[_qi];
+          if (_q.step === _step && (!_q.branch || !_branch || _q.branch === _branch)) {
+            if (_q.room && !state.flags[_q.completionFlag]) {
+              if (state.hour >= _q.timeStart && state.hour < _q.timeEnd) {
+                return _q.room;
+              }
+            }
+            break;
+          }
+        }
+      }
+    }
     const route = DATA.characterRoutes && DATA.characterRoutes[charId];
     if (route) {
       let current;
