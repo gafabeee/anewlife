@@ -18643,6 +18643,40 @@ function checkBlackedZoeStage() {
         if (q.phrase) html += '<div class="alw-step-phrase">' + escapeHtml(q.phrase) + '</div>';
         html += '</div></div>';
       });
+      // Action scenes for this character
+      var _actDefs = [
+        { c: "serena", f: "serena_ntr_q3_complete", s: "serena_ntr_action1_seen", t: "Private Moment", r: "kitchen", t0: 21, t1: 24 },
+        { c: "serena", f: "serena_ntr_q5_complete", s: "serena_ntr_action2_seen", b: "a", t: "Late Night", r: "kitchen", t0: 23, t1: 24 },
+        { c: "serena", f: "serena_ntr_q5_complete", s: "serena_ntr_action3_seen", b: "b", t: "After Hours", r: "kitchen", t0: 22, t1: 24 },
+        { c: "kira", f: "kira_ntr_q3_complete", s: "kira_ntr_action1_seen", t: "Private Training", r: "park", t0: 6, t1: 9 },
+        { c: "kira", f: "kira_ntr_q5_complete", s: "kira_ntr_action2_seen", b: "a", t: "After Hours", r: "gym", t0: 20, t1: 24 },
+        { c: "kira", f: "kira_ntr_q5_complete", s: "kira_ntr_action3_seen", b: "b", t: "Dawn Run", r: "park", t0: 6, t1: 9 },
+        { c: "valentina", f: "valentina_ntr_q3_complete", s: "valentina_ntr_action1_seen", t: "Her Room", r: "sabrina_room", t0: 21, t1: 24 },
+        { c: "valentina", f: "valentina_ntr_q5_complete", s: "valentina_ntr_action2_seen", b: "a", t: "Midnight", r: "sabrina_room", t0: 22, t1: 24 },
+        { c: "valentina", f: "valentina_ntr_q5_complete", s: "valentina_ntr_action3_seen", b: "b", t: "Late Visit", r: "sabrina_room", t0: 22, t1: 24 },
+        { c: "harper", f: "harper_ntr_q3_complete", s: "harper_ntr_action1_seen", t: "Closing Time", r: "market", t0: 20, t1: 24 },
+        { c: "harper", f: "harper_ntr_q5_complete", s: "harper_ntr_action2_seen", b: "a", t: "Late Shift", r: "market", t0: 21, t1: 24 },
+        { c: "harper", f: "harper_ntr_q5_complete", s: "harper_ntr_action3_seen", b: "b", t: "Morning Delivery", r: "market", t0: 8, t1: 12 }
+      ];
+      var _charActs = _actDefs.filter(function(a) { return a.c === id; });
+      var _hasAny = false;
+      for (var _ai = 0; _ai < _charActs.length; _ai++) {
+        var _a = _charActs[_ai];
+        if (!state.flags[_a.f]) continue;
+        if (_a.b && state.flags[_a.c + "_ntr_branch"] !== _a.b) continue;
+        if (!_hasAny) {
+          html += '<div style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(236,72,153,.15);"><div style="font-size:11px;color:rgba(236,72,153,.6);margin-bottom:4px;padding-left:28px;">Action Scenes</div>';
+          _hasAny = true;
+        }
+        var _seen = !!state.flags[_a.s];
+        var _cls = _seen ? "done" : "active";
+        var _dot = _seen ? "\u2714" : "\u2764";
+        var _rm = roomTitle(_a.r);
+        var _meta = '<span>' + icon("marker") + ' ' + escapeHtml(_rm) + '</span><span>' + icon("clock") + ' ' + _a.t0 + ':00\u2013' + _a.t1 + ':00</span>';
+        if (!_seen) _meta += '<span class="req-now">\u25CF available</span>';
+        html += '<div class="alw-step ' + _cls + '"><div class="alw-step-dot">' + _dot + '</div><div class="alw-step-body"><div class="alw-step-title">' + escapeHtml(_a.t) + '</div><div class="alw-step-meta">' + _meta + '</div></div></div>';
+      }
+      if (_hasAny) html += '</div>';
       html += '</div></div>';
     });
     html += '</div>';
