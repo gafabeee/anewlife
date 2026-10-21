@@ -17742,6 +17742,29 @@ function checkBlackedZoeStage() {
         items.push({ title: "\u26A0 " + rQuest.title, note: rivalName + " is making moves. Check " + rm + " (" + rQuest.timeStart + ":00\u2013" + rQuest.timeEnd + ":00).", charId: id });
       });
     }
+    // Action scene hints: show when an action is available but not yet seen.
+    var NTR_ACTION_HINTS = [
+      { charId: "serena", flag: "serena_ntr_q3_complete", seen: "serena_ntr_action1_seen", title: "Private Moment", room: "kitchen", timeStart: 21, timeEnd: 24 },
+      { charId: "serena", flag: "serena_ntr_q5_complete", seen: "serena_ntr_action2_seen", branch: "a", title: "Late Night", room: "kitchen", timeStart: 23, timeEnd: 24 },
+      { charId: "serena", flag: "serena_ntr_q5_complete", seen: "serena_ntr_action3_seen", branch: "b", title: "After Hours", room: "kitchen", timeStart: 22, timeEnd: 24 },
+      { charId: "kira", flag: "kira_ntr_q3_complete", seen: "kira_ntr_action1_seen", title: "Private Training", room: "park", timeStart: 6, timeEnd: 9 },
+      { charId: "kira", flag: "kira_ntr_q5_complete", seen: "kira_ntr_action2_seen", branch: "a", title: "After Hours", room: "gym", timeStart: 20, timeEnd: 24 },
+      { charId: "kira", flag: "kira_ntr_q5_complete", seen: "kira_ntr_action3_seen", branch: "b", title: "Dawn Run", room: "park", timeStart: 6, timeEnd: 9 },
+      { charId: "valentina", flag: "valentina_ntr_q3_complete", seen: "valentina_ntr_action1_seen", title: "Her Room", room: "sabrina_room", timeStart: 21, timeEnd: 24 },
+      { charId: "valentina", flag: "valentina_ntr_q5_complete", seen: "valentina_ntr_action2_seen", branch: "a", title: "Midnight", room: "sabrina_room", timeStart: 22, timeEnd: 24 },
+      { charId: "valentina", flag: "valentina_ntr_q5_complete", seen: "valentina_ntr_action3_seen", branch: "b", title: "Late Visit", room: "sabrina_room", timeStart: 22, timeEnd: 24 },
+      { charId: "harper", flag: "harper_ntr_q3_complete", seen: "harper_ntr_action1_seen", title: "Closing Time", room: "market", timeStart: 20, timeEnd: 24 },
+      { charId: "harper", flag: "harper_ntr_q5_complete", seen: "harper_ntr_action2_seen", branch: "a", title: "Late Shift", room: "market", timeStart: 21, timeEnd: 24 },
+      { charId: "harper", flag: "harper_ntr_q5_complete", seen: "harper_ntr_action3_seen", branch: "b", title: "Morning Delivery", room: "market", timeStart: 8, timeEnd: 12 }
+    ];
+    NTR_ACTION_HINTS.forEach(function(a) {
+      if (!state.flags[a.flag]) return;
+      if (state.flags[a.seen]) return;
+      if (a.branch && state.flags[a.charId + "_ntr_branch"] !== a.branch) return;
+      var cName = DATA.characters[a.charId] ? DATA.characters[a.charId].name : a.charId;
+      var rm = roomTitle(a.room);
+      items.push({ title: "❤ " + a.title, note: "Visit " + cName + " at " + rm + " (" + a.timeStart + ":00–" + a.timeEnd + ":00).", charId: a.charId });
+    });
     return items;
   }
   function ntrQuestStep(charId) {
